@@ -1,0 +1,48 @@
+.App {
+  font-family: Arial, Helvetica, sans-serif;
+  display: grid;
+  max-width: 100px;
+}
+
+h1, h2, p {
+  text-align: center;
+}
+
+.iconLinks {
+  display: grid;
+  color: transparent;
+  width: fit-content;
+  margin: auto;
+}
+
+.iconLinks:hover {
+  color: black;
+}
+
+a {
+  color: inherit;
+}
+
+.icon, .links {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  font-weight: bold;
+}
+
+.icon:hover {
+  opacity: .3;
+}
+
+.links :nth-child(odd) {
+  margin-bottom: 20px;
+}
+
+.icon {
+  width: 200px;
+}
