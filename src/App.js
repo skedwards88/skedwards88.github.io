@@ -5,12 +5,12 @@ import "./App.css";
 // get colored monkeys icon
 // get higher resolution icons where needed
 // make dynamic based on viewport width
-// get links working 
 // add frame around each project
 // get font a good size
 // style background
 // change name
 // link to repo and linkedin
+// set up commit hooks, see if can make global
 
 function importAll(r) {
   let images = {};
@@ -80,8 +80,11 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Portfolio</h1>
-      {displays}
+      <h1>CnS Games</h1>
+      <h2>Games designed by Colin, built by Sarah</h2>
+      <div id="projects">
+        {displays}
+      </div>
     </div>
   );
 
