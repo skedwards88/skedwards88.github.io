@@ -20,23 +20,23 @@ function importAll(r) {
 
 const images = importAll(require.context('./images', false, /\.(png|jpe?g|svg)$/));
 
-function Project({ name, id, description, site, code }) {
+function Project({ name, id, description, site, code, activityDescription="Play now" }) {
   const imagePath = images[id].default;
 
   return (
     <div className="project" key={id}>
       <h2>{name}</h2>
-      <div className="iconLinks">
-        <img className="icon"
-          src={imagePath}
-          alt={id}
-        />
-        <div className="links">
-          <a href={site}>play now</a>
-          <a href={code}>see code</a>
-        </div>
-      </div>
+      <img className="icon"
+        src={imagePath}
+        alt={id}
+      />
       <p>{description}</p>
+      <div className="links">
+        <a href={site}>{activityDescription}</a>
+        <div>&nbsp;●&nbsp;</div>
+        <a href={code}>See code</a>
+      </div>
+
     </div>
   )
 }
@@ -70,7 +70,8 @@ function App() {
       name: "Stories ",
       description: "A static site generator to share short stories",
       site: "https://skedwards88.github.io/ShortStories/",
-      code: "https://github.com/skedwards88/ShortStories"
+      code: "https://github.com/skedwards88/ShortStories",
+      activityDescription: "Read now",
     }
   ]
 
@@ -81,13 +82,12 @@ function App() {
   return (
     <div className="App">
       <h1>CnS Games</h1>
-      <h2>Games designed by Colin, built by Sarah</h2>
+      <h2>Designed by Colin Thom<br/>Built by Sarah Edwards</h2>
       <div id="projects">
         {displays}
       </div>
     </div>
   );
-
 }
 
 export default App;
