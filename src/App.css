@@ -1,18 +1,31 @@
 .App {
   font-family: Arial, Helvetica, sans-serif;
   display: grid;
-  max-width: 100px;
+  margin: 10px;
 }
 
 h1, h2, p {
   text-align: center;
 }
 
+#projects {
+  display: grid;
+  grid-template-columns: 100%;
+  gap: 50px;
+}
+
+.project {
+  border: 2px solid black;
+  margin: 3px;
+  padding: 20px;
+}
+
 .iconLinks {
   display: grid;
   color: transparent;
-  width: fit-content;
+  /* width: fit-content; */
   margin: auto;
+  width: 100%;
 }
 
 .iconLinks:hover {
@@ -39,10 +52,17 @@ a {
   opacity: .3;
 }
 
-.links :nth-child(odd) {
+/* .links :nth-child(odd) {
   margin-bottom: 20px;
-}
+} */
 
 .icon {
-  width: 200px;
+  width: 100%;
+}
+
+/* larger screens */
+@media (min-width: 500) {
+  #projects {
+    grid-template-columns: 50% 50%;
+  }
 }
