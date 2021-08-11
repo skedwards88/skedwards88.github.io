@@ -11,6 +11,10 @@ import "./App.css";
 // change name
 // link to repo and linkedin
 // set up commit hooks, see if can make global
+// favicon
+// web manifest
+// service worker
+// github pages
 
 function importAll(r) {
   let images = {};
@@ -20,23 +24,27 @@ function importAll(r) {
 
 const images = importAll(require.context('./images', false, /\.(png|jpe?g|svg)$/));
 
-function Project({ name, id, description, site, code, activityDescription="Play now" }) {
+function Project({ name, id, description, site, code, activityDescription = "Play now", numPlayers, playTimeMinutes }) {
   const imagePath = images[id].default;
 
   return (
     <div className="project" key={id}>
-      <h2>{name}</h2>
+      <h3>{name}</h3>
       <img className="icon"
         src={imagePath}
         alt={id}
       />
+      <div id="playParameters">
+        <p>{numPlayers ? numPlayers + " players" : null}</p>
+        <p>{numPlayers && playTimeMinutes ? " ● " : null}</p>
+        <p>{playTimeMinutes ? playTimeMinutes + " min" : null}</p>
+      </div>
       <p>{description}</p>
       <div className="links">
         <a href={site}>{activityDescription}</a>
         <div>&nbsp;●&nbsp;</div>
         <a href={code}>See code</a>
       </div>
-
     </div>
   )
 }
@@ -47,23 +55,29 @@ function App() {
     {
       id: "monkeys",
       name: "Monkeys of the Caribbean",
-      description: "2 players ● 15 min ● Compete to control the most coconut routes",
+      description: "Compete to control the most coconut routes",
       site: "https://skedwards88.github.io/monkeys/",
       code: "https://github.com/skedwards88/monkeys",
+      numPlayers: 2,
+      playTimeMinutes: 15,
     },
     {
       id: "sector",
       name: "Sector",
-      description: "2 players ● 15 min ● Control the largest sector of the universe",
+      description: "Control the largest sector of the universe",
       site: "https://skedwards88.github.io/sector/",
       code: "https://github.com/skedwards88/sector",
+      numPlayers: 2,
+      playTimeMinutes: 15,
     },
     {
       id: "stars_circles",
       name: "Stars and Circles",
-      description: "2 players ● 15 min ● Stake out your territory before your opponent claims it",
+      description: "Stake out your territory before your opponent claims it",
       site: "https://skedwards88.github.io/stars_circles_game/",
       code: "https://github.com/skedwards88/stars_circles_game",
+      numPlayers: 2,
+      playTimeMinutes: 15,
     },
     {
       id: "stories",
@@ -82,7 +96,7 @@ function App() {
   return (
     <div className="App">
       <h1>CnS Games</h1>
-      <h2>Designed by Colin Thom<br/>Built by Sarah Edwards</h2>
+      <h2>Designed by Colin Thom<br />Built by Sarah Edwards</h2>
       <div id="projects">
         {displays}
       </div>
