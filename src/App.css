@@ -1,23 +1,23 @@
+#root {
+  background-color: rgb(235, 235, 235);
+}
+
 .App {
   font-family: Arial, Helvetica, sans-serif;
   display: grid;
   margin: 10px;
   text-align: center;
+    font-weight: bold;
+  font-variant: small-caps;
+
 }
 
 #projects {
   display: grid;
-  /* grid-template-columns: 100%; */
-  gap: 50px;
+  grid-template-columns: 100%;
+  gap: 10px;
   justify-items: center;
 }
-
-/* larger screens */
-/* @media (min-width: 500) { */
-  #projects {
-    grid-template-columns: 50% 50%;
-  }
-/* } */
 
 .project {
   border: 2px solid black;
@@ -26,6 +26,19 @@
   display: grid;
   justify-content: space-between;
 }
+
+#playParameters {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  white-space: pre;
+  font-weight: bold;
+  font-variant: small-caps;
+
+
+}
+
+
 
 a {
   color: inherit;
@@ -50,5 +63,15 @@ a:active, a:hover {
 }
 
 .icon {
-  width: 100%;
+  width: 50%;
+  margin: auto;
+  /* max-height: 70%; */
+}
+
+/* larger screens */
+@media (min-width: 500px) {
+  #projects {
+    grid-template-columns: 50% 50%;
+    max-width: 900px;
+  }
 }
