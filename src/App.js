@@ -19,22 +19,32 @@ import "./App.css";
 
 function importAll(r) {
   let images = {};
-  r.keys().map((item, index) => { images[item.replace('./', '').split(".")[0]] = r(item); });
+  r.keys().map((item, index) => {
+    images[item.replace("./", "").split(".")[0]] = r(item);
+  });
   return images;
 }
 
-const images = importAll(require.context('./images', false, /\.(png|jpe?g|svg)$/));
+const images = importAll(
+  require.context("./images", false, /\.(png|jpe?g|svg)$/)
+);
 
-function Project({ name, id, description, site, code, activityDescription = "Play now", numPlayers, playTimeMinutes }) {
+function Project({
+  name,
+  id,
+  description,
+  site,
+  code,
+  activityDescription = "Play now",
+  numPlayers,
+  playTimeMinutes,
+}) {
   const imagePath = images[id].default;
 
   return (
     <div className="project" key={id}>
       <h3>{name}</h3>
-      <img className="icon"
-        src={imagePath}
-        alt={id}
-      />
+      <img className="icon" src={imagePath} alt={id} />
       <div id="playParameters">
         <p>{numPlayers ? numPlayers + " players" : null}</p>
         <p>{numPlayers && playTimeMinutes ? " ● " : null}</p>
@@ -47,11 +57,10 @@ function Project({ name, id, description, site, code, activityDescription = "Pla
         <a href={code}>See code</a>
       </div>
     </div>
-  )
+  );
 }
 
 function App() {
-
   const projects = [
     {
       id: "monkeys",
@@ -87,20 +96,22 @@ function App() {
       site: "https://skedwards88.github.io/ShortStories/",
       code: "https://github.com/skedwards88/ShortStories",
       activityDescription: "Read now",
-    }
-  ]
+    },
+  ];
 
-  const displays = projects.map(project => {
-    return Project(project)
-  })
+  const displays = projects.map((project) => {
+    return Project(project);
+  });
 
   return (
     <div className="App">
       <h1>CnS Games</h1>
-      <h2>Designed by Colin Thom<br />Built by Sarah Edwards</h2>
-      <div id="projects">
-        {displays}
-      </div>
+      <h2>
+        Designed by Colin Thom
+        <br />
+        Built by Sarah Edwards
+      </h2>
+      <div id="projects">{displays}</div>
     </div>
   );
 }
