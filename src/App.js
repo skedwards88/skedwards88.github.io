@@ -1,21 +1,13 @@
 import React from "react";
 import "./App.css";
 import { projects } from "./projects.js";
+import getImageLookup from "./imageLookup.js"
+
 // get font a good size
 // favicon
 // web manifest
 // service worker
 // github pages
-
-function getImageLookup() {
-  const context = require.context("./images", false, /\.(png|jpe?g|svg)$/);
-  const imageLookup = {};
-  context.keys().forEach((item) => {
-    const parsedName = item.replace("./", "").split(".")[0];
-    imageLookup[parsedName] = context(item);
-  });
-  return imageLookup;
-}
 
 const imageLookup = getImageLookup();
 
