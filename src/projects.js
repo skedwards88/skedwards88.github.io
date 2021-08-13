@@ -34,8 +34,8 @@ export const projects = [
     code: "https://github.com/skedwards88/ShortStories",
     activityDescription: "Read now",
   },
-]
+];
 
 export default {
   projects,
-}
+};

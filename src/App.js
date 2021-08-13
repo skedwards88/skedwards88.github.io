@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import { projects } from "./projects.js"
+import { projects } from "./projects.js";
 // get font a good size
 // favicon
 // web manifest
@@ -8,16 +8,16 @@ import { projects } from "./projects.js"
 // github pages
 
 function getImageLookup() {
-  const context = require.context("./images", false, /\.(png|jpe?g|svg)$/)
-  const imageLookup = {}
-  context.keys().forEach(item => {
-    const parsedName = item.replace("./", "").split(".")[0]
+  const context = require.context("./images", false, /\.(png|jpe?g|svg)$/);
+  const imageLookup = {};
+  context.keys().forEach((item) => {
+    const parsedName = item.replace("./", "").split(".")[0];
     imageLookup[parsedName] = context(item);
-  })
-  return imageLookup
+  });
+  return imageLookup;
 }
 
-const imageLookup = getImageLookup()
+const imageLookup = getImageLookup();
 
 function Project({
   name,
