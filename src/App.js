@@ -2,15 +2,7 @@ import React from "react";
 import "./App.css";
 
 // clean up the import image functions
-// in single column don't need black border
-// get colored monkeys icon
-// get higher resolution icons where needed
-// make dynamic based on viewport width
-// add frame around each project
 // get font a good size
-// style background
-// change name
-// link to repo and linkedin
 // favicon
 // web manifest
 // service worker
