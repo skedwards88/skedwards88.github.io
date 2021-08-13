@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 import { projects } from "./projects.js";
-import getImageLookup from "./imageLookup.js"
+import getImageLookup from "./imageLookup.js";
 
 // get font a good size
 // favicon
