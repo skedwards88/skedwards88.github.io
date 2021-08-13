@@ -11,7 +11,6 @@ import "./App.css";
 // style background
 // change name
 // link to repo and linkedin
-// set up commit hooks, see if can make global
 // favicon
 // web manifest
 // service worker
