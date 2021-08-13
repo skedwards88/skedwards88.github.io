@@ -1,24 +1,23 @@
 import React from "react";
 import "./App.css";
 
-// clean up the import image functions
 // get font a good size
 // favicon
 // web manifest
 // service worker
 // github pages
 
-function importAll(r) {
-  let images = {};
-  r.keys().map((item, index) => {
-    images[item.replace("./", "").split(".")[0]] = r(item);
-  });
-  return images;
+function getImageLookup() {
+  const context = require.context("./images", false, /\.(png|jpe?g|svg)$/)
+  const imageLookup = {}
+  context.keys().forEach(item => {
+    const parsedName = item.replace("./", "").split(".")[0]
+    imageLookup[parsedName] = context(item);
+  })
+  return imageLookup
 }
 
-const images = importAll(
-  require.context("./images", false, /\.(png|jpe?g|svg)$/)
-);
+const imageLookup = getImageLookup()
 
 function Project({
   name,
@@ -30,7 +29,7 @@ function Project({
   numPlayers,
   playTimeMinutes,
 }) {
-  const imagePath = images[id].default;
+  const imagePath = imageLookup[id].default;
 
   return (
     <div className="project" key={id}>
