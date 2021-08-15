@@ -64,7 +64,7 @@
 /******/
 /******/ 	var hotApplyOnUpdate = true;
 /******/ 	// eslint-disable-next-line no-unused-vars
-/******/ 	var hotCurrentHash = "6fba544340bcabf073b5";
+/******/ 	var hotCurrentHash = "eec8d54dd15d321ad0f7";
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule;
@@ -988,7 +988,19 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export (binding) *
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("var map = {\n\t\"./monkeys.png\": \"./src/images/monkeys.png\",\n\t\"./sector.png\": \"./src/images/sector.png\",\n\t\"./stars_circles.png\": \"./src/images/stars_circles.png\",\n\t\"./stories.svg\": \"./src/images/stories.svg\"\n};\n\n\nfunction webpackContext(req) {\n\tvar id = webpackContextResolve(req);\n\treturn __webpack_require__(id);\n}\nfunction webpackContextResolve(req) {\n\tvar id = map[req];\n\tif(!(id + 1)) { // check for number or string\n\t\tvar e = new Error(\"Cannot find module '\" + req + \"'\");\n\t\te.code = 'MODULE_NOT_FOUND';\n\t\tthrow e;\n\t}\n\treturn id;\n}\nwebpackContext.keys = function webpackContextKeys() {\n\treturn Object.keys(map);\n};\nwebpackContext.resolve = webpackContextResolve;\nmodule.exports = webpackContext;\nwebpackContext.id = \"./src/images sync \\\\.(png|jpe?g|svg)$\";\n\n//# sourceURL=webpack:///./src/images_sync_nonrecursive_\\.(png%7Cjpe?");
+eval("var map = {\n\t\"./favicon.png\": \"./src/images/favicon.png\",\n\t\"./monkeys.png\": \"./src/images/monkeys.png\",\n\t\"./sector.png\": \"./src/images/sector.png\",\n\t\"./stars_circles.png\": \"./src/images/stars_circles.png\",\n\t\"./stories.svg\": \"./src/images/stories.svg\"\n};\n\n\nfunction webpackContext(req) {\n\tvar id = webpackContextResolve(req);\n\treturn __webpack_require__(id);\n}\nfunction webpackContextResolve(req) {\n\tvar id = map[req];\n\tif(!(id + 1)) { // check for number or string\n\t\tvar e = new Error(\"Cannot find module '\" + req + \"'\");\n\t\te.code = 'MODULE_NOT_FOUND';\n\t\tthrow e;\n\t}\n\treturn id;\n}\nwebpackContext.keys = function webpackContextKeys() {\n\treturn Object.keys(map);\n};\nwebpackContext.resolve = webpackContextResolve;\nmodule.exports = webpackContext;\nwebpackContext.id = \"./src/images sync \\\\.(png|jpe?g|svg)$\";\n\n//# sourceURL=webpack:///./src/images_sync_nonrecursive_\\.(png%7Cjpe?");
+
+/***/ }),
+
+/***/ "./src/images/favicon.png":
+/*!********************************!*\
+  !*** ./src/images/favicon.png ***!
+  \********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony default export */ __webpack_exports__[\"default\"] = (__webpack_require__.p + \"c20701d3f9044e2bdeaa74efc39f8f2b.png\");\n\n//# sourceURL=webpack:///./src/images/favicon.png?");
 
 /***/ }),
 
