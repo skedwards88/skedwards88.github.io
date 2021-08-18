@@ -4,7 +4,6 @@ import { projects } from "./projects.js";
 import getImageLookup from "./imageLookup.js";
 
 // get font a good size
-// favicon
 // web manifest
 // service worker
 // github pages

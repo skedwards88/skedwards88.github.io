@@ -62,12 +62,6 @@ a:hover {
 .icon {
   width: 50%;
   margin: auto;
-
-  /* max-height: 70%; */
-}
-
-.icon:hover {
-  opacity: 0.3;
 }
 
 /* larger screens */
