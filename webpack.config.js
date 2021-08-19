@@ -1,6 +1,6 @@
 const path = require("path");
 const webpack = require("webpack");
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
   entry: "./src/index.js",
@@ -35,9 +35,11 @@ module.exports = {
     publicPath: "http://localhost:3000",
     hotOnly: false,
   },
-  plugins: [new HtmlWebpackPlugin({
-  inject: true,
-  // Need to use template because need 'root' div for react injection. templateContent doesn't play nice with title, so just use a template file instead.
-  template: "./src/index.html",
-  })],
+  plugins: [
+    new HtmlWebpackPlugin({
+      inject: true,
+      // Need to use template because need 'root' div for react injection. templateContent doesn't play nice with title, so just use a template file instead.
+      template: "./src/index.html",
+    }),
+  ],
 };
