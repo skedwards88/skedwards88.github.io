@@ -3,10 +3,8 @@ import "./App.css";
 import { projects } from "./projects.js";
 import getImageLookup from "./imageLookup.js";
 
-// get font a good size
 // web manifest
 // service worker
-// github pages
 
 const imageLookup = getImageLookup();
 

@@ -36,17 +36,8 @@ module.exports = {
     hotOnly: false,
   },
   plugins: [new HtmlWebpackPlugin({
-    // title: 'CnS Games 4',
-    // favicon: "./src/images/favicon.png",
-    // meta: {viewport: 'width=device-width, initial-scale=1'},
-  //   templateContent: `
-  //   <html>
-  //     <body>
-  //       <div id="root"></div>
-  //     </body>
-  //   </html>
-  // `,
   inject: true,
-  template: "./src/index.html"
+  // Need to use template because need 'root' div for react injection. templateContent doesn't play nice with title, so just use a template file instead.
+  template: "./src/index.html",
   })],
 };
