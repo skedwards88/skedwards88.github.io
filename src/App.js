@@ -3,9 +3,6 @@ import "./App.css";
 import { projects } from "./projects.js";
 import getImageLookup from "./imageLookup.js";
 
-// web manifest
-// service worker
-
 const imageLookup = getImageLookup();
 
 function Project({
