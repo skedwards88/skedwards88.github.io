@@ -28,7 +28,7 @@ function App() {
   const [gameState, setGameState] = useState(startingState);
   const [playerLocation, setPlayerLocation] = useState("room");
   const [consequenceText, setConsequenceText] = useState("");
-  const [currentDisplay, setCurrentDisplay] = useState("location") // location | inventory | consequence
+  const [currentDisplay, setCurrentDisplay] = useState("location"); // location | inventory | consequence
 
   // todo could build programatically...if can remove circular dependency or need test to confirm matches
   const startingItemLocations = {
@@ -301,7 +301,10 @@ function App() {
         </div>
         <LocationItems itemsAtLocation={itemLocations[playerLocation]} />
         <Connections connections={locations[playerLocation].connections} />
-        <button className="inventory" onClick={(e) => setCurrentDisplay("inventory")}>
+        <button
+          className="inventory"
+          onClick={(e) => setCurrentDisplay("inventory")}
+        >
           Inventory
         </button>
         <div>Reputation: {gameState.reputation}</div>
@@ -341,7 +344,7 @@ function App() {
       return <Inventory></Inventory>;
     default:
       return <Location />;
-  }  
+  }
 }
 
 export default App;
