@@ -7,10 +7,19 @@
   display: grid;
   margin: 10px;
   text-align: center;
-  font-weight: bold;
-  font-variant: small-caps;
+  /* font-weight: bold; */
+  /* font-variant: small-caps; */
   justify-items: center;
 }
+
+.item {
+  background-color: lightblue;
+}
+
+.connection {
+  background-color: lightpink;
+}
+
 
 #projects {
   display: grid;
