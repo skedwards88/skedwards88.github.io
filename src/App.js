@@ -27,7 +27,6 @@ function App() {
   };
   const [gameState, setGameState] = useState(startingState);
   const [playerLocation, setPlayerLocation] = useState("room");
-  const [showConsequence, setShowConsequence] = useState(false);
   const [consequenceText, setConsequenceText] = useState("");
   const [showInventory, setShowInventory] = useState(false);
   const [currentDisplay, setCurrentDisplay] = useState("location") // location | inventory | consequence
@@ -202,7 +201,7 @@ function App() {
     setConsequenceText(description);
 
     // set show consequence to true
-    setShowConsequence(true);
+    setCurrentDisplay("consequence");
   }
 
   function handleUse(item) {
@@ -218,7 +217,7 @@ function App() {
     setConsequenceText(description);
 
     // set show consequence to true
-    setShowConsequence(true);
+    setCurrentDisplay("consequence");
   }
 
   function handleDrop(item) {
@@ -243,7 +242,7 @@ function App() {
     setConsequenceText(description);
 
     // set show consequence to true
-    setShowConsequence(true);
+    setCurrentDisplay("consequence");
   }
 
   function LocationItems({ itemsAtLocation }) {
@@ -303,7 +302,7 @@ function App() {
         </div>
         <LocationItems itemsAtLocation={itemLocations[playerLocation]} />
         <Connections connections={locations[playerLocation]["connections"]} />
-        <button className="inventory" onClick={(e) => setShowInventory(true)}>
+        <button className="inventory" onClick={(e) => setCurrentDisplay("inventory")}>
           Inventory
         </button>
         <div>Reputation: {gameState.reputation}</div>
@@ -315,7 +314,7 @@ function App() {
     return (
       <div className="App">
         <div className="description">{consequenceText}</div>
-        <button onClick={(e) => setShowConsequence(false)}>
+        <button onClick={(e) => setCurrentDisplay("location")}>
           Back to {playerLocation}
         </button>
       </div>
@@ -329,20 +328,21 @@ function App() {
           Inventory
         </div>
         <InventoryItems itemsInInventory={itemLocations["inventory"]} />
-        <button key="back" onClick={(e) => setShowInventory(false)}>
+        <button key="back" onClick={(e) => setCurrentDisplay("location")}>
           Close Inventory
         </button>
       </div>
     );
   }
 
-  if (showConsequence) {
-    return <Consequence></Consequence>;
-  } else if (showInventory) {
-    return <Inventory></Inventory>;
-  } else {
-    return <Location />;
-  }
+  switch (currentDisplay) {
+    case "consequence":
+      return <Consequence></Consequence>;
+    case "inventory":
+      return <Inventory></Inventory>;
+    default:
+      return <Location />;
+  }  
 }
 
 export default App;
