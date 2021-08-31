@@ -28,7 +28,6 @@ function App() {
   const [gameState, setGameState] = useState(startingState);
   const [playerLocation, setPlayerLocation] = useState("room");
   const [consequenceText, setConsequenceText] = useState("");
-  const [showInventory, setShowInventory] = useState(false);
   const [currentDisplay, setCurrentDisplay] = useState("location") // location | inventory | consequence
 
   // todo could build programatically...if can remove circular dependency or need test to confirm matches
@@ -104,7 +103,7 @@ function App() {
     lute: {
       spawnLocation: "room",
       description: "A wooden lute",
-      ...(playerLocation == "inn" && {
+      ...(playerLocation === "inn" && {
         takeDescription: "The lute feels familiar",
         takeLocation: "inn",
       }),
@@ -154,7 +153,7 @@ function App() {
   };
 
   function buildStartingLocations() {
-    let startingItemLocations = {};
+    const startingItemLocations = {};
 
     Object.keys(locations).forEach(
       (location) => (startingItemLocations[location] = new Set())
@@ -298,10 +297,10 @@ function App() {
     return (
       <div className="App">
         <div className="description">
-          {locations[playerLocation]["description"]}
+          {locations[playerLocation].description}
         </div>
         <LocationItems itemsAtLocation={itemLocations[playerLocation]} />
-        <Connections connections={locations[playerLocation]["connections"]} />
+        <Connections connections={locations[playerLocation].connections} />
         <button className="inventory" onClick={(e) => setCurrentDisplay("inventory")}>
           Inventory
         </button>
@@ -327,7 +326,7 @@ function App() {
         <div className="description" key="description">
           Inventory
         </div>
-        <InventoryItems itemsInInventory={itemLocations["inventory"]} />
+        <InventoryItems itemsInInventory={itemLocations.inventory} />
         <button key="back" onClick={(e) => setCurrentDisplay("location")}>
           Close Inventory
         </button>
