@@ -7,7 +7,9 @@
   display: grid;
   margin: 10px;
   text-align: center;
+
   /* font-weight: bold; */
+
   /* font-variant: small-caps; */
   justify-items: center;
 }
@@ -19,7 +21,6 @@
 .connection {
   background-color: lightpink;
 }
-
 
 #projects {
   display: grid;
