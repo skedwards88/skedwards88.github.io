@@ -30,13 +30,13 @@ function App() {
     firstCourtyardEntry: true,
   };
   const [gameState, setGameState] = useState(startingState);
-  const [playerLocation, setPlayerLocation] = useState("blacksmith");
+  const [playerLocation, setPlayerLocation] = useState("clearing");
   const [consequenceText, setConsequenceText] = useState("");
   const [currentDisplay, setCurrentDisplay] = useState("location"); // location | inventory | consequence
 
   // todo could build programatically...if can remove circular dependency or need test to confirm matches
   const startingItemLocations = {
-    inventory: new Set([]),
+    inventory: new Set(["horse"]),
     outOfPlay: new Set([]),
     room: new Set(["lute"]),
     window: new Set([]),
@@ -53,9 +53,10 @@ function App() {
     pasture: new Set(["horse"]),
     northGate: new Set([]),
     adolescent: new Set([]),
-    squirrel: new Set([]),
-    clearing: new Set(["berries"]),
+    road: new Set([]),
     stream: new Set([]),
+    clearing: new Set(["berries"]),
+    squirrel: new Set([]),
     wizard: new Set([]),
     cliff: new Set([]),
     caveEntrance: new Set([]),
@@ -80,7 +81,7 @@ function App() {
           : ""
       }`,
       connections: ["window", "wardrobe", "inn"], // todo could say door instead of inn if used alias
-      dropProposition: "in", // todo use this when drop. also check that word propositino is correct
+      dropPreposition: "in", // todo use this when drop. also check that word propositino is correct
     },
     window: {
       description: `${
@@ -89,14 +90,14 @@ function App() {
           : "Through the window, you see the charred remains of a nearby mansion."
       }`,
       connections: ["room"],
-      dropProposition: "at",
+      dropPreposition: "at",
     },
     wardrobe: {
       description: `Inside the wardrobe, there is a mirror ${
         itemLocations.wardrobe.has("clothes") ? "and a set of clothes" : ""
       }.`,
       connections: ["room", "mirror"],
-      dropProposition: "in",
+      dropPreposition: "in",
     },
     mirror: {
       // todo could also handle poopy, singed. Would need to use multiple ternary expressions.
@@ -106,7 +107,7 @@ function App() {
           : "You are quite good looking, if you say so yourself."
       }`,
       connections: ["wardrobe"],
-      dropProposition: "at",
+      dropPreposition: "at",
     },
     inn: {
       description: `You enter what appears to be the common room of an inn. ${
@@ -119,7 +120,7 @@ function App() {
           : ""
       }`,
       connections: ["room", "courtyard"],
-      dropProposition: "in",
+      dropPreposition: "in",
       ...(gameState.naked && {
         onEnterGameStateEffect: { reputation: gameState.reputation - 1 },
       }),
@@ -133,14 +134,14 @@ function App() {
           : ""
       }`,
       connections: ["inn", "fountain", "smithy"],
-      dropProposition: "in",
+      dropPreposition: "in",
       ...(gameState.firstCourtyardEntry && {
         onExitGameStateEffect: { firstCourtyardEntry: false },
       }),
     },
     fountain: {
       connections: ["manor", "courtyard"],
-      dropProposition: "in",
+      dropPreposition: "in",
       description: `You stand at the edge of a fountain. In the center is a statue of a dragon surrounded by cowering people. To the east is a courtyard. To the north is a manor. ${
         gameState.fire
           ? "The manor is on fire and surrounded by a crowd of people. "
@@ -195,7 +196,7 @@ function App() {
       ...(gameState.fire &&
         gameState.handkerchiefDamp &&
         gameState.masked && { connections: ["fountain", "nursery"] }),
-      dropProposition: "in",
+      dropPreposition: "in",
       description: `${
         gameState.fire
           ? "You stand in the entrance of the burning manor. "
@@ -219,7 +220,7 @@ function App() {
     },
     nursery: {
       connections: ["nurseryWindow", "manor"],
-      dropProposition: "in",
+      dropPreposition: "in",
       description: `${
         gameState.fire && itemLocations.nursery.has("baby")
           ? "You stand in a nursery. You see a baby wailing in the crib under an open window. The open window must be the only thing keeping the baby alive in this smoke. "
@@ -234,7 +235,7 @@ function App() {
     },
     nurseryWindow: {
       connections: ["nursery"],
-      dropProposition: "at", // todo could change to out and have anything dropped out any window end in location below
+      dropPreposition: "at", // todo could change to out and have anything dropped out any window end in location below
       description: `${
         gameState.fire
           ? "Below the window, you see the gathered crowd. "
@@ -243,7 +244,7 @@ function App() {
     },
     smithy: {
       connections: ["courtyard", "blacksmith", "northGate", "pasture"],
-      dropProposition: "at",
+      dropPreposition: "at",
       description: `You stand in front of a blacksmith shop. To the north and south are city gates. To the west is a courtyard. The blacksmith is working inside the shop. ${
         itemLocations.smithy.has("sword")
           ? "In front of the shop, you see a sword gleaming as if someone was recently polishing it."
@@ -253,7 +254,7 @@ function App() {
     blacksmith: {
       sentient: true,
       connections: ["smithy"],
-      dropProposition: "at",
+      dropPreposition: "by",
       description: `The blacksmith looks up as you walk in. ${
         !gameState.ownSword && itemLocations.smithy.has("sword")
           ? `"Are you interested in buying that sword? It costs ${
@@ -282,7 +283,7 @@ function App() {
     pasture: {
       sentient: itemLocations.pasture.has("horse"),
       connections: ["smithy"],
-      dropProposition: "at",
+      dropPreposition: "at",
       description: `You are standing in a wide field. There is no road in sight. To the north, you hear sounds of the blacksmith shop. ${
         itemLocations.pasture.has("horse")
           ? 'A horse is grazing in the field. Its reins have come untied from the post. A sign reads: "Free horse (if you can catch it)."'
@@ -290,8 +291,8 @@ function App() {
       }`,
     },
     northGate: {
-      connections: ["adolescent", "smithy"],
-      dropProposition: "at",
+      connections: ["adolescent", "smithy", "road"],
+      dropPreposition: "at",
       description: `You are standing at the north gate. To the north, you see a road leading up a mountain. The adolescent that you saw earlier stands at the courtyard${
         !gameState.playedForAdolescent ? ", crying" : ""
       }.`,
@@ -299,15 +300,85 @@ function App() {
     adolescent: {
       sentient: true,
       connections: ["northGate"],
-      dropProposition: "at",
-      description: ``,
+      dropPreposition: "at",
+      description: `todo`,
+    },
+    // todo roads
+    road: {
+      description: "todo",
+      connections: ["northGate", "stream"],
+      dropPreposition: "on",
+    },
+    stream: {
+      description:
+        "You come across a steam. It looks crossable by foot or by horse. On the north side, you see a bush full of berries. To the south, the road stretches back to the city.",
+      connections: ["road", "clearing"],
+      dropPreposition: "in",
+    },
+    clearing: {
+      description: `You stand in a clearing. A bush full of berries catches your eye. To the south, a stream burbles. To the north, you see a rocky cliff with a cave. A man stands in the middle of the clearing. His long white beard, pointed hat, and staff mark him as a wizard. ${
+        gameState.squirrelDead
+          ? "A dead squirrel lies at the base of a tree. "
+          : "A squirrel scampers around a tree."
+      }`,
+      connections: ["wizard", "squirrel", "stream", "cliff"],
+      dropPreposition: "on",
     },
     squirrel: {
+      sentient: true,
       description: gameState.squirrelDead
-        ? "A dead squirrel lies at the base of a tree."
-        : "A squirrel scampers around a tree.",
+        ? "The squirrel lies dead on the ground."
+        : "You approach the squirrel. It pauses, perhaps curious if you will feed it, before scampering up the tree.",
+      connections: ["clearing"],
+      dropPreposition: "by",
     },
+    wizard: {
+      sentient: true,
+      connections: ["clearing"],
+      dropPreposition: "by",
+      description: `The wizard looks at you though bushy eyebrows. ${ true ? "" : ""}`,
+    },
+    cliff: {
+      connections: itemLocations.inventory.has("horse") ? ["clearing"] : ["clearing", "caveEntrance"],
+      dropPreposition: "on",
+      description: itemLocations.inventory.has("horse") ? `The horse cannot make it up the rocky cliff. You must return to the clearing.` : `You scramble on the rocky cliff. Above you is the entrance to a cave. Below you is a clearing next to a stream.`,
+    },
+    caveEntrance: {
+      connections: ["cliff", "lair", "defecatory"],
+      dropPreposition: "in",
+      description: `You stand in the entrance of a large cave. To the west, there is an entrance to a foul smelling room. To the east, there is an entrance to a room that glitters with gems and gold. ${!gameState.dragonAsleep ? "You hear coins clanking from the east room, as if a large beast is rolling in piles of gold." : ""}${(!gameState.poopy && gameState.timeInCave === 1) ? 'From the east room, a voice booms "WHO DO I SMELL?"' : ''}`,
+      onEnterGameStateEffect: {timeInCave: gameState.timeInCave + 1}
+    },
+    defecatory: {
+      connections: ["caveEntrance", "puddle", "boulder", "dung"],
+      dropPreposition: "in",
+      description: "You stand in a foul smelling room. On the south side, there is a puddle of clear water. On the west side, there is a large boulder. On the north side, there is a pile of dragon dung. The stench makes you gag.",
+      onEnterGameStateEffect: {timeInCave: gameState.timeInCave + 1}
+    },
+    puddle: {
+      connections: ["caveEntrance", "boulder", "dung"],
+      dropPreposition: "in",
+      description: "You stand at a puddle of clear water. To the west, there is a large boulder. To the north, there is a pile of dragon dung.",
+      onEnterGameStateEffect: {timeInCave: gameState.timeInCave + 1},
+      // todo handle berry dropping
+    },
+    boulder: {
+      connections: ["caveEntrance", "puddle", "dung"],
+      dropPreposition: "in",
+      description: "You walk behind the boulder. It seems large enough to hide your from sight. To the north, there is a pile of dragon dung. To the south, there is a pool of clear water.",
+      onEnterGameStateEffect: {timeInCave: gameState.timeInCave + 1},
+    },
+    boulder: {
+      connections: ["caveEntrance", "puddle", "boulder"],
+      dropPreposition: "in",
+      description: "You walk behind the boulder. It seems large enough to hide your from sight. To the north, there is a pile of dragon dung. To the south, there is a pool of clear water.",
+      onEnterGameStateEffect: {timeInCave: gameState.timeInCave + 1},
+    },
+
   };
+// poison - can steal treasure but get singed. can put to sleep without singed. can't use sword without getting singed.
+// sleep - can steal treasure without singed. can use sword without getting singed.
+// dead - can steal treasure without singed and get glory for saving town
 
   const allItems = {
     lute: {
@@ -344,14 +415,14 @@ function App() {
     },
     clothes: {
       spawnLocation: "wardrobe",
-      dropDescription: `You strip down and drop your clothes ${locations[playerLocation].dropProposition} the ${playerLocation}.`,
+      dropDescription: `You strip down and drop your clothes ${locations[playerLocation].dropPreposition} the ${playerLocation}.`,
       dropGameStateEffect: { naked: true },
       ...(playerLocation === ("fountain" || "stream" || "puddle") && {
-        dropDescription: `You strip down and drop your clothes ${locations[playerLocation].dropProposition} the ${playerLocation}. Your clothes look much cleaner now.`,
+        dropDescription: `You strip down and drop your clothes ${locations[playerLocation].dropPreposition} the ${playerLocation}. Your clothes look much cleaner now.`,
         dropGameStateEffect: { naked: true, poopy: false }, // todo lose reputation if at fountain (drinking water)?
       }),
       ...(playerLocation === "dung" && {
-        dropDescription: `You strip down and drop your clothes ${locations[playerLocation].dropProposition} the ${playerLocation}. Your clothes are now covered in dragon dung.`,
+        dropDescription: `You strip down and drop your clothes ${locations[playerLocation].dropPreposition} the ${playerLocation}. Your clothes are now covered in dragon dung.`,
         dropGameStateEffect: { naked: true, poopy: true },
       }),
       ...(gameState.poopy
@@ -471,8 +542,8 @@ function App() {
         takeLocation: playerLocation,
       }),
       dropDescription:
-        "You let go of the horse's reins. The horse trots away, probably in search of grass to munch.", // todo make sure cannot catch horse again?
-      dropGameStateEffect: { horseTethered: false },
+        "You let go of the horse's reins. The horse trots away, probably in search of grass to munch.",
+      dropGameStateEffect: { horseTethered: false, horseMounted: false },
       ...(gameState.horseMounted
         ? {
             useVerb: "Unmount",
@@ -487,7 +558,9 @@ function App() {
             useDescription: "You mount the horse. Much easier than walking!",
             useGameStateEffect: { horseMounted: true },
           }),
-      // ...(playerLocation === "clearing" ? {dropDescription} : "") todo stopped here
+      ...(playerLocation === "clearing" ? {dropDescription:
+        "You let go of the horse's reins. The horse starts to eat the berries. After a few mouthfuls, it foams at the mouth and falls over dead.",
+      dropGameStateEffect: { horseTethered: false, horseMounted: false, horseDead: true },} : "")
     },
     berries: {
       description: "red berries",
@@ -615,7 +688,7 @@ function App() {
     // Get the "drop"" description for the item -- this will be the consequence text
     const description = allItems[item].dropDescription
       ? allItems[item].dropDescription
-      : `You drop the ${item} ${locations[playerLocation].dropProposition} the ${playerLocation}`;
+      : `You drop the ${item} ${locations[playerLocation].dropPreposition} the ${playerLocation}`;
 
     // Get the "drop" end location for the item -- will usually be the current player location
     const endItemLocation = allItems[item].dropLocation
