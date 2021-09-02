@@ -4,7 +4,7 @@ import "./App.css";
 function App() {
   const startingState = {
     reputation: 10,
-    gold: 0,
+    gold: 400,
     timeInCave: 0,
     unsinged: ["eyebrows", "hair", "nose", "ears", "neck"],
     singed: [],
@@ -30,7 +30,7 @@ function App() {
     firstCourtyardEntry: true,
   };
   const [gameState, setGameState] = useState(startingState);
-  const [playerLocation, setPlayerLocation] = useState("room");
+  const [playerLocation, setPlayerLocation] = useState("blacksmith");
   const [consequenceText, setConsequenceText] = useState("");
   const [currentDisplay, setCurrentDisplay] = useState("location"); // location | inventory | consequence
 
@@ -55,6 +55,15 @@ function App() {
     adolescent: new Set([]),
     squirrel: new Set([]),
     clearing: new Set(["berries"]),
+    stream: new Set([]),
+    clearing: new Set([]),
+    wizard: new Set([]),
+    cliff: new Set([]),
+    caveEntrance: new Set([]),
+    defecatory: new Set([]),
+    puddle: new Set([]),
+    boulder: new Set([]),
+    lair: new Set([]),
   };
 
   const [itemLocations, setItemLocations] = useState(startingItemLocations);
@@ -257,6 +266,16 @@ function App() {
             }. `
           : ""
       }`,
+      ...(!gameState.ownSword &&
+        itemLocations.smithy.has("sword") && {
+          payDescription: `You hand the blacksmith ${gameState.swordCost} in exchange for the sword.`,
+          payGameStateEffect: { ownSword: true, gold: gameState.gold - gameState.swordCost },
+          payItemLocationEffect: {
+            item: "sword",
+            oldLocation: "smithy",
+            newLocation: "inventory",
+          },
+        }),
     },
     pasture: {
       sentient: itemLocations.pasture.has("horse"),
@@ -621,9 +640,57 @@ function App() {
     setCurrentDisplay("consequence");
   }
 
+  function handlePay() {
+
+    if (locations[playerLocation].payDescription || locations[playerLocation].payGameStateEffect || locations[playerLocation].payItemLocationEffect) {
+      handleAcceptedPay();
+    } else {
+      handleUnwantedPay();
+    }
+
+    switch (playerLocation) {
+      case "blacksmith":
+      // lose sword cost, gain sword
+      case "wizard":
+      // go into debt, gain score
+      default:
+      // not interested
+    }
+  }
+
+  function handleUnwantedPay() {
+    // set the consequence text to the give description text
+    setConsequenceText(`The ${playerLocation} is not interested in your gold.`);
+
+    // set show consequence to true
+    setCurrentDisplay("consequence");
+  }
+
+  function handleAcceptedPay() {
+    // Get the "pay" description for the item -- this will be the consequence text
+    const description = locations[playerLocation].payDescription
+      ? locations[playerLocation].payDescription
+      : `You pay the ${playerLocation}.`;
+
+    if (locations[playerLocation].payGameStateEffect) {
+      setGameState({ ...gameState, ...locations[playerLocation].payGameStateEffect });
+    }
+
+    if (locations[playerLocation].payItemLocationEffect) {
+      moveItem(locations[playerLocation].payItemLocationEffect);
+    }
+
+    // set the consequence text to the give description text
+    setConsequenceText(description);
+
+    // set show consequence to true
+    setCurrentDisplay("consequence");
+  }
+
+
   function handleGive(item) {
     // If "give" is not handled, you can't give
-    if (allItems[item].giveDescription) {
+    if (allItems[item].giveDescription || allItems[item].giveGameStateEffect || allItems[item].giveLocation ||allItems[item].giveItemLocationEffect) {
       handleAcceptedGive(item);
     } else {
       handleUnwantedGive();
@@ -687,7 +754,7 @@ function App() {
     return Array.from(itemsInInventory).map((item) => {
       return (
         <div className="inventoryItem" key={item}>
-          <div key={item}>{item}</div>
+          <div key={item}>{allItems[item].description}</div>
           <button
             onClick={(e) => handleUse(item)}
             className="item"
@@ -767,6 +834,17 @@ function App() {
           Inventory
         </div>
         <InventoryItems itemsInInventory={itemLocations.inventory} />
+        <div className="inventoryItem" key="gold">
+          <div key="gold">{gameState.gold + " gold"}</div>
+          <button
+            disabled={!locations[playerLocation].sentient}
+            onClick={(e) => handlePay()}
+            className="item"
+            key={"gold-give"}
+          >
+            Pay
+          </button>
+        </div>
         <button key="back" onClick={(e) => setCurrentDisplay("location")}>
           Close Inventory
         </button>
