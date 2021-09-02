@@ -56,7 +56,6 @@ function App() {
     squirrel: new Set([]),
     clearing: new Set(["berries"]),
     stream: new Set([]),
-    clearing: new Set([]),
     wizard: new Set([]),
     cliff: new Set([]),
     caveEntrance: new Set([]),
@@ -269,7 +268,10 @@ function App() {
       ...(!gameState.ownSword &&
         itemLocations.smithy.has("sword") && {
           payDescription: `You hand the blacksmith ${gameState.swordCost} in exchange for the sword.`,
-          payGameStateEffect: { ownSword: true, gold: gameState.gold - gameState.swordCost },
+          payGameStateEffect: {
+            ownSword: true,
+            gold: gameState.gold - gameState.swordCost,
+          },
           payItemLocationEffect: {
             item: "sword",
             oldLocation: "smithy",
@@ -641,20 +643,14 @@ function App() {
   }
 
   function handlePay() {
-
-    if (locations[playerLocation].payDescription || locations[playerLocation].payGameStateEffect || locations[playerLocation].payItemLocationEffect) {
+    if (
+      locations[playerLocation].payDescription ||
+      locations[playerLocation].payGameStateEffect ||
+      locations[playerLocation].payItemLocationEffect
+    ) {
       handleAcceptedPay();
     } else {
       handleUnwantedPay();
-    }
-
-    switch (playerLocation) {
-      case "blacksmith":
-      // lose sword cost, gain sword
-      case "wizard":
-      // go into debt, gain score
-      default:
-      // not interested
     }
   }
 
@@ -673,7 +669,10 @@ function App() {
       : `You pay the ${playerLocation}.`;
 
     if (locations[playerLocation].payGameStateEffect) {
-      setGameState({ ...gameState, ...locations[playerLocation].payGameStateEffect });
+      setGameState({
+        ...gameState,
+        ...locations[playerLocation].payGameStateEffect,
+      });
     }
 
     if (locations[playerLocation].payItemLocationEffect) {
@@ -687,10 +686,14 @@ function App() {
     setCurrentDisplay("consequence");
   }
 
-
   function handleGive(item) {
     // If "give" is not handled, you can't give
-    if (allItems[item].giveDescription || allItems[item].giveGameStateEffect || allItems[item].giveLocation ||allItems[item].giveItemLocationEffect) {
+    if (
+      allItems[item].giveDescription ||
+      allItems[item].giveGameStateEffect ||
+      allItems[item].giveLocation ||
+      allItems[item].giveItemLocationEffect
+    ) {
       handleAcceptedGive(item);
     } else {
       handleUnwantedGive();
