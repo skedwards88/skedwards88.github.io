@@ -7,10 +7,6 @@
   display: grid;
   margin: 10px;
   text-align: center;
-
-  /* font-weight: bold; */
-
-  /* font-variant: small-caps; */
   justify-items: center;
 }
 
@@ -20,68 +16,4 @@
 
 .connection {
   background-color: lightpink;
-}
-
-#projects {
-  display: grid;
-  grid-template-columns: 100%;
-  gap: 10px;
-  justify-items: center;
-}
-
-.project {
-  border-top: 2px solid black;
-  border-bottom: 0;
-  border-left: 0;
-  border-right: 0;
-  margin: 3px;
-  padding: 20px;
-  display: grid;
-  justify-content: stretch;
-  width: 90%;
-}
-
-#playParameters {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  white-space: pre;
-  font-weight: bold;
-  font-variant: small-caps;
-}
-
-a {
-  color: inherit;
-  text-decoration: underline;
-}
-
-a:active,
-a:hover {
-  color: darkblue;
-}
-
-.links {
-  display: flex;
-  flex-direction: row;
-  margin: auto;
-  font-weight: bold;
-  font-variant: small-caps;
-  justify-content: space-evenly;
-}
-
-.icon {
-  width: 50%;
-  margin: auto;
-}
-
-/* larger screens */
-@media (min-width: 500px) {
-  #projects {
-    grid-template-columns: 50% 50%;
-    max-width: 900px;
-  }
-
-  .project {
-    border: 2px solid black;
-  }
 }

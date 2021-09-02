@@ -9,6 +9,7 @@ function App() {
     unsinged: ["eyebrows", "hair", "nose", "ears", "neck"],
     singed: [],
     swordCost: 50,
+    ownSword: false,
     fire: true,
     naked: true,
     squirrelDead: false,
@@ -48,6 +49,10 @@ function App() {
     manor: new Set([]),
     nursery: new Set(["baby"]),
     nurseryWindow: new Set([]),
+    smithy: new Set(["sword"]),
+    blacksmith: new Set([]),
+    southGate: new Set(["horse"]),
+    northGate: new Set([]),
   };
 
   const [itemLocations, setItemLocations] = useState(startingItemLocations);
@@ -190,7 +195,7 @@ function App() {
           ? "You hear a baby crying upstairs. "
           : ""
       }${
-        gameState.fire && !gameState.handkerchiefDamp && !gameState.masked
+        gameState.fire && (!gameState.handkerchiefDamp || !gameState.masked)
           ? "Your throat burns from the smoke and heat. You can't breath this air. "
           : ""
       }${
@@ -210,11 +215,11 @@ function App() {
       connections: ["nurseryWindow", "manor"],
       dropProposition: "in",
       description: `${
-        gameState.fire && itemLocations.nursery.has("baby")
+        (gameState.fire && itemLocations.nursery.has("baby"))
           ? "You stand in a nursery. You see a baby wailing in the crib under an open window. The open window must be the only thing keeping the baby alive in this smoke. "
           : ""
       }${
-        gameState.fire && !itemLocations.nursery.has("baby")
+        (gameState.fire && !itemLocations.nursery.has("baby"))
           ? "You stand in a nursery with an empty crib. The fire continues to burn, pouring smoke into the room. "
           : ""
       }${
@@ -230,12 +235,32 @@ function App() {
           : "You see the charred remains of the manor below you. "
       }`,
     },
+    smithy: {
+      connections: ["courtyard", "blacksmith", "northGate", "southGate"],
+      dropProposition: "at",
+      description: `You stand in front of a blacksmith shop. To the north and south are city gates. To the west is a courtyard. The blacksmith is working inside the shop. ${
+        itemLocations.smithy.has("sword")
+          ? "In front of the shop, you see a sword gleaming as if someone was recently polishing it."
+          : ""
+      }`,
+    },
+    blacksmith: {
+      connections: ["smithy"],
+      dropProposition: "at",
+      description: `The blacksmith looks up as you walk in. ${!gameState.ownSword ? `"Are you interested in buying that sword? It costs ${gameState.swordCost}gold${itemLocations.inventory.has("lute") ? ' or I would trade it for your lute' : ""}. ` : ""}`,
+    },
+    southGate: {
+      connections: ["smithy"],
+      dropProposition: "at",
+      description: `You are standing at the south gate, which opens to a wide field. There is no road in sight. To the north, you hear sounds of the blacksmith shop. ${itemLocations.southGate.has("horse") ? 'A horse is grazing in the field. A sign reads: "Free horse (if you can catch it)."' : ""}`,
+    },
+    northGate: {},
   };
 
   const allItems = {
     lute: {
       spawnLocation: "room",
-      description: "A wooden lute",
+      description: "a wooden lute",
       ...(playerLocation === "room" && {
         takeDescription: "The lute feels familiar.",
       }),
@@ -244,7 +269,7 @@ function App() {
     },
     clothes: {
       spawnLocation: "wardrobe",
-      description: "A set of clothes",
+      description: "a set of clothes",
       ...(gameState.naked
         ? {
             useVerb: "Wear",
@@ -259,7 +284,7 @@ function App() {
     },
     apple: {
       spawnLocation: "inn",
-      description: "A crisp apple",
+      description: "a fresh apple",
       useVerb: "Eat",
       useDescription: "the desc for use",
     },
@@ -267,10 +292,10 @@ function App() {
       spawnLocation: "adolescent",
       ...(gameState.handkerchiefDamp
         ? {
-            description: "A damp handkerchief",
+            description: "a damp handkerchief",
           }
         : {
-            description: "A handkerchief",
+            description: "a handkerchief",
           }),
       ...(gameState.masked
         ? {
@@ -291,7 +316,7 @@ function App() {
     },
     baby: {
       spawnLocation: "nursery",
-      description: "A crying baby",
+      description: "a crying baby",
       useVerb: "Use",
       useDescription: "It's unclear what use this item has. ",
       dropDescription: "You drop the crying baby. It cries even louder. ",
@@ -311,12 +336,38 @@ function App() {
         dropLocation: "outOfPlay",
       }),
     },
-    milk: {
-      spawnLocation: "inn",
-      description: "A knife",
+    sword: {
+      // todo need to add "Admire" action: if sword location is blacksmith shop: You admire the sword. The smith sees you admiring the sword. "Fine piece of work, eh? It costs 50, but I'll sell it for 40. cost -10 gold.
+      spawnLocation: "smithy",
+      description: "a sword",
       useVerb: "Attack",
-      useDescription: "the desc for use",
+      useDescription:
+        "You slash the sword through the air, looking a bit foolish.", // todo have alt if at dragon
+      ...(playerLocation === "smithy" &&
+        !gameState.ownSword && {
+          takeDescription:
+            'You grab the sword and place it in your bag. "Hey! Are you stealing my sword?" The blacksmith shop grabs the sword from you and returns it to the table.',
+          takeLocation: "smithy",
+          takeGameStateEffect: { reputation: gameState.reputation - 1 },
+        }),
     },
+    horse: {
+      spawnLocation: "southGate",
+      description: "a voracious horse",
+      dropDescription: "You let go of the horse's reins. The horse trots away, probably in search of grass to munch.", // todo make sure cannot catch horse again?
+      dropGameStateEffect: {horseTethered: false},
+      ...(gameState.horseMounted ? {
+        useVerb: "Unmount",
+        useDescription: "You unmount the horse, keeping hold of the horse's reins.",
+        useGameStateEffect: {horseMounted: false},
+        dropDescription: "You unmount the horse and let go of the horse's reins."
+      } : {
+        useVerb: "Mount",
+        useDescription: "You mount the horse. Much easier than walking!",
+        useGameStateEffect: {horseMounted: true}
+      }),
+      // ...(playerLocation === "clearing" ? {dropDescription} : "") todo stopped here
+    }
   };
 
   // function buildStartingLocations() {
@@ -386,7 +437,7 @@ function App() {
     // Get the "take"" description for the item -- this will be the consequence text
     const description = allItems[item].takeDescription
       ? allItems[item].takeDescription
-      : `You now have ${item}`;
+      : `You now have ${allItems[item].description}`;
 
     // Get the "take" end location for the item -- will usually be "inventory"
     const endItemLocation = allItems[item].takeLocation
@@ -431,7 +482,7 @@ function App() {
     // Get the "drop"" description for the item -- this will be the consequence text
     const description = allItems[item].dropDescription
       ? allItems[item].dropDescription
-      : `You drop ${item} at ${playerLocation}`;
+      : `You drop the ${item} ${locations[playerLocation].dropProposition} the ${playerLocation}`;
 
     // Get the "drop" end location for the item -- will usually be the current player location
     const endItemLocation = allItems[item].dropLocation
@@ -469,10 +520,9 @@ function App() {
   }
 
   function InventoryItems({ itemsInInventory }) {
-    // todo inventory items have different action than take
     return Array.from(itemsInInventory).map((item) => {
       return (
-        <div key={item}>
+        <div className="inventoryItem" key={item}>
           <div key={item}>{item}</div>
           <button
             onClick={(e) => handleUse(item)}
