@@ -17,7 +17,6 @@ function App() {
     horseTethered: false,
     horseMounted: false,
     poisoned: false,
-    dragonAsleep: false,
     poopy: false,
     handkerchiefDamp: false,
     masked: false,
@@ -28,15 +27,20 @@ function App() {
     promisedTreasure: false,
     cursed: false,
     firstCourtyardEntry: true,
+    dragonAsleep: false,
+    dragonPoisoned: false,
+    dragonDead: false,
+    treasureAmount: 100,
+    singeCount: 0,
   };
   const [gameState, setGameState] = useState(startingState);
-  const [playerLocation, setPlayerLocation] = useState("clearing");
+  const [playerLocation, setPlayerLocation] = useState("lair");
   const [consequenceText, setConsequenceText] = useState("");
   const [currentDisplay, setCurrentDisplay] = useState("location"); // location | inventory | consequence
 
   // todo could build programatically...if can remove circular dependency or need test to confirm matches
   const startingItemLocations = {
-    inventory: new Set(["horse"]),
+    inventory: new Set(["sword"]),
     outOfPlay: new Set([]),
     room: new Set(["lute"]),
     window: new Set([]),
@@ -63,7 +67,7 @@ function App() {
     defecatory: new Set([]),
     puddle: new Set([]),
     boulder: new Set([]),
-    lair: new Set([]),
+    lair: new Set(["treasure"]),
   };
 
   const [itemLocations, setItemLocations] = useState(startingItemLocations);
@@ -336,49 +340,93 @@ function App() {
       sentient: true,
       connections: ["clearing"],
       dropPreposition: "by",
-      description: `The wizard looks at you though bushy eyebrows. ${ true ? "" : ""}`,
+      description: `The wizard looks at you though bushy eyebrows. ${
+        true ? "" : ""
+      }`, // todo
     },
     cliff: {
-      connections: itemLocations.inventory.has("horse") ? ["clearing"] : ["clearing", "caveEntrance"],
+      connections: itemLocations.inventory.has("horse")
+        ? ["clearing"]
+        : ["clearing", "caveEntrance"],
       dropPreposition: "on",
-      description: itemLocations.inventory.has("horse") ? `The horse cannot make it up the rocky cliff. You must return to the clearing.` : `You scramble on the rocky cliff. Above you is the entrance to a cave. Below you is a clearing next to a stream.`,
+      description: itemLocations.inventory.has("horse")
+        ? `The horse cannot make it up the rocky cliff. You must return to the clearing.`
+        : `You scramble on the rocky cliff. Above you is the entrance to a cave. Below you is a clearing next to a stream.`,
     },
     caveEntrance: {
       connections: ["cliff", "lair", "defecatory"],
       dropPreposition: "in",
-      description: `You stand in the entrance of a large cave. To the west, there is an entrance to a foul smelling room. To the east, there is an entrance to a room that glitters with gems and gold. ${!gameState.dragonAsleep ? "You hear coins clanking from the east room, as if a large beast is rolling in piles of gold." : ""}${(!gameState.poopy && gameState.timeInCave === 1) ? 'From the east room, a voice booms "WHO DO I SMELL?"' : ''}`,
-      onEnterGameStateEffect: {timeInCave: gameState.timeInCave + 1}
+      description: `You stand in the entrance of a large cave. To the west, there is an entrance to a foul smelling room. To the east, there is an entrance to a room that glitters with gems and gold. ${
+        !gameState.dragonAsleep
+          ? "You hear coins clanking from the east room, as if a large beast is rolling in piles of gold."
+          : ""
+      }${
+        !gameState.poopy && gameState.timeInCave === 1
+          ? 'From the east room, a voice booms "WHO DO I SMELL?"'
+          : ""
+      }`,
+      onEnterGameStateEffect: { timeInCave: gameState.timeInCave + 1 },
     },
     defecatory: {
       connections: ["caveEntrance", "puddle", "boulder", "dung"],
       dropPreposition: "in",
-      description: "You stand in a foul smelling room. On the south side, there is a puddle of clear water. On the west side, there is a large boulder. On the north side, there is a pile of dragon dung. The stench makes you gag.",
-      onEnterGameStateEffect: {timeInCave: gameState.timeInCave + 1}
+      description:
+        "You stand in a foul smelling room. On the south side, there is a puddle of clear water. On the west side, there is a large boulder. On the north side, there is a pile of dragon dung. The stench makes you gag.",
+      onEnterGameStateEffect: { timeInCave: gameState.timeInCave + 1 },
     },
     puddle: {
       connections: ["caveEntrance", "boulder", "dung"],
       dropPreposition: "in",
-      description: "You stand at a puddle of clear water. To the west, there is a large boulder. To the north, there is a pile of dragon dung.",
-      onEnterGameStateEffect: {timeInCave: gameState.timeInCave + 1},
+      description:
+        "You stand at a puddle of clear water. To the west, there is a large boulder. To the north, there is a pile of dragon dung.",
+      onEnterGameStateEffect: { timeInCave: gameState.timeInCave + 1 },
       // todo handle berry dropping
     },
     boulder: {
       connections: ["caveEntrance", "puddle", "dung"],
       dropPreposition: "in",
-      description: "You walk behind the boulder. It seems large enough to hide your from sight. To the north, there is a pile of dragon dung. To the south, there is a pool of clear water.",
-      onEnterGameStateEffect: {timeInCave: gameState.timeInCave + 1},
+      description:
+        "You walk behind the boulder. It seems large enough to hide your from sight. To the north, there is a pile of dragon dung. To the south, there is a pool of clear water.",
+      onEnterGameStateEffect: { timeInCave: gameState.timeInCave + 1 },
     },
-    boulder: {
+    dung: {
       connections: ["caveEntrance", "puddle", "boulder"],
       dropPreposition: "in",
-      description: "You walk behind the boulder. It seems large enough to hide your from sight. To the north, there is a pile of dragon dung. To the south, there is a pool of clear water.",
-      onEnterGameStateEffect: {timeInCave: gameState.timeInCave + 1},
+      description: ".",
+      onEnterGameStateEffect: { timeInCave: gameState.timeInCave + 1 },
     },
-
+    lair: {
+      //todo
+      connections: ["caveEntrance", "puddle", "boulder"],
+      dropPreposition: "in",
+      description: ".",
+      onEnterGameStateEffect: { timeInCave: gameState.timeInCave + 1 },
+    },
   };
-// poison - can steal treasure but get singed. can put to sleep without singed. can't use sword without getting singed.
-// sleep - can steal treasure without singed. can use sword without getting singed.
-// dead - can steal treasure without singed and get glory for saving town
+  // poison - can steal treasure but get singed. can put to sleep without singed. can't use sword without getting singed.
+  // sleep - can steal treasure without singed. can use sword without getting singed.
+  // dead - can steal treasure without singed and get glory for saving town
+
+  function dragonResponse() {
+    // Dragon enters the room
+
+    // not poopy and not hidden
+    if (!gameState.poopy && playerLocation !== "boulder") {
+      let initialUnsingedParts = gameState.unsinged;
+      let initialSingedParts = gameState.singed;
+      let newSingedPart = initialUnsingedParts.pop();
+      let newSingedParts = initialUnsingedParts.push(newSingedPart);
+
+      return {
+        description: `"I KNEW I SMELT A HUMAN!" the dragon roars. Before you can run or defend yourself, the dragon unleashes a burst of fire, singing your ${newSingedPart}`,
+      };
+    }
+
+    // if not poop and not hidden: "I KNEW I SMELT A HUMAN." singes you before you can fight or defend yourself.
+    // if poop and not hidden: "YOU DO NOT SMELL LIKE A HUMAN BUT YOU LOOK LIKE ONE." Singes.
+    // if not poop and hidden: "I SMELL A HUMAN SOMEWHERE NEARBY." The dragon peaks around the boulder. singes you.
+    // if poop and hidden: The dragon takes a drink from the water.
+  }
 
   const allItems = {
     lute: {
@@ -481,8 +529,24 @@ function App() {
           }
         : {
             useVerb: "Wear",
-            useDescription:
-              "You tie the handkerchief around your nose and mouth.", // todo if player location is defecatory: Even with it, the stench reaches your nose. ?
+            useDescription: `You tie the handkerchief around your nose and mouth. ${
+              playerLocation === ("manor" || "nursery" || "nurseryWindow") &&
+              gameState.fire &&
+              gameState.masked
+                ? "The damp handkerchief lets you breath more easily. "
+                : ""
+            }${
+              playerLocation === ("manor" || "nursery" || "nurseryWindow") &&
+              gameState.fire &&
+              !gameState.masked
+                ? "On its own, the handkerchief does little to block the smoke. "
+                : ""
+            }${
+              playerLocation ===
+              ("dung" || "defecatory" || "boulder" || "puddle")
+                ? "Even with it, the stench reaches your nose. "
+                : ""
+            }}`,
             useGameStateEffect: { masked: true },
           }),
       ...(playerLocation === ("fountain" || "stream" || "puddle") && {
@@ -529,6 +593,29 @@ function App() {
           takeLocation: "smithy",
           takeGameStateEffect: { reputation: gameState.reputation - 1 },
         }),
+        ...((gameState.dragonAsleep && !gameState.dragonDead && playerLocation === "lair") && {
+          useDescription:
+            "You cut off the head of the dragon.",
+          useGameStateEffect: {
+            dragonDead: true,
+          },
+        }),
+        ...((gameState.dragonPoisoned && !gameState.dragonAsleep && !gameState.dragonDead && playerLocation === "lair") && {
+          useDescription:
+            "Despite the poison, the dragon is still able to singe you once you get near enough to cut off its head.",
+          useGameStateEffect: {
+            singeCount: gameState.singeCount + 1,
+            reputation: gameState.reputation - 1,
+            },
+        }),
+        ...((!gameState.dragonPoisoned && !gameState.dragonAsleep && !gameState.dragonDead && playerLocation === "lair") && {
+          useDescription:
+            "You try to cut off the dragon's head, but it singes you as soon as you get close enough.",
+          useGameStateEffect: {
+            singeCount: gameState.singeCount + 1,
+            reputation: gameState.reputation - 1,
+            },
+        }),
     },
     horse: {
       description: gameState.horseDead ? "a dead horse" : "a voracious horse",
@@ -558,16 +645,24 @@ function App() {
             useDescription: "You mount the horse. Much easier than walking!",
             useGameStateEffect: { horseMounted: true },
           }),
-      ...(playerLocation === "clearing" ? {dropDescription:
-        "You let go of the horse's reins. The horse starts to eat the berries. After a few mouthfuls, it foams at the mouth and falls over dead.",
-      dropGameStateEffect: { horseTethered: false, horseMounted: false, horseDead: true },} : "")
+      ...(playerLocation === "clearing"
+        ? {
+            dropDescription:
+              "You let go of the horse's reins. The horse starts to eat the berries. After a few mouthfuls, it foams at the mouth and falls over dead.",
+            dropGameStateEffect: {
+              horseTethered: false,
+              horseMounted: false,
+              horseDead: true,
+            },
+          }
+        : ""),
     },
     berries: {
       description: "red berries",
       useVerb: "Eat",
       useDescription:
         "You pop the berries into your mouth. Immediately, your mouth starts to tingle, so you spit out the berries. You narrowly avoided death, but your face is splotchy ans swollen, and your lips are a nasty shade of purple.",
-      useGameStateEffect: { poisoned: true }, // todo reputation goes down now or later?
+      useGameStateEffect: { poisoned: true, reputation: gameState.reputation - 1,},
       ...(playerLocation === "squirrel" &&
         !gameState.squirrelDead && {
           giveDescription:
@@ -575,6 +670,63 @@ function App() {
           giveLocation: "clearing",
           giveGameStateEffect: { squirrelDead: true }, // todo didn't give way to give berries to horse. probably ok.
         }),
+    },
+    treasure: {
+      ...(gameState.dragonDead && {
+        takeDescription:
+          "You scoop as much treasure as possible into your bag, avoiding the gore from the severed dragon head.",
+        takeGameStateEffect: {
+          gold: gameState.gold + gameState.treasureAmount,
+        },
+        takeLocation: "outOfPlay",
+      }),
+      ...((gameState.dragonAsleep && !gameState.dragonDead) && {
+        takeDescription:
+          "Giving a wide berth to the snoring dragon, you scoop as much treasure as possible into your bag.",
+        takeGameStateEffect: {
+          gold: gameState.gold + gameState.treasureAmount,
+        },
+        takeLocation: "outOfPlay",
+      }),
+      ...((gameState.dragonPoisoned && !gameState.dragonAsleep && !gameState.dragonDead) && {
+        takeDescription:
+          "With the dragon slower from the poison, you can now reach the treasure. You scoop as much treasure as possible into your bag before the dragon singes you.",
+        takeGameStateEffect: {
+          gold: gameState.gold + (gameState.treasureAmount / 2),
+          singeCount: gameState.singeCount + 1,
+          reputation: gameState.reputation - 1,
+        },
+        takeLocation: "outOfPlay",
+      }),
+      ...((!gameState.dragonPoisoned && !gameState.dragonAsleep && !gameState.dragonDead) && {
+        takeDescription:
+          "You try to steal the treasure, but the dragon singes you before you can get close.",
+        takeGameStateEffect: {
+          singeCount: gameState.singeCount + 1,
+          reputation: gameState.reputation - 1,
+        },
+        takeLocation: "lair",
+      }),
+    },
+    score: {
+      description: "a musical score",
+      useVerb: "Play",
+      useDescription: itemLocations.inventory.has("lute") ? "You play a lulling melody." : "You would like to play this song, but you have no instrument.",
+      ...((gameState.dragonPoisoned && !gameState.dragonAsleep && !gameState.dragonDead && playerLocation === "lair" && itemLocations.inventory.has("lute")) && {
+        useDescription:
+          "You play a lulling melody. The dragon closes its eyes and begins to snore.",
+        useGameStateEffect: {
+          dragonAsleep: true,
+        },
+      }),
+      ...((!gameState.dragonPoisoned && !gameState.dragonAsleep && !gameState.dragonDead && playerLocation === "lair" && itemLocations.inventory.has("lute")) && {
+        useDescription:
+          "Before you can play the first few notes, the dragon lets out a burst of flame, singing you and nearly burning your lute.",
+        useGameStateEffect: {
+          singeCount: gameState.singeCount + 1,
+          reputation: gameState.reputation - 1,
+        },
+      }),
     },
   };
 
