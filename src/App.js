@@ -6,8 +6,6 @@ function App() {
     reputation: 10,
     gold: 400,
     timeInCave: 0,
-    unsinged: ["eyebrows", "hair", "nose", "ears", "neck"],
-    singed: [],
     swordCost: 50,
     ownSword: false,
     fire: true,
@@ -34,7 +32,7 @@ function App() {
     singeCount: 0,
   };
   const [gameState, setGameState] = useState(startingState);
-  const [playerLocation, setPlayerLocation] = useState("lair");
+  const [playerLocation, setPlayerLocation] = useState("room");
   const [consequenceText, setConsequenceText] = useState("");
   const [currentDisplay, setCurrentDisplay] = useState("location"); // location | inventory | consequence
 
@@ -77,6 +75,7 @@ function App() {
   // todo convert to objects with methods, pass itemLocations/game to remove circular dependency
   const locations = {
     room: {
+      displayName: "Room",
       description: `You are in a room with a bed. A window faces the west. A wardrobe sits on the north side of the room, opposite a door. ${
         itemLocations.room.has("lute") ? "A lute leans against the bed. " : ""
       }${
@@ -85,9 +84,10 @@ function App() {
           : ""
       }`,
       connections: ["window", "wardrobe", "inn"], // todo could say door instead of inn if used alias
-      dropPreposition: "in", // todo use this when drop. also check that word propositino is correct
+      dropPreposition: "in",
     },
     window: {
+      displayName: "Window",
       description: `${
         gameState.fire
           ? "Through the window, you see flames and smoke coming from a nearby mansion. A crowd has gathered in front of the mansion."
@@ -97,6 +97,7 @@ function App() {
       dropPreposition: "at",
     },
     wardrobe: {
+      displayName: "Wardrobe",
       description: `Inside the wardrobe, there is a mirror ${
         itemLocations.wardrobe.has("clothes") ? "and a set of clothes" : ""
       }.`,
@@ -104,6 +105,7 @@ function App() {
       dropPreposition: "in",
     },
     mirror: {
+      displayName: "Mirror",
       // todo could also handle poopy, singed. Would need to use multiple ternary expressions.
       description: `${
         gameState.naked
@@ -114,6 +116,7 @@ function App() {
       dropPreposition: "at",
     },
     inn: {
+      displayName: playerLocation === "room" ? "Door" : "Inn",
       description: `You enter what appears to be the common room of an inn. ${
         itemLocations.inn.has("apple")
           ? "A complementary apple rests on the table. "
@@ -130,6 +133,7 @@ function App() {
       }),
     },
     courtyard: {
+      displayName: "Courtyard",
       description: `You are in a small courtyard. The entrance to the inn sits at the north side. To the east you hear sounds of a blacksmith shop. To the west you see a fountain. ${
         gameState.fire ? "Beyond the fountain, you see flames and smoke. " : ""
       }${
@@ -407,26 +411,11 @@ function App() {
   // sleep - can steal treasure without singed. can use sword without getting singed.
   // dead - can steal treasure without singed and get glory for saving town
 
-  function dragonResponse() {
-    // Dragon enters the room
-
-    // not poopy and not hidden
-    if (!gameState.poopy && playerLocation !== "boulder") {
-      let initialUnsingedParts = gameState.unsinged;
-      let initialSingedParts = gameState.singed;
-      let newSingedPart = initialUnsingedParts.pop();
-      let newSingedParts = initialUnsingedParts.push(newSingedPart);
-
-      return {
-        description: `"I KNEW I SMELT A HUMAN!" the dragon roars. Before you can run or defend yourself, the dragon unleashes a burst of fire, singing your ${newSingedPart}`,
-      };
-    }
 
     // if not poop and not hidden: "I KNEW I SMELT A HUMAN." singes you before you can fight or defend yourself.
     // if poop and not hidden: "YOU DO NOT SMELL LIKE A HUMAN BUT YOU LOOK LIKE ONE." Singes.
     // if not poop and hidden: "I SMELL A HUMAN SOMEWHERE NEARBY." The dragon peaks around the boulder. singes you.
     // if poop and hidden: The dragon takes a drink from the water.
-  }
 
   const allItems = {
     lute: {
@@ -593,28 +582,35 @@ function App() {
           takeLocation: "smithy",
           takeGameStateEffect: { reputation: gameState.reputation - 1 },
         }),
-        ...((gameState.dragonAsleep && !gameState.dragonDead && playerLocation === "lair") && {
-          useDescription:
-            "You cut off the head of the dragon.",
+      ...(gameState.dragonAsleep &&
+        !gameState.dragonDead &&
+        playerLocation === "lair" && {
+          useDescription: "You cut off the head of the dragon.",
           useGameStateEffect: {
             dragonDead: true,
           },
         }),
-        ...((gameState.dragonPoisoned && !gameState.dragonAsleep && !gameState.dragonDead && playerLocation === "lair") && {
+      ...(gameState.dragonPoisoned &&
+        !gameState.dragonAsleep &&
+        !gameState.dragonDead &&
+        playerLocation === "lair" && {
           useDescription:
             "Despite the poison, the dragon is still able to singe you once you get near enough to cut off its head.",
           useGameStateEffect: {
             singeCount: gameState.singeCount + 1,
             reputation: gameState.reputation - 1,
-            },
+          },
         }),
-        ...((!gameState.dragonPoisoned && !gameState.dragonAsleep && !gameState.dragonDead && playerLocation === "lair") && {
+      ...(!gameState.dragonPoisoned &&
+        !gameState.dragonAsleep &&
+        !gameState.dragonDead &&
+        playerLocation === "lair" && {
           useDescription:
             "You try to cut off the dragon's head, but it singes you as soon as you get close enough.",
           useGameStateEffect: {
             singeCount: gameState.singeCount + 1,
             reputation: gameState.reputation - 1,
-            },
+          },
         }),
     },
     horse: {
@@ -662,7 +658,10 @@ function App() {
       useVerb: "Eat",
       useDescription:
         "You pop the berries into your mouth. Immediately, your mouth starts to tingle, so you spit out the berries. You narrowly avoided death, but your face is splotchy ans swollen, and your lips are a nasty shade of purple.",
-      useGameStateEffect: { poisoned: true, reputation: gameState.reputation - 1,},
+      useGameStateEffect: {
+        poisoned: true,
+        reputation: gameState.reputation - 1,
+      },
       ...(playerLocation === "squirrel" &&
         !gameState.squirrelDead && {
           giveDescription:
@@ -680,53 +679,68 @@ function App() {
         },
         takeLocation: "outOfPlay",
       }),
-      ...((gameState.dragonAsleep && !gameState.dragonDead) && {
-        takeDescription:
-          "Giving a wide berth to the snoring dragon, you scoop as much treasure as possible into your bag.",
-        takeGameStateEffect: {
-          gold: gameState.gold + gameState.treasureAmount,
-        },
-        takeLocation: "outOfPlay",
-      }),
-      ...((gameState.dragonPoisoned && !gameState.dragonAsleep && !gameState.dragonDead) && {
-        takeDescription:
-          "With the dragon slower from the poison, you can now reach the treasure. You scoop as much treasure as possible into your bag before the dragon singes you.",
-        takeGameStateEffect: {
-          gold: gameState.gold + (gameState.treasureAmount / 2),
-          singeCount: gameState.singeCount + 1,
-          reputation: gameState.reputation - 1,
-        },
-        takeLocation: "outOfPlay",
-      }),
-      ...((!gameState.dragonPoisoned && !gameState.dragonAsleep && !gameState.dragonDead) && {
-        takeDescription:
-          "You try to steal the treasure, but the dragon singes you before you can get close.",
-        takeGameStateEffect: {
-          singeCount: gameState.singeCount + 1,
-          reputation: gameState.reputation - 1,
-        },
-        takeLocation: "lair",
-      }),
+      ...(gameState.dragonAsleep &&
+        !gameState.dragonDead && {
+          takeDescription:
+            "Giving a wide berth to the snoring dragon, you scoop as much treasure as possible into your bag.",
+          takeGameStateEffect: {
+            gold: gameState.gold + gameState.treasureAmount,
+          },
+          takeLocation: "outOfPlay",
+        }),
+      ...(gameState.dragonPoisoned &&
+        !gameState.dragonAsleep &&
+        !gameState.dragonDead && {
+          takeDescription:
+            "With the dragon slower from the poison, you can now reach the treasure. You scoop as much treasure as possible into your bag before the dragon singes you.",
+          takeGameStateEffect: {
+            gold: gameState.gold + gameState.treasureAmount / 2,
+            singeCount: gameState.singeCount + 1,
+            reputation: gameState.reputation - 1,
+          },
+          takeLocation: "outOfPlay",
+        }),
+      ...(!gameState.dragonPoisoned &&
+        !gameState.dragonAsleep &&
+        !gameState.dragonDead && {
+          takeDescription:
+            "You try to steal the treasure, but the dragon singes you before you can get close.",
+          takeGameStateEffect: {
+            singeCount: gameState.singeCount + 1,
+            reputation: gameState.reputation - 1,
+          },
+          takeLocation: "lair",
+        }),
     },
     score: {
       description: "a musical score",
       useVerb: "Play",
-      useDescription: itemLocations.inventory.has("lute") ? "You play a lulling melody." : "You would like to play this song, but you have no instrument.",
-      ...((gameState.dragonPoisoned && !gameState.dragonAsleep && !gameState.dragonDead && playerLocation === "lair" && itemLocations.inventory.has("lute")) && {
-        useDescription:
-          "You play a lulling melody. The dragon closes its eyes and begins to snore.",
-        useGameStateEffect: {
-          dragonAsleep: true,
-        },
-      }),
-      ...((!gameState.dragonPoisoned && !gameState.dragonAsleep && !gameState.dragonDead && playerLocation === "lair" && itemLocations.inventory.has("lute")) && {
-        useDescription:
-          "Before you can play the first few notes, the dragon lets out a burst of flame, singing you and nearly burning your lute.",
-        useGameStateEffect: {
-          singeCount: gameState.singeCount + 1,
-          reputation: gameState.reputation - 1,
-        },
-      }),
+      useDescription: itemLocations.inventory.has("lute")
+        ? "You play a lulling melody."
+        : "You would like to play this song, but you have no instrument.",
+      ...(gameState.dragonPoisoned &&
+        !gameState.dragonAsleep &&
+        !gameState.dragonDead &&
+        playerLocation === "lair" &&
+        itemLocations.inventory.has("lute") && {
+          useDescription:
+            "You play a lulling melody. The dragon closes its eyes and begins to snore.",
+          useGameStateEffect: {
+            dragonAsleep: true,
+          },
+        }),
+      ...(!gameState.dragonPoisoned &&
+        !gameState.dragonAsleep &&
+        !gameState.dragonDead &&
+        playerLocation === "lair" &&
+        itemLocations.inventory.has("lute") && {
+          useDescription:
+            "Before you can play the first few notes, the dragon lets out a burst of flame, singing you and nearly burning your lute.",
+          useGameStateEffect: {
+            singeCount: gameState.singeCount + 1,
+            reputation: gameState.reputation - 1,
+          },
+        }),
     },
   };
 
@@ -972,7 +986,7 @@ function App() {
     return Array.from(itemsAtLocation).map((item) => {
       return (
         <button onClick={(e) => handleTake(item)} className="item" key={item}>
-          {item}
+          {allItems[item].displayName ? allItems[item].displayName : item}
         </button>
       );
     });
@@ -1018,7 +1032,9 @@ function App() {
           key={connection}
           onClick={(e) => handleMovePlayer(connection)}
         >
-          {connection}
+          {locations[connection].displayName
+            ? locations[connection].displayName
+            : connection}
         </button>
       );
     });
