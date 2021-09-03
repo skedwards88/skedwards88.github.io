@@ -25,14 +25,14 @@ function App() {
     promisedTreasure: false,
     cursed: false,
     firstCourtyardEntry: true,
-    dragonAsleep: false,
     dragonPoisoned: false,
+    dragonAsleep: false,
     dragonDead: false,
     treasureAmount: 100,
     singeCount: 0,
   };
   const [gameState, setGameState] = useState(startingState);
-  const [playerLocation, setPlayerLocation] = useState("room");
+  const [playerLocation, setPlayerLocation] = useState("lair");
   const [consequenceText, setConsequenceText] = useState("");
   const [currentDisplay, setCurrentDisplay] = useState("location"); // location | inventory | consequence
 
@@ -62,7 +62,7 @@ function App() {
     wizard: new Set([]),
     cliff: new Set([]),
     caveEntrance: new Set([]),
-    defecatory: new Set([]),
+    dung: new Set([]),
     puddle: new Set([]),
     boulder: new Set([]),
     lair: new Set(["treasure"]),
@@ -83,7 +83,7 @@ function App() {
           ? "You smell fire and hear screams in the distance. "
           : ""
       }`,
-      connections: ["window", "wardrobe", "inn"], // todo could say door instead of inn if used alias
+      connections: ["window", "wardrobe", "inn"],
       dropPreposition: "in",
     },
     window: {
@@ -358,7 +358,7 @@ function App() {
         : `You scramble on the rocky cliff. Above you is the entrance to a cave. Below you is a clearing next to a stream.`,
     },
     caveEntrance: {
-      connections: ["cliff", "lair", "defecatory"],
+      connections: ["cliff", "lair", "puddle", "boulder", "dung"],
       dropPreposition: "in",
       description: `You stand in the entrance of a large cave. To the west, there is an entrance to a foul smelling room. To the east, there is an entrance to a room that glitters with gems and gold. ${
         !gameState.dragonAsleep
@@ -369,7 +369,7 @@ function App() {
           ? 'From the east room, a voice booms "WHO DO I SMELL?"'
           : ""
       }`,
-      onEnterGameStateEffect: { timeInCave: gameState.timeInCave + 1 },
+      // onEnterGameStateEffect: { timeInCave: gameState.timeInCave + 1 },
     },
     defecatory: {
       connections: ["caveEntrance", "puddle", "boulder", "dung"],
@@ -381,41 +381,116 @@ function App() {
     puddle: {
       connections: ["caveEntrance", "boulder", "dung"],
       dropPreposition: "in",
-      description:
-        "You stand at a puddle of clear water. To the west, there is a large boulder. To the north, there is a pile of dragon dung.",
-      onEnterGameStateEffect: { timeInCave: gameState.timeInCave + 1 },
-      // todo handle berry dropping
-    },
+      description: `You stand at a puddle of clear water. To the west, there is a large boulder. To the north, there is a pile of dragon dung. 
+        ${dragonDescription()}`,
+        onEnterGameStateEffect: { timeInCave: gameState.timeInCave + 1, ...(((gameState.timeInCave % 4 === 3) && (!gameState.poopy || playerLocation !== "boulder")) && {singeCount: gameState.singeCount + 1,reputation: gameState.reputation - 1}) },    },
     boulder: {
       connections: ["caveEntrance", "puddle", "dung"],
       dropPreposition: "in",
-      description:
-        "You walk behind the boulder. It seems large enough to hide your from sight. To the north, there is a pile of dragon dung. To the south, there is a pool of clear water.",
-      onEnterGameStateEffect: { timeInCave: gameState.timeInCave + 1 },
-    },
+      description: `You walk behind the boulder. It seems large enough to hide your from sight. To the north, there is a pile of dragon dung. To the south, there is a pool of clear water.
+      
+      ${dragonDescription()}`,
+      onEnterGameStateEffect: { timeInCave: gameState.timeInCave + 1, ...(((gameState.timeInCave % 4 === 3) && (!gameState.poopy || playerLocation !== "boulder")) && {singeCount: gameState.singeCount + 1,reputation: gameState.reputation - 1}) },    },
     dung: {
       connections: ["caveEntrance", "puddle", "boulder"],
       dropPreposition: "in",
-      description: ".",
-      onEnterGameStateEffect: { timeInCave: gameState.timeInCave + 1 },
-    },
+      description: `Dung todo. 
+      
+      ${dragonDescription()}`,
+      onEnterGameStateEffect: { timeInCave: gameState.timeInCave + 1, ...(((gameState.timeInCave % 4 === 3) && (!gameState.poopy || playerLocation !== "boulder")) && {singeCount: gameState.singeCount + 1,reputation: gameState.reputation - 1}) },    },
     lair: {
       //todo
-      connections: ["caveEntrance", "puddle", "boulder"],
+      connections: ["caveEntrance"],
       dropPreposition: "in",
-      description: ".",
-      onEnterGameStateEffect: { timeInCave: gameState.timeInCave + 1 },
+      description: `You stand in a room full of gold and gems. ${
+        !gameState.dragonAsleep &&
+        !gameState.dragonDead &&
+        !gameState.dragonPoisoned
+          ? "A dragon sits atop the pile of treasure. "
+          : ""
+      }${
+        gameState.dragonAsleep && !gameState.dragonDead
+          ? "The dragon lies in a deep slumber atop the pile of treasure. "
+          : ""
+      }${
+        gameState.dragonDead
+          ? "The dragon's body lies top the pile of treasure, its head severed. "
+          : ""
+      }${
+        !gameState.dragonAsleep &&
+        !gameState.dragonDead &&
+        gameState.dragonPoisoned
+          ? "The dragon looks half dead from the poison but still shoots flame as you approach it and its pile of treasure."
+          : ""
+      }`,
+      
     },
   };
+
+  function dragonDescription() {
+    const timeInterval = gameState.timeInCave % 4;
+
+    let text = "";
+    let singe = false;
+    let poisoned = false;
+
+    if (
+      timeInterval === 3 ||
+      (gameState.poopy &&
+        playerLocation === "boulder" &&
+        itemLocations.puddle.has("berries"))
+    ) {
+      text += "The dragon prowls into the room.";
+      // not poop and not hidden
+      if (!gameState.poopy && playerLocation !== "boulder") {
+        text += `"I KNEW I SMELT A HUMAN." The dragon singes you before you can fight or defend yourself. `;
+        singe = true;
+      } // poop and not hidden
+      else if (gameState.poopy && playerLocation !== "boulder") {
+        text += `"YOU DO NOT SMELL LIKE A HUMAN BUT YOU LOOK LIKE ONE. The dragon singes you before you can fight or defend yourself. " `;
+        singe = true;
+      } // not poop and hidden
+      else if (!gameState.poopy && playerLocation === "boulder") {
+        text += `"I SMELL A HUMAN SOMEWHERE NEARBY." The dragon peaks around the boulder and spots you. The dragon singes you before you can fight or defend yourself. `;
+        singe = true;
+      } // poop and hidden
+      else if (gameState.poopy && playerLocation !== "boulder") {
+        text +=
+          "The dragon prowls through the cavern, unaware of your location.";
+
+        // dragon drinks
+        if (itemLocations.puddle.has("berries")) {
+          ("The dragon drinks from the puddle. It starts foaming at the mouth. Enraged and in pain, it stumbles back to the lair.");
+          poisoned = true;
+        } else {
+          ("The dragon drinks from the puddle, then returns to the lair.");
+        }
+      }
+    } else if (timeInterval === 2) {
+      text += "You hear the dragon just outside.";
+    } else if (timeInterval === 1) {
+      text +=
+        "You hear coins clanking from the east room, as if a large beast is rising from a sea of treasure. ";
+    }
+
+    // setGameState({
+    //   ...gameState,
+    //   ...(singe && {singeCount: gameState.singeCount + 1,
+    //     reputation: gameState.reputation - 1,}),
+    //   ...(poisoned && {dragonPoisoned: true,}),
+    // });
+
+    return text;
+  }
+
   // poison - can steal treasure but get singed. can put to sleep without singed. can't use sword without getting singed.
   // sleep - can steal treasure without singed. can use sword without getting singed.
   // dead - can steal treasure without singed and get glory for saving town
 
-
-    // if not poop and not hidden: "I KNEW I SMELT A HUMAN." singes you before you can fight or defend yourself.
-    // if poop and not hidden: "YOU DO NOT SMELL LIKE A HUMAN BUT YOU LOOK LIKE ONE." Singes.
-    // if not poop and hidden: "I SMELL A HUMAN SOMEWHERE NEARBY." The dragon peaks around the boulder. singes you.
-    // if poop and hidden: The dragon takes a drink from the water.
+  // if not poop and not hidden:
+  // if poop and not hidden: Singes.
+  // if not poop and hidden:
+  // if poop and hidden: The dragon takes a drink from the water.
 
   const allItems = {
     lute: {
