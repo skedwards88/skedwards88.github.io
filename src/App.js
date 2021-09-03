@@ -15,7 +15,7 @@ function App() {
     horseTethered: false,
     horseMounted: false,
     poisoned: false,
-    poopy: false,
+    poopy: true,
     handkerchiefDamp: false,
     masked: false,
     babyCough: false,
@@ -383,21 +383,48 @@ function App() {
       dropPreposition: "in",
       description: `You stand at a puddle of clear water. To the west, there is a large boulder. To the north, there is a pile of dragon dung. 
         ${dragonDescription()}`,
-        onEnterGameStateEffect: { timeInCave: gameState.timeInCave + 1, ...(((gameState.timeInCave % 4 === 3) && (!gameState.poopy || playerLocation !== "boulder")) && {singeCount: gameState.singeCount + 1,reputation: gameState.reputation - 1}) },    },
+      onEnterGameStateEffect: {
+        timeInCave: gameState.timeInCave + 1,
+        ...((gameState.timeInCave + 1) % 4 === 3 &&
+          (!gameState.poopy || playerLocation !== "boulder") && {
+            singeCount: gameState.singeCount + 1,
+            reputation: gameState.reputation - 1,
+          }),
+      },
+    },
     boulder: {
       connections: ["caveEntrance", "puddle", "dung"],
       dropPreposition: "in",
       description: `You walk behind the boulder. It seems large enough to hide your from sight. To the north, there is a pile of dragon dung. To the south, there is a pool of clear water.
       
       ${dragonDescription()}`,
-      onEnterGameStateEffect: { timeInCave: gameState.timeInCave + 1, ...(((gameState.timeInCave % 4 === 3) && (!gameState.poopy || playerLocation !== "boulder")) && {singeCount: gameState.singeCount + 1,reputation: gameState.reputation - 1}) },    },
+      onEnterGameStateEffect: {
+        timeInCave: gameState.timeInCave + 1,
+        ...((gameState.timeInCave + 1) % 4 === 3 &&
+          (!gameState.poopy || playerLocation !== "boulder") && {
+            singeCount: gameState.singeCount + 1,
+            reputation: gameState.reputation - 1,
+          }),
+        ...(itemLocations.puddle.has("berries") &&
+          gameState.poopy &&
+          playerLocation === "boulder" && { dragonPoisoned: true }),
+      },
+    },
     dung: {
       connections: ["caveEntrance", "puddle", "boulder"],
       dropPreposition: "in",
       description: `Dung todo. 
       
       ${dragonDescription()}`,
-      onEnterGameStateEffect: { timeInCave: gameState.timeInCave + 1, ...(((gameState.timeInCave % 4 === 3) && (!gameState.poopy || playerLocation !== "boulder")) && {singeCount: gameState.singeCount + 1,reputation: gameState.reputation - 1}) },    },
+      onEnterGameStateEffect: {
+        timeInCave: gameState.timeInCave + 1,
+        ...((gameState.timeInCave + 1) % 4 === 3 &&
+          (!gameState.poopy || playerLocation !== "boulder") && {
+            singeCount: gameState.singeCount + 1,
+            reputation: gameState.reputation - 1,
+          }),
+      },
+    },
     lair: {
       //todo
       connections: ["caveEntrance"],
@@ -423,7 +450,6 @@ function App() {
           ? "The dragon looks half dead from the poison but still shoots flame as you approach it and its pile of treasure."
           : ""
       }`,
-      
     },
   };
 
@@ -431,8 +457,6 @@ function App() {
     const timeInterval = gameState.timeInCave % 4;
 
     let text = "";
-    let singe = false;
-    let poisoned = false;
 
     if (
       timeInterval === 3 ||
@@ -440,30 +464,26 @@ function App() {
         playerLocation === "boulder" &&
         itemLocations.puddle.has("berries"))
     ) {
-      text += "The dragon prowls into the room.";
+      text += "The dragon prowls into the cavern. ";
       // not poop and not hidden
       if (!gameState.poopy && playerLocation !== "boulder") {
         text += `"I KNEW I SMELT A HUMAN." The dragon singes you before you can fight or defend yourself. `;
-        singe = true;
       } // poop and not hidden
       else if (gameState.poopy && playerLocation !== "boulder") {
         text += `"YOU DO NOT SMELL LIKE A HUMAN BUT YOU LOOK LIKE ONE. The dragon singes you before you can fight or defend yourself. " `;
-        singe = true;
       } // not poop and hidden
       else if (!gameState.poopy && playerLocation === "boulder") {
         text += `"I SMELL A HUMAN SOMEWHERE NEARBY." The dragon peaks around the boulder and spots you. The dragon singes you before you can fight or defend yourself. `;
-        singe = true;
       } // poop and hidden
-      else if (gameState.poopy && playerLocation !== "boulder") {
-        text +=
-          "The dragon prowls through the cavern, unaware of your location.";
-
+      else if (gameState.poopy && playerLocation === "boulder") {
+        text += "It seems unaware of your location. ";
         // dragon drinks
         if (itemLocations.puddle.has("berries")) {
-          ("The dragon drinks from the puddle. It starts foaming at the mouth. Enraged and in pain, it stumbles back to the lair.");
-          poisoned = true;
+          text +=
+            "The dragon drinks from the puddle. It starts foaming at the mouth. Enraged and in pain, it stumbles back to the lair.";
         } else {
-          ("The dragon drinks from the puddle, then returns to the lair.");
+          text +=
+            "The dragon drinks from the puddle, then returns to the lair.";
         }
       }
     } else if (timeInterval === 2) {
@@ -473,24 +493,8 @@ function App() {
         "You hear coins clanking from the east room, as if a large beast is rising from a sea of treasure. ";
     }
 
-    // setGameState({
-    //   ...gameState,
-    //   ...(singe && {singeCount: gameState.singeCount + 1,
-    //     reputation: gameState.reputation - 1,}),
-    //   ...(poisoned && {dragonPoisoned: true,}),
-    // });
-
     return text;
   }
-
-  // poison - can steal treasure but get singed. can put to sleep without singed. can't use sword without getting singed.
-  // sleep - can steal treasure without singed. can use sword without getting singed.
-  // dead - can steal treasure without singed and get glory for saving town
-
-  // if not poop and not hidden:
-  // if poop and not hidden: Singes.
-  // if not poop and hidden:
-  // if poop and hidden: The dragon takes a drink from the water.
 
   const allItems = {
     lute: {
@@ -880,7 +884,6 @@ function App() {
   }
 
   function handleTake(item) {
-    console.log(`handkerchief is damp ${gameState.handkerchiefDamp}`);
     // Get the "take"" description for the item -- this will be the consequence text
     const description = allItems[item].takeDescription
       ? allItems[item].takeDescription
