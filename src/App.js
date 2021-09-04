@@ -4,7 +4,7 @@ import "./App.css";
 function App() {
   const startingState = {
     reputation: 10,
-    gold: 400,
+    gold: 0,
     timeInCave: 0,
     swordCost: 50,
     ownSword: false,
@@ -15,7 +15,7 @@ function App() {
     horseTethered: false,
     horseMounted: false,
     poisoned: false,
-    poopy: true,
+    poopy: false,
     handkerchiefDamp: false,
     masked: false,
     babyCough: false,
@@ -32,13 +32,13 @@ function App() {
     singeCount: 0,
   };
   const [gameState, setGameState] = useState(startingState);
-  const [playerLocation, setPlayerLocation] = useState("lair");
+  const [playerLocation, setPlayerLocation] = useState("room");
   const [consequenceText, setConsequenceText] = useState("");
   const [currentDisplay, setCurrentDisplay] = useState("location"); // location | inventory | consequence
 
   // todo could build programatically...if can remove circular dependency or need test to confirm matches
   const startingItemLocations = {
-    inventory: new Set(["sword"]),
+    inventory: new Set([]),
     outOfPlay: new Set([]),
     room: new Set(["lute"]),
     window: new Set([]),
@@ -318,6 +318,7 @@ function App() {
       dropPreposition: "on",
     },
     stream: {
+      // todo add display names
       description:
         "You come across a steam. It looks crossable by foot or by horse. On the north side, you see a bush full of berries. To the south, the road stretches back to the city.",
       connections: ["road", "clearing"],
@@ -360,29 +361,24 @@ function App() {
     caveEntrance: {
       connections: ["cliff", "lair", "puddle", "boulder", "dung"],
       dropPreposition: "in",
-      description: `You stand in the entrance of a large cave. To the west, there is an entrance to a foul smelling room. To the east, there is an entrance to a room that glitters with gems and gold. ${
+      description: `You stand in a large, foul smelling cavern. On the west side, there is a puddle of clear water, and a pile of dragon dung. To the east, there is an entrance to a room that glitters with gems and gold. To the south, you feel the fresh air from the cave entrance. 
+      
+      ${
         !gameState.dragonAsleep
           ? "You hear coins clanking from the east room, as if a large beast is rolling in piles of gold."
           : ""
       }${
-        !gameState.poopy && gameState.timeInCave === 1
+        !gameState.poopy
           ? 'From the east room, a voice booms "WHO DO I SMELL?"'
           : ""
       }`,
-      // onEnterGameStateEffect: { timeInCave: gameState.timeInCave + 1 },
-    },
-    defecatory: {
-      connections: ["caveEntrance", "puddle", "boulder", "dung"],
-      dropPreposition: "in",
-      description:
-        "You stand in a foul smelling room. On the south side, there is a puddle of clear water. On the west side, there is a large boulder. On the north side, there is a pile of dragon dung. The stench makes you gag.",
-      onEnterGameStateEffect: { timeInCave: gameState.timeInCave + 1 },
     },
     puddle: {
       connections: ["caveEntrance", "boulder", "dung"],
       dropPreposition: "in",
-      description: `You stand at a puddle of clear water. To the west, there is a large boulder. To the north, there is a pile of dragon dung. 
-        ${dragonDescription()}`,
+      description: `You stand at a puddle of clear water. Nearby, there is a large boulder and a pile of dragon dung. The cave entrance is on the opposite side of the room. 
+
+      ${dragonDescription()}`,
       onEnterGameStateEffect: {
         timeInCave: gameState.timeInCave + 1,
         ...((gameState.timeInCave + 1) % 4 === 3 &&
@@ -394,8 +390,8 @@ function App() {
     },
     boulder: {
       connections: ["caveEntrance", "puddle", "dung"],
-      dropPreposition: "in",
-      description: `You walk behind the boulder. It seems large enough to hide your from sight. To the north, there is a pile of dragon dung. To the south, there is a pool of clear water.
+      dropPreposition: "at",
+      description: `You walk behind the boulder. It seems large enough to hide your from sight. Nearby, there is a pile of dragon dung and a puddle of clear water. The cave entrance is on the opposite side of the room. 
       
       ${dragonDescription()}`,
       onEnterGameStateEffect: {
@@ -413,7 +409,7 @@ function App() {
     dung: {
       connections: ["caveEntrance", "puddle", "boulder"],
       dropPreposition: "in",
-      description: `Dung todo. 
+      description: `You stand in front of a large puddle of dragon dung. The stench makes your eyes water. Nearby, there is a large boulder and a puddle of clear water. The cave entrance is on the opposite side of the room. 
       
       ${dragonDescription()}`,
       onEnterGameStateEffect: {
@@ -426,14 +422,13 @@ function App() {
       },
     },
     lair: {
-      //todo
       connections: ["caveEntrance"],
       dropPreposition: "in",
       description: `You stand in a room full of gold and gems. ${
         !gameState.dragonAsleep &&
         !gameState.dragonDead &&
         !gameState.dragonPoisoned
-          ? "A dragon sits atop the pile of treasure. "
+          ? "A dragon sits atop the pile of treasure. It shoots fire as you approach, singing you. You cannot go closer without getting burnt further. "
           : ""
       }${
         gameState.dragonAsleep && !gameState.dragonDead
@@ -447,11 +442,21 @@ function App() {
         !gameState.dragonAsleep &&
         !gameState.dragonDead &&
         gameState.dragonPoisoned
-          ? "The dragon looks half dead from the poison but still shoots flame as you approach it and its pile of treasure."
+          ? "The dragon looks half dead from the poison but still shoots flame as you approach it and its pile of treasure. The flame is no longer strong enough to harm you from the entrance to the lair, but it will surely singe you if you get closer. "
           : ""
       }`,
+      ...(!gameState.dragonAsleep &&
+        !gameState.dragonDead &&
+        !gameState.dragonPoisoned && {
+          onEnterGameStateEffect: {
+            singeCount: gameState.singeCount + 1,
+            reputation: gameState.reputation - 1,
+          },
+        }),
     },
   };
+
+  // todo write end game and scoring
 
   function dragonDescription() {
     const timeInterval = gameState.timeInCave % 4;
@@ -499,12 +504,12 @@ function App() {
   const allItems = {
     lute: {
       spawnLocation: "room",
-      description: "a wooden lute",
+      description: "wooden lute",
       ...(playerLocation === "room" && {
-        takeDescription: "The lute feels familiar.",
+        takeDescription: "The lute feels familiar. ",
       }),
       useVerb: "Play",
-      useDescription: "You play a beautiful melody.",
+      useDescription: "You play a beautiful melody. ",
       ...(playerLocation === "adolescent" &&
         !gameState.playedForAdolescent && {
           useDescription: `You play a song for the crying adolescent. The music seems to cheer the youth up.`,
@@ -648,18 +653,20 @@ function App() {
       }),
     },
     sword: {
-      // todo need to add "Admire" action: if sword location is blacksmith shop: You admire the sword. The smith sees you admiring the sword. "Fine piece of work, eh? It costs 50, but I'll sell it for 40. cost -10 gold.
       spawnLocation: "smithy",
       description: "a sword",
       useVerb: "Attack",
       useDescription:
-        "You slash the sword through the air, looking a bit foolish.", // todo have alt if at dragon
+        "You slash the sword through the air, looking a bit foolish.",
       ...(playerLocation === "smithy" &&
         !gameState.ownSword && {
           takeDescription:
             'You grab the sword and place it in your bag. "Hey! Are you stealing my sword?" The blacksmith shop grabs the sword from you and returns it to the table.',
           takeLocation: "smithy",
-          takeGameStateEffect: { reputation: gameState.reputation - 1 },
+          takeGameStateEffect: {
+            reputation: gameState.reputation - 1,
+            swordCost: gameState.swordCost + 10,
+          }, // todo this means sword cost can exceed amount of gold that you have...
         }),
       ...(gameState.dragonAsleep &&
         !gameState.dragonDead &&
@@ -792,18 +799,18 @@ function App() {
         }),
     },
     score: {
-      description: "a musical score",
+      description: "musical score",
       useVerb: "Play",
       useDescription: itemLocations.inventory.has("lute")
-        ? "You play a lulling melody."
-        : "You would like to play this song, but you have no instrument.",
+        ? "You play a lulling melody. "
+        : "You would like to play this song, but you have no instrument. ",
       ...(gameState.dragonPoisoned &&
         !gameState.dragonAsleep &&
         !gameState.dragonDead &&
         playerLocation === "lair" &&
         itemLocations.inventory.has("lute") && {
           useDescription:
-            "You play a lulling melody. The dragon closes its eyes and begins to snore.",
+            "You play a lulling melody. The dragon closes its eyes and begins to snore. ",
           useGameStateEffect: {
             dragonAsleep: true,
           },
@@ -814,7 +821,7 @@ function App() {
         playerLocation === "lair" &&
         itemLocations.inventory.has("lute") && {
           useDescription:
-            "Before you can play the first few notes, the dragon lets out a burst of flame, singing you and nearly burning your lute.",
+            "Before you can play the first few notes, the dragon lets out a burst of flame, singing you and nearly burning your lute. ",
           useGameStateEffect: {
             singeCount: gameState.singeCount + 1,
             reputation: gameState.reputation - 1,
@@ -960,6 +967,7 @@ function App() {
   }
 
   function handlePay() {
+    // todo not checking yet if you have enough gold to buy
     if (
       locations[playerLocation].payDescription ||
       locations[playerLocation].payGameStateEffect ||
@@ -1143,7 +1151,16 @@ function App() {
       <div className="App">
         <div className="description">{consequenceText}</div>
         <button onClick={(e) => setCurrentDisplay("location")}>
-          Back to {playerLocation}
+          Back to{" "}
+          {locations[playerLocation].displayName
+            ? locations[playerLocation].displayName
+            : playerLocation}
+        </button>
+        <button
+          className="inventory"
+          onClick={(e) => setCurrentDisplay("inventory")}
+        >
+          Inventory
         </button>
       </div>
     );
