@@ -1,4 +1,4 @@
-#root {
+html {
   background-color: rgb(240, 240, 241);
 }
 
@@ -22,7 +22,6 @@
   padding: 10px;
   justify-content: space-around;
   white-space: pre;
-
 }
 
 .stat {
@@ -34,18 +33,28 @@
 }
 
 .description {
- padding: 20px;
+  padding: 20px;
 }
-.connection, .close {
+
+.connection,
+.close {
   background-color: rgb(110, 121, 158);
   border-color: rgb(110, 121, 158);
   color: rgb(240, 240, 241);
 }
 
-.item, .inventory {
+.item,
+.inventory {
   background-color: rgb(38, 36, 129);
   border-color: rgb(38, 36, 129);
   color: rgb(240, 240, 241);
+}
+
+.item-action {
+  background-color: rgb(38, 36, 129);
+  border-color: rgb(38, 36, 129);
+  color: rgb(240, 240, 241);
+  border-width: 5px 15px;
 }
 
 button {
@@ -65,10 +74,17 @@ button:disabled {
   border-width: 1px 0 1px 0;
   border-color: black;
   border-style: solid;
+  padding: 5px 0;
 }
 
-.inventoryItem:first {
-  border-width: 10px 0 1px 0;
+.inventoryItem:first-child {
+  border-width: 4px 0 1px 0;
+  border-color: black;
+  border-style: solid;
+}
+
+.inventoryItem:last-child {
+  border-width: 1px 0 2px 0;
   border-color: black;
   border-style: solid;
 }

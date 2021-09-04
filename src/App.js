@@ -38,7 +38,7 @@ function App() {
 
   // todo could build programatically...if can remove circular dependency or need test to confirm matches
   const startingItemLocations = {
-    inventory: new Set(["apple"]),
+    inventory: new Set([]),
     outOfPlay: new Set([]),
     room: new Set(["lute"]),
     window: new Set([]),
@@ -282,7 +282,7 @@ function App() {
       }`,
       ...(!gameState.ownSword &&
         itemLocations.smithy.has("sword") && {
-          payDescription: `You hand the blacksmith ${gameState.swordCost} in exchange for the sword.`,
+          payDescription: `You hand the blacksmith ${gameState.swordCost} gold in exchange for the sword.`,//todo this doesn't account for if sword costs more than have
           payGameStateEffect: {
             ownSword: true,
             gold: gameState.gold - gameState.swordCost,
@@ -608,6 +608,7 @@ function App() {
         }),
     },
     handkerchief: {
+      // todo when you drop the handkerchief but are wearing it, you should also stop wearingit
       displayName: "Handkerchief",
       spawnLocation: "adolescent",
       ...(gameState.handkerchiefDamp
@@ -643,7 +644,7 @@ function App() {
               ("dung" || "defecatory" || "boulder" || "puddle")
                 ? "Even with it, the stench reaches your nose. "
                 : ""
-            }}`,
+            }`,
             useGameStateEffect: { masked: true },
           }),
       ...(playerLocation === ("fountain" || "stream" || "puddle") && {
@@ -751,7 +752,7 @@ function App() {
           }
         : {
             useVerb: "Mount",
-            useDescription: "You mount the horse. Much easier than walking!",
+            useDescription: "You mount the horse. Much easier than walking!",// todo should you be allowed to mount inside a building?
             useGameStateEffect: { horseMounted: true },
           }),
       ...(playerLocation === "clearing"
@@ -924,7 +925,7 @@ function App() {
     // Get the "take"" description for the item -- this will be the consequence text
     const description = allItems[item].takeDescription
       ? allItems[item].takeDescription
-      : `You now have ${allItems[item].description}.`;
+      : `You now have ${['a', 'e', 'i', 'o', 'u'].includes(allItems[item].description[0].toLowerCase()) ? "an" : "a"} ${allItems[item].description}.`;
 
     // Get the "take" end location for the item -- will usually be "inventory"
     const endItemLocation = allItems[item].takeLocation
@@ -1115,14 +1116,14 @@ function App() {
           <div key={item}>{allItems[item].description}</div>
           <button
             onClick={(e) => handleUse(item)}
-            className="item"
+            className="item-action"
             key={item + "-use"}
           >
             {allItems[item].useVerb}
           </button>
           <button
             onClick={(e) => handleDrop(item)}
-            className="item"
+            className="item-action"
             key={item + "-drop"}
           >
             Drop
@@ -1130,7 +1131,7 @@ function App() {
           <button
             disabled={!locations[playerLocation].sentient}
             onClick={(e) => handleGive(item)}
-            className="item"
+            className="item-action"
             key={item + "-give"}
           >
             Give
@@ -1212,17 +1213,18 @@ function App() {
         <div className="description" key="description">
           Inventory
         </div>
-        <InventoryItems itemsInInventory={itemLocations.inventory} />
+        <div className="inventoryItems"><InventoryItems itemsInInventory={itemLocations.inventory} />
         <div className="inventoryItem" key="gold">
           <div key="gold">{gameState.gold + " gold"}</div>
           <button
             disabled={!locations[playerLocation].sentient}
             onClick={(e) => handlePay()}
-            className="item"
+            className="item-action"
             key={"gold-give"}
           >
             Pay
           </button>
+        </div>
         </div>
         <button key="back" className="close" onClick={(e) => setCurrentDisplay("location")}>
           Close Inventory
