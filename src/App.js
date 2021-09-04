@@ -38,7 +38,7 @@ function App() {
 
   // todo could build programatically...if can remove circular dependency or need test to confirm matches
   const startingItemLocations = {
-    inventory: new Set([]),
+    inventory: new Set(["apple"]),
     outOfPlay: new Set([]),
     room: new Set(["lute"]),
     window: new Set([]),
@@ -53,7 +53,7 @@ function App() {
     smithy: new Set(["sword"]),
     blacksmith: new Set([]),
     pasture: new Set(["horse"]),
-    northGate: new Set([]),
+    gate: new Set([]),
     adolescent: new Set([]),
     road: new Set([]),
     stream: new Set([]),
@@ -148,6 +148,7 @@ function App() {
       }),
     },
     fountain: {
+      displayName: "Fountain",
       connections: ["manor", "courtyard"],
       dropPreposition: "in",
       description: `You stand at the edge of a fountain. In the center is a statue of a dragon surrounded by cowering people. To the east is a courtyard. To the north is a manor. ${
@@ -200,6 +201,7 @@ function App() {
         }),
     },
     manor: {
+      displayName: "Manor",
       connections: ["fountain"], // todo allow to continue if not masked but develop cough/lose reputation. todo could instead allow to continue if no fire but have manor collapse
       ...(gameState.fire &&
         gameState.handkerchiefDamp &&
@@ -227,6 +229,7 @@ function App() {
       }),
     },
     nursery: {
+      displayName: "Nursery",
       connections: ["nurseryWindow", "manor"],
       dropPreposition: "in",
       description: `${
@@ -242,6 +245,7 @@ function App() {
       }`,
     },
     nurseryWindow: {
+      displayName: "Window",
       connections: ["nursery"],
       dropPreposition: "at", // todo could change to out and have anything dropped out any window end in location below
       description: `${
@@ -251,7 +255,8 @@ function App() {
       }`,
     },
     smithy: {
-      connections: ["courtyard", "blacksmith", "northGate", "pasture"],
+      displayName: "Smithy",
+      connections: ["courtyard", "blacksmith", "gate", "pasture"],
       dropPreposition: "at",
       description: `You stand in front of a blacksmith shop. To the north and south are city gates. To the west is a courtyard. The blacksmith is working inside the shop. ${
         itemLocations.smithy.has("sword")
@@ -260,6 +265,7 @@ function App() {
       }`,
     },
     blacksmith: {
+      displayName: "Blacksmith",
       sentient: true,
       connections: ["smithy"],
       dropPreposition: "by",
@@ -289,6 +295,7 @@ function App() {
         }),
     },
     pasture: {
+      displayName: "Pasture",
       sentient: itemLocations.pasture.has("horse"),
       connections: ["smithy"],
       dropPreposition: "at",
@@ -298,7 +305,8 @@ function App() {
           : ""
       }`,
     },
-    northGate: {
+    gate: {
+      displayName: "Gate",
       connections: ["adolescent", "smithy", "road"],
       dropPreposition: "at",
       description: `You are standing at the north gate. To the north, you see a road leading up a mountain. The adolescent that you saw earlier stands at the courtyard${
@@ -306,25 +314,28 @@ function App() {
       }.`,
     },
     adolescent: {
+      displayName: "TODO",
       sentient: true,
-      connections: ["northGate"],
+      connections: ["gate"],
       dropPreposition: "at",
       description: `todo`,
     },
     // todo roads
     road: {
+      displayName: "TODO ROAD",
       description: "todo",
-      connections: ["northGate", "stream"],
+      connections: ["gate", "stream"],
       dropPreposition: "on",
     },
     stream: {
-      // todo add display names
+      displayName: "Stream",
       description:
         "You come across a steam. It looks crossable by foot or by horse. On the north side, you see a bush full of berries. To the south, the road stretches back to the city.",
       connections: ["road", "clearing"],
       dropPreposition: "in",
     },
     clearing: {
+      displayName: "Clearing",
       description: `You stand in a clearing. A bush full of berries catches your eye. To the south, a stream burbles. To the north, you see a rocky cliff with a cave. A man stands in the middle of the clearing. His long white beard, pointed hat, and staff mark him as a wizard. ${
         gameState.squirrelDead
           ? "A dead squirrel lies at the base of a tree. "
@@ -334,6 +345,7 @@ function App() {
       dropPreposition: "on",
     },
     squirrel: {
+      displayName: "Wizard",
       sentient: true,
       description: gameState.squirrelDead
         ? "The squirrel lies dead on the ground."
@@ -342,6 +354,7 @@ function App() {
       dropPreposition: "by",
     },
     wizard: {
+      displayName: "Wizard",
       sentient: true,
       connections: ["clearing"],
       dropPreposition: "by",
@@ -350,6 +363,7 @@ function App() {
       }`, // todo
     },
     cliff: {
+      displayName: "Cliff",
       connections: itemLocations.inventory.has("horse")
         ? ["clearing"]
         : ["clearing", "caveEntrance"],
@@ -359,6 +373,7 @@ function App() {
         : `You scramble on the rocky cliff. Above you is the entrance to a cave. Below you is a clearing next to a stream.`,
     },
     caveEntrance: {
+      displayName: "Cave Entrance",
       connections: ["cliff", "lair", "puddle", "boulder", "dung"],
       dropPreposition: "in",
       description: `You stand in a large, foul smelling cavern. On the west side, there is a puddle of clear water, and a pile of dragon dung. To the east, there is an entrance to a room that glitters with gems and gold. To the south, you feel the fresh air from the cave entrance. 
@@ -374,6 +389,7 @@ function App() {
       }`,
     },
     puddle: {
+      displayName: "Puddle",
       connections: ["caveEntrance", "boulder", "dung"],
       dropPreposition: "in",
       description: `You stand at a puddle of clear water. Nearby, there is a large boulder and a pile of dragon dung. The cave entrance is on the opposite side of the room. 
@@ -389,6 +405,7 @@ function App() {
       },
     },
     boulder: {
+      displayName: "Boulder",
       connections: ["caveEntrance", "puddle", "dung"],
       dropPreposition: "at",
       description: `You walk behind the boulder. It seems large enough to hide your from sight. Nearby, there is a pile of dragon dung and a puddle of clear water. The cave entrance is on the opposite side of the room. 
@@ -407,6 +424,7 @@ function App() {
       },
     },
     dung: {
+      displayName: "Dung",
       connections: ["caveEntrance", "puddle", "boulder"],
       dropPreposition: "in",
       description: `You stand in front of a large puddle of dragon dung. The stench makes your eyes water. Nearby, there is a large boulder and a puddle of clear water. The cave entrance is on the opposite side of the room. 
@@ -422,6 +440,7 @@ function App() {
       },
     },
     lair: {
+      displayName: "Lair",
       connections: ["caveEntrance"],
       dropPreposition: "in",
       description: `You stand in a room full of gold and gems. ${
@@ -503,6 +522,7 @@ function App() {
 
   const allItems = {
     lute: {
+      displayName: "Lute",
       spawnLocation: "room",
       description: "wooden lute",
       ...(playerLocation === "room" && {
@@ -535,6 +555,7 @@ function App() {
         }),
     },
     clothes: {
+      displayName: "Clothes",
       spawnLocation: "wardrobe",
       dropDescription: `You strip down and drop your clothes ${locations[playerLocation].dropPreposition} the ${playerLocation}.`,
       dropGameStateEffect: { naked: true },
@@ -547,8 +568,8 @@ function App() {
         dropGameStateEffect: { naked: true, poopy: true },
       }),
       ...(gameState.poopy
-        ? { description: "a poopy set of clothes" }
-        : { description: "a set of clothes" }),
+        ? { description: "poopy set of clothes" }
+        : { description: "set of clothes" }),
       ...(gameState.naked
         ? {
             useVerb: "Wear",
@@ -562,8 +583,10 @@ function App() {
           }),
     },
     apple: {
+      //todo when you eat the apple, it remains in inventory; it should not
+      displayName: "Apple",
       spawnLocation: "inn",
-      description: "a fresh apple",
+      description: "fresh apple",
       useVerb: "Eat",
       useDescription: "You bite eat the apple, feeling refreshed.",
       ...(itemLocations.pasture.has("horse") &&
@@ -585,13 +608,14 @@ function App() {
         }),
     },
     handkerchief: {
+      displayName: "Handkerchief",
       spawnLocation: "adolescent",
       ...(gameState.handkerchiefDamp
         ? {
-            description: "a damp handkerchief",
+            description: "damp handkerchief",
           }
         : {
-            description: "a handkerchief",
+            description: "handkerchief",
           }),
       ...(gameState.masked
         ? {
@@ -631,8 +655,9 @@ function App() {
       }),
     },
     baby: {
+      displayName: "Baby",
       spawnLocation: "nursery",
-      description: "a crying baby",
+      description: "crying baby",
       useVerb: "Use",
       useDescription: "It's unclear what use this item has. ",
       dropDescription: "You drop the crying baby. It cries even louder. ",
@@ -653,8 +678,9 @@ function App() {
       }),
     },
     sword: {
+      displayName: "Sword",
       spawnLocation: "smithy",
-      description: "a sword",
+      description: "sword",
       useVerb: "Attack",
       useDescription:
         "You slash the sword through the air, looking a bit foolish.",
@@ -700,7 +726,8 @@ function App() {
         }),
     },
     horse: {
-      description: gameState.horseDead ? "a dead horse" : "a voracious horse",
+      displayName: "Horse",
+      description: gameState.horseDead ? "a dead horse" : "voracious horse",
       ...(!gameState.horseTethered && {
         takeDescription:
           "You try to grab the horse's reins, but it evades you. It seems more interested in foraging for food than carrying you around.",
@@ -740,6 +767,7 @@ function App() {
         : ""),
     },
     berries: {
+      displayName: "Berries",
       description: "red berries",
       useVerb: "Eat",
       useDescription:
@@ -757,6 +785,7 @@ function App() {
         }),
     },
     treasure: {
+      displayName: "Treasure",
       ...(gameState.dragonDead && {
         takeDescription:
           "You scoop as much treasure as possible into your bag, avoiding the gore from the severed dragon head.",
@@ -799,6 +828,7 @@ function App() {
         }),
     },
     score: {
+      displayName: "Muscial score",
       description: "musical score",
       useVerb: "Play",
       useDescription: itemLocations.inventory.has("lute")
@@ -894,7 +924,7 @@ function App() {
     // Get the "take"" description for the item -- this will be the consequence text
     const description = allItems[item].takeDescription
       ? allItems[item].takeDescription
-      : `You now have ${allItems[item].description}`;
+      : `You now have ${allItems[item].description}.`;
 
     // Get the "take" end location for the item -- will usually be "inventory"
     const endItemLocation = allItems[item].takeLocation
@@ -939,7 +969,7 @@ function App() {
     // Get the "drop"" description for the item -- this will be the consequence text
     const description = allItems[item].dropDescription
       ? allItems[item].dropDescription
-      : `You drop the ${item} ${locations[playerLocation].dropPreposition} the ${playerLocation}`;
+      : `You drop the ${item} ${locations[playerLocation].dropPreposition} the ${playerLocation}.`;
 
     // Get the "drop" end location for the item -- will usually be the current player location
     const endItemLocation = allItems[item].dropLocation
@@ -1132,6 +1162,7 @@ function App() {
         <div className="description">
           {locations[playerLocation].description}
         </div>
+        <div className="buttons">
         <LocationItems itemsAtLocation={itemLocations[playerLocation]} />
         <Connections connections={locations[playerLocation].connections} />
         <button
@@ -1140,8 +1171,17 @@ function App() {
         >
           Inventory
         </button>
-        <div>Reputation: {gameState.reputation}</div>
-        <div>Gold: {gameState.gold}</div>
+        </div>
+        <div className="stats">
+          <div className="stat">
+            <div className="statName">Reputation:{" "}</div>
+            <div className="statValue">{gameState.reputation}</div>
+          </div>
+          <div className="stat">
+            <div className="statName">Gold: </div>
+            <div className="statValue">{gameState.gold}</div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -1150,7 +1190,7 @@ function App() {
     return (
       <div className="App">
         <div className="description">{consequenceText}</div>
-        <button onClick={(e) => setCurrentDisplay("location")}>
+        <button className="close" onClick={(e) => setCurrentDisplay("location")}>
           Back to{" "}
           {locations[playerLocation].displayName
             ? locations[playerLocation].displayName
@@ -1184,7 +1224,7 @@ function App() {
             Pay
           </button>
         </div>
-        <button key="back" onClick={(e) => setCurrentDisplay("location")}>
+        <button key="back" className="close" onClick={(e) => setCurrentDisplay("location")}>
           Close Inventory
         </button>
       </div>
