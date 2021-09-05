@@ -78,7 +78,7 @@ function App() {
     blacksmith: {
       ...(!gameState.ownSword &&
         itemLocations.smithy.has("sword") && {
-          payDescription: `You hand the blacksmith ${gameState.swordCost} gold in exchange for the sword.`, //todo this doesn't account for if sword costs more than have
+          payDescription: `You hand the blacksmith ${gameState.swordCost} gold in exchange for the sword.`, // todo this doesn't account for if sword costs more than have
           payGameStateEffect: {
             ownSword: true,
             gold: gameState.gold - gameState.swordCost,
@@ -184,9 +184,7 @@ function App() {
         itemLocations: itemLocations,
       });
 
-    const description = customDescription
-      ? customDescription
-      : `You now have ${
+    const description = customDescription || `You now have ${
           ["a", "e", "i", "o", "u"].includes(
             allItems[item]
               .getDescription({
@@ -213,9 +211,7 @@ function App() {
         itemLocations: itemLocations,
       });
 
-    const endItemLocation = customItemLocation
-      ? customItemLocation
-      : "inventory";
+    const endItemLocation = customItemLocation || "inventory";
 
     // Get any effect on the game state
     const customGameEffect =
@@ -254,9 +250,7 @@ function App() {
         itemLocations: itemLocations,
       });
 
-    const description = customDescription
-      ? customDescription
-      : `You use the ${allItems[item].displayName.toLowerCase()}.`;
+    const description = customDescription || `You use the ${allItems[item].displayName.toLowerCase()}.`;
 
     // Get any effect on the game state
     const customGameEffect =
@@ -290,9 +284,7 @@ function App() {
         itemLocations: itemLocations,
       });
 
-    const description = customDescription
-      ? customDescription
-      : `You drop the ${item} ${locations[playerLocation].dropPreposition} the ${playerLocation}.`;
+    const description = customDescription || `You drop the ${item} ${locations[playerLocation].dropPreposition} the ${playerLocation}.`;
 
     // Get the "drop" end location for the item -- will usually be the current player location
     const customItemLocation =
@@ -303,9 +295,7 @@ function App() {
         itemLocations: itemLocations,
       });
 
-    const endItemLocation = customItemLocation
-      ? customItemLocation
-      : playerLocation;
+    const endItemLocation = customItemLocation || playerLocation;
 
     console.log(`drop at ${endItemLocation}`);
 
@@ -433,9 +423,7 @@ function App() {
         itemLocations: itemLocations,
       });
 
-    const description = customDescription
-      ? customDescription
-      : `You give the ${item} to the ${playerLocation}.`;
+    const description = customDescription || `You give the ${item} to the ${playerLocation}.`;
 
     // Get the "drop" end location for the item -- will usually be the current player location
     const customItemLocation =
@@ -446,9 +434,7 @@ function App() {
         itemLocations: itemLocations,
       });
 
-    const endItemLocation = customItemLocation
-      ? customItemLocation
-      : "outOfPlay";
+    const endItemLocation = customItemLocation || "outOfPlay";
 
     console.log(`give to ${endItemLocation}`);
 

@@ -204,7 +204,7 @@ const apple = new Item({
   getDescription: function (props) {
     return "fresh apple";
   },
-  //todo when you eat the apple, it remains in inventory; it should not. also, if apple is not in inventory, it should be in inn so you can get another one
+  // todo when you eat the apple, it remains in inventory; it should not. also, if apple is not in inventory, it should be in inn so you can get another one
 
   getUseVerb: function (props) {
     return "Eat";
@@ -336,7 +336,7 @@ const handkerchief = new Item({
       return `You offer the handkerchief that you saw the adolescent drop. "Th-thank you," they sob. She tells you that she was meant to be sacrificed to the dragon in exchange for another year of safety for the town. In retaliation, she set the mayor's house on fire, not realizing that the baby was trapped inside.`;
     }
   },
-  getCustomGiveLocation: function (props) {}, //todo need to put out of play when give to adolescent?
+  getCustomGiveLocation: function (props) {}, // todo need to put out of play when give to adolescent?
   getCustomGiveGameEffect: function (props) {
     // todo gender is inconsistent
     if (props.playerLocation === "adolescent") {
@@ -562,7 +562,7 @@ const berries = new Item({
   },
   getCustomUseDescription: function (props) {
     return "You pop the berries into your mouth. Immediately, your mouth starts to tingle, so you spit out the berries. You narrowly avoided death, but your face is splotchy ans swollen, and your lips are a nasty shade of purple.";
-  }, //todo where do the berries go when you eat them?
+  }, // todo where do the berries go when you eat them?
   getCustomUseGameEffect: function (props) {
     return {
       poisoned: true,
