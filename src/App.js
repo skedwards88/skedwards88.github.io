@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
+import { allItems } from "./items.js";
+import { locations } from "./locations.js";
 
 function App() {
   const startingState = {
@@ -40,7 +42,7 @@ function App() {
   const startingItemLocations = {
     inventory: new Set([]),
     outOfPlay: new Set([]),
-    room: new Set(["lute"]),
+    room: new Set(["lute", "apple"]),
     window: new Set([]),
     wardrobe: new Set(["clothes"]),
     mirror: new Set([]),
@@ -72,217 +74,11 @@ function App() {
 
   // todo add tests that locations and items have required values
 
-  // todo convert to objects with methods, pass itemLocations/game to remove circular dependency
-  const locations = {
-    room: {
-      displayName: "Room",
-      description: `You are in a room with a bed. A window faces the west. A wardrobe sits on the north side of the room, opposite a door. ${
-        itemLocations.room.has("lute") ? "A lute leans against the bed. " : ""
-      }${
-        gameState.fire
-          ? "You smell fire and hear screams in the distance. "
-          : ""
-      }`,
-      connections: ["window", "wardrobe", "inn"],
-      dropPreposition: "in",
-    },
-    window: {
-      displayName: "Window",
-      description: `${
-        gameState.fire
-          ? "Through the window, you see flames and smoke coming from a nearby mansion. A crowd has gathered in front of the mansion."
-          : "Through the window, you see the charred remains of a nearby mansion."
-      }`,
-      connections: ["room"],
-      dropPreposition: "at",
-    },
-    wardrobe: {
-      displayName: "Wardrobe",
-      description: `Inside the wardrobe, there is a mirror ${
-        itemLocations.wardrobe.has("clothes") ? "and a set of clothes" : ""
-      }.`,
-      connections: ["room", "mirror"],
-      dropPreposition: "in",
-    },
-    mirror: {
-      displayName: "Mirror",
-      // todo could also handle poopy, singed. Would need to use multiple ternary expressions.
-      description: `${
-        gameState.naked
-          ? "You're naked!"
-          : "You are quite good looking, if you say so yourself."
-      }`,
-      connections: ["wardrobe"],
-      dropPreposition: "at",
-    },
-    inn: {
-      displayName: playerLocation === "room" ? "Door" : "Inn",
-      description: `You enter what appears to be the common room of an inn. ${
-        itemLocations.inn.has("apple")
-          ? "A complementary apple rests on the table. "
-          : ""
-      }${
-        gameState.naked
-          ? 'The inn keeper laughs, "Haven\'t you heard of clothes?!"'
-          : ""
-      }`,
-      connections: ["room", "courtyard"],
-      dropPreposition: "in",
-      ...(gameState.naked && {
-        onEnterGameStateEffect: { reputation: gameState.reputation - 1 },
-      }),
-    },
-    courtyard: {
-      displayName: "Courtyard",
-      description: `You are in a small courtyard. The entrance to the inn sits at the north side. To the east you hear sounds of a blacksmith shop. To the west you see a fountain. ${
-        gameState.fire ? "Beyond the fountain, you see flames and smoke. " : ""
-      }${
-        gameState.firstCourtyardEntry
-          ? "An adolescent runs west to east, crying as they flee. They drop a handkerchief in their distress. "
-          : ""
-      }`,
-      connections: ["inn", "fountain", "smithy"],
-      dropPreposition: "in",
-      ...(gameState.firstCourtyardEntry && {
-        onExitGameStateEffect: { firstCourtyardEntry: false },
-      }),
-    },
-    fountain: {
-      displayName: "Fountain",
-      connections: ["manor", "courtyard"],
-      dropPreposition: "in",
-      description: `You stand at the edge of a fountain. In the center is a statue of a dragon surrounded by cowering people. To the east is a courtyard. To the north is a manor. ${
-        gameState.fire
-          ? "The manor is on fire and surrounded by a crowd of people. "
-          : "The manor is a framework of charred wood."
-      }${
-        itemLocations.nursery.has("baby")
-          ? 'You hear a voice sobbing, "My baby! My baby is trapped in the nursery."'
-          : ""
-      }${
-        gameState.savedBaby &&
-        gameState.babyCough &&
-        !gameState.receivedBabyReward
-          ? 'You hear a voice: "My baby! You saved my baby! But my dear baby has a terrible cough from being carried through the smoke. Regardless, take this gold as thanks." As you take the gold and praise, you see the roof collapse. Finally, the crowd is able to douse the flames. '
-          : ""
-      }${
-        gameState.savedBaby &&
-        !gameState.babyCough &&
-        !gameState.receivedBabyReward
-          ? 'You hear a voice: "Thank you for saving my baby! Please take this gold as thanks." As you take the gold and praise, you see the roof collapse. Finally, the crowd is able to douse the flames.'
-          : ""
-      }`,
-      // todo could use consequence instead of on enter and on exit
-      // ...((gameState.savedBaby && !gameState.receivedBabyReward) && {
-      //   consequenceText: "",
-      //   consequenceStateEffect: {
-      //     fire: false,
-      //     receivedBabyReward: true
-      //   },
-      //   consequenceItemLocationEffect: {}
-      // }),
-      ...(gameState.savedBaby &&
-        !gameState.receivedBabyReward && {
-          onExitGameStateEffect: { fire: false, receivedBabyReward: true },
-          onEnterItemLocationEffect: {
-            item: "baby",
-            oldLocation: "inventory",
-            newLocation: "outOfPlay",
-          },
-        }),
-      ...(gameState.savedBaby &&
-        !gameState.receivedBabyReward && {
-          onEnterGameStateEffect: {
-            gold: gameState.gold + 50,
-            reputation: gameState.babyCough
-              ? gameState.reputation + 1
-              : gameState.reputation + 2,
-          },
-        }),
-    },
-    manor: {
-      displayName: "Manor",
-      connections: ["fountain"], // todo allow to continue if not masked but develop cough/lose reputation. todo could instead allow to continue if no fire but have manor collapse
-      ...(gameState.fire &&
-        gameState.handkerchiefDamp &&
-        gameState.masked && { connections: ["fountain", "nursery"] }),
-      dropPreposition: "in",
-      description: `${
-        gameState.fire
-          ? "You stand in the entrance of the burning manor. "
-          : "You stand in the charred remains of the manor. "
-      }${
-        itemLocations.nursery.has("baby")
-          ? "You hear a baby crying upstairs. "
-          : ""
-      }${
-        gameState.fire && (!gameState.handkerchiefDamp || !gameState.masked)
-          ? "Your throat burns from the smoke and heat. You can't breath this air. "
-          : ""
-      }${
-        gameState.fire && gameState.handkerchiefDamp && gameState.masked
-          ? "Although the smoke is thick, the damp handkerchief over your mouth helps you breath."
-          : ""
-      }`,
-      ...(itemLocations.inventory.has("baby") && {
-        onEnterGameStateEffect: { babyCough: true },
-      }),
-    },
-    nursery: {
-      displayName: "Nursery",
-      connections: ["nurseryWindow", "manor"],
-      dropPreposition: "in",
-      description: `${
-        gameState.fire && itemLocations.nursery.has("baby")
-          ? "You stand in a nursery. You see a baby wailing in the crib under an open window. The open window must be the only thing keeping the baby alive in this smoke. "
-          : ""
-      }${
-        gameState.fire && !itemLocations.nursery.has("baby")
-          ? "You stand in a nursery with an empty crib. The fire continues to burn, pouring smoke into the room. "
-          : ""
-      }${
-        !gameState.fire ? "You stand in the charred remains of a nursery." : ""
-      }`,
-    },
-    nurseryWindow: {
-      displayName: "Window",
-      connections: ["nursery"],
-      dropPreposition: "at", // todo could change to out and have anything dropped out any window end in location below
-      description: `${
-        gameState.fire
-          ? "Below the window, you see the gathered crowd. "
-          : "You see the charred remains of the manor below you. "
-      }`,
-    },
-    smithy: {
-      displayName: "Smithy",
-      connections: ["courtyard", "blacksmith", "gate", "pasture"],
-      dropPreposition: "at",
-      description: `You stand in front of a blacksmith shop. To the north and south are city gates. To the west is a courtyard. The blacksmith is working inside the shop. ${
-        itemLocations.smithy.has("sword")
-          ? "In front of the shop, you see a sword gleaming as if someone was recently polishing it."
-          : ""
-      }`,
-    },
+  const z = {
     blacksmith: {
-      displayName: "Blacksmith",
-      sentient: true,
-      connections: ["smithy"],
-      dropPreposition: "by",
-      description: `The blacksmith looks up as you walk in. ${
-        !gameState.ownSword && itemLocations.smithy.has("sword")
-          ? `"Are you interested in buying that sword? It costs ${
-              gameState.swordCost
-            } gold${
-              itemLocations.inventory.has("lute")
-                ? " or I would trade it for your lute"
-                : ""
-            }. `
-          : ""
-      }`,
       ...(!gameState.ownSword &&
         itemLocations.smithy.has("sword") && {
-          payDescription: `You hand the blacksmith ${gameState.swordCost} gold in exchange for the sword.`,//todo this doesn't account for if sword costs more than have
+          payDescription: `You hand the blacksmith ${gameState.swordCost} gold in exchange for the sword.`, //todo this doesn't account for if sword costs more than have
           payGameStateEffect: {
             ownSword: true,
             gold: gameState.gold - gameState.swordCost,
@@ -294,572 +90,9 @@ function App() {
           },
         }),
     },
-    pasture: {
-      displayName: "Pasture",
-      sentient: itemLocations.pasture.has("horse"),
-      connections: ["smithy"],
-      dropPreposition: "at",
-      description: `You are standing in a wide field. There is no road in sight. To the north, you hear sounds of the blacksmith shop. ${
-        itemLocations.pasture.has("horse")
-          ? 'A horse is grazing in the field. Its reins have come untied from the post. A sign reads: "Free horse (if you can catch it)."'
-          : ""
-      }`,
-    },
-    gate: {
-      displayName: "Gate",
-      connections: ["adolescent", "smithy", "road"],
-      dropPreposition: "at",
-      description: `You are standing at the north gate. To the north, you see a road leading up a mountain. The adolescent that you saw earlier stands at the courtyard${
-        !gameState.playedForAdolescent ? ", crying" : ""
-      }.`,
-    },
-    adolescent: {
-      displayName: "TODO",
-      sentient: true,
-      connections: ["gate"],
-      dropPreposition: "at",
-      description: `todo`,
-    },
-    // todo roads
-    road: {
-      displayName: "TODO ROAD",
-      description: "todo",
-      connections: ["gate", "stream"],
-      dropPreposition: "on",
-    },
-    stream: {
-      displayName: "Stream",
-      description:
-        "You come across a steam. It looks crossable by foot or by horse. On the north side, you see a bush full of berries. To the south, the road stretches back to the city.",
-      connections: ["road", "clearing"],
-      dropPreposition: "in",
-    },
-    clearing: {
-      displayName: "Clearing",
-      description: `You stand in a clearing. A bush full of berries catches your eye. To the south, a stream burbles. To the north, you see a rocky cliff with a cave. A man stands in the middle of the clearing. His long white beard, pointed hat, and staff mark him as a wizard. ${
-        gameState.squirrelDead
-          ? "A dead squirrel lies at the base of a tree. "
-          : "A squirrel scampers around a tree."
-      }`,
-      connections: ["wizard", "squirrel", "stream", "cliff"],
-      dropPreposition: "on",
-    },
-    squirrel: {
-      displayName: "Wizard",
-      sentient: true,
-      description: gameState.squirrelDead
-        ? "The squirrel lies dead on the ground."
-        : "You approach the squirrel. It pauses, perhaps curious if you will feed it, before scampering up the tree.",
-      connections: ["clearing"],
-      dropPreposition: "by",
-    },
-    wizard: {
-      displayName: "Wizard",
-      sentient: true,
-      connections: ["clearing"],
-      dropPreposition: "by",
-      description: `The wizard looks at you though bushy eyebrows. ${
-        true ? "" : ""
-      }`, // todo
-    },
-    cliff: {
-      displayName: "Cliff",
-      connections: itemLocations.inventory.has("horse")
-        ? ["clearing"]
-        : ["clearing", "caveEntrance"],
-      dropPreposition: "on",
-      description: itemLocations.inventory.has("horse")
-        ? `The horse cannot make it up the rocky cliff. You must return to the clearing.`
-        : `You scramble on the rocky cliff. Above you is the entrance to a cave. Below you is a clearing next to a stream.`,
-    },
-    caveEntrance: {
-      displayName: "Cave Entrance",
-      connections: ["cliff", "lair", "puddle", "boulder", "dung"],
-      dropPreposition: "in",
-      description: `You stand in a large, foul smelling cavern. On the west side, there is a puddle of clear water, and a pile of dragon dung. To the east, there is an entrance to a room that glitters with gems and gold. To the south, you feel the fresh air from the cave entrance. 
-      
-      ${
-        !gameState.dragonAsleep
-          ? "You hear coins clanking from the east room, as if a large beast is rolling in piles of gold."
-          : ""
-      }${
-        !gameState.poopy
-          ? 'From the east room, a voice booms "WHO DO I SMELL?"'
-          : ""
-      }`,
-    },
-    puddle: {
-      displayName: "Puddle",
-      connections: ["caveEntrance", "boulder", "dung"],
-      dropPreposition: "in",
-      description: `You stand at a puddle of clear water. Nearby, there is a large boulder and a pile of dragon dung. The cave entrance is on the opposite side of the room. 
-
-      ${dragonDescription()}`,
-      onEnterGameStateEffect: {
-        timeInCave: gameState.timeInCave + 1,
-        ...((gameState.timeInCave + 1) % 4 === 3 &&
-          (!gameState.poopy || playerLocation !== "boulder") && {
-            singeCount: gameState.singeCount + 1,
-            reputation: gameState.reputation - 1,
-          }),
-      },
-    },
-    boulder: {
-      displayName: "Boulder",
-      connections: ["caveEntrance", "puddle", "dung"],
-      dropPreposition: "at",
-      description: `You walk behind the boulder. It seems large enough to hide your from sight. Nearby, there is a pile of dragon dung and a puddle of clear water. The cave entrance is on the opposite side of the room. 
-      
-      ${dragonDescription()}`,
-      onEnterGameStateEffect: {
-        timeInCave: gameState.timeInCave + 1,
-        ...((gameState.timeInCave + 1) % 4 === 3 &&
-          (!gameState.poopy || playerLocation !== "boulder") && {
-            singeCount: gameState.singeCount + 1,
-            reputation: gameState.reputation - 1,
-          }),
-        ...(itemLocations.puddle.has("berries") &&
-          gameState.poopy &&
-          playerLocation === "boulder" && { dragonPoisoned: true }),
-      },
-    },
-    dung: {
-      displayName: "Dung",
-      connections: ["caveEntrance", "puddle", "boulder"],
-      dropPreposition: "in",
-      description: `You stand in front of a large puddle of dragon dung. The stench makes your eyes water. Nearby, there is a large boulder and a puddle of clear water. The cave entrance is on the opposite side of the room. 
-      
-      ${dragonDescription()}`,
-      onEnterGameStateEffect: {
-        timeInCave: gameState.timeInCave + 1,
-        ...((gameState.timeInCave + 1) % 4 === 3 &&
-          (!gameState.poopy || playerLocation !== "boulder") && {
-            singeCount: gameState.singeCount + 1,
-            reputation: gameState.reputation - 1,
-          }),
-      },
-    },
-    lair: {
-      displayName: "Lair",
-      connections: ["caveEntrance"],
-      dropPreposition: "in",
-      description: `You stand in a room full of gold and gems. ${
-        !gameState.dragonAsleep &&
-        !gameState.dragonDead &&
-        !gameState.dragonPoisoned
-          ? "A dragon sits atop the pile of treasure. It shoots fire as you approach, singing you. You cannot go closer without getting burnt further. "
-          : ""
-      }${
-        gameState.dragonAsleep && !gameState.dragonDead
-          ? "The dragon lies in a deep slumber atop the pile of treasure. "
-          : ""
-      }${
-        gameState.dragonDead
-          ? "The dragon's body lies top the pile of treasure, its head severed. "
-          : ""
-      }${
-        !gameState.dragonAsleep &&
-        !gameState.dragonDead &&
-        gameState.dragonPoisoned
-          ? "The dragon looks half dead from the poison but still shoots flame as you approach it and its pile of treasure. The flame is no longer strong enough to harm you from the entrance to the lair, but it will surely singe you if you get closer. "
-          : ""
-      }`,
-      ...(!gameState.dragonAsleep &&
-        !gameState.dragonDead &&
-        !gameState.dragonPoisoned && {
-          onEnterGameStateEffect: {
-            singeCount: gameState.singeCount + 1,
-            reputation: gameState.reputation - 1,
-          },
-        }),
-    },
   };
 
   // todo write end game and scoring
-
-  function dragonDescription() {
-    const timeInterval = gameState.timeInCave % 4;
-
-    let text = "";
-
-    if (
-      timeInterval === 3 ||
-      (gameState.poopy &&
-        playerLocation === "boulder" &&
-        itemLocations.puddle.has("berries"))
-    ) {
-      text += "The dragon prowls into the cavern. ";
-      // not poop and not hidden
-      if (!gameState.poopy && playerLocation !== "boulder") {
-        text += `"I KNEW I SMELT A HUMAN." The dragon singes you before you can fight or defend yourself. `;
-      } // poop and not hidden
-      else if (gameState.poopy && playerLocation !== "boulder") {
-        text += `"YOU DO NOT SMELL LIKE A HUMAN BUT YOU LOOK LIKE ONE. The dragon singes you before you can fight or defend yourself. " `;
-      } // not poop and hidden
-      else if (!gameState.poopy && playerLocation === "boulder") {
-        text += `"I SMELL A HUMAN SOMEWHERE NEARBY." The dragon peaks around the boulder and spots you. The dragon singes you before you can fight or defend yourself. `;
-      } // poop and hidden
-      else if (gameState.poopy && playerLocation === "boulder") {
-        text += "It seems unaware of your location. ";
-        // dragon drinks
-        if (itemLocations.puddle.has("berries")) {
-          text +=
-            "The dragon drinks from the puddle. It starts foaming at the mouth. Enraged and in pain, it stumbles back to the lair.";
-        } else {
-          text +=
-            "The dragon drinks from the puddle, then returns to the lair.";
-        }
-      }
-    } else if (timeInterval === 2) {
-      text += "You hear the dragon just outside.";
-    } else if (timeInterval === 1) {
-      text +=
-        "You hear coins clanking from the east room, as if a large beast is rising from a sea of treasure. ";
-    }
-
-    return text;
-  }
-
-  const allItems = {
-    lute: {
-      displayName: "Lute",
-      spawnLocation: "room",
-      description: "wooden lute",
-      ...(playerLocation === "room" && {
-        takeDescription: "The lute feels familiar. ",
-      }),
-      useVerb: "Play",
-      useDescription: "You play a beautiful melody. ",
-      ...(playerLocation === "adolescent" &&
-        !gameState.playedForAdolescent && {
-          useDescription: `You play a song for the crying adolescent. The music seems to cheer the youth up.`,
-          useGameStateEffect: {
-            reputation: gameState.reputation + 1,
-            playedForAdolescent: true,
-          },
-        }),
-      ...(playerLocation === "adolescent" &&
-        gameState.playedForAdolescent && {
-          useDescription: `They appreciate the music, but don't seem keen to listen all day.`,
-        }),
-      ...(!gameState.ownSword &&
-        itemLocations.smithy.has("sword") && {
-          giveDescription:
-            "You give your lute to the blacksmith. In exchange, they give you the sword.",
-          giveGameStateEffect: { ownSword: true },
-          giveItemLocationEffect: {
-            item: "sword",
-            oldLocation: "smithy",
-            newLocation: "inventory",
-          },
-        }),
-    },
-    clothes: {
-      displayName: "Clothes",
-      spawnLocation: "wardrobe",
-      dropDescription: `You strip down and drop your clothes ${locations[playerLocation].dropPreposition} the ${playerLocation}.`,
-      dropGameStateEffect: { naked: true },
-      ...(playerLocation === ("fountain" || "stream" || "puddle") && {
-        dropDescription: `You strip down and drop your clothes ${locations[playerLocation].dropPreposition} the ${playerLocation}. Your clothes look much cleaner now.`,
-        dropGameStateEffect: { naked: true, poopy: false }, // todo lose reputation if at fountain (drinking water)?
-      }),
-      ...(playerLocation === "dung" && {
-        dropDescription: `You strip down and drop your clothes ${locations[playerLocation].dropPreposition} the ${playerLocation}. Your clothes are now covered in dragon dung.`,
-        dropGameStateEffect: { naked: true, poopy: true },
-      }),
-      ...(gameState.poopy
-        ? { description: "poopy set of clothes" }
-        : { description: "set of clothes" }),
-      ...(gameState.naked
-        ? {
-            useVerb: "Wear",
-            useDescription: "You put on the clothes.",
-            useGameStateEffect: { naked: false },
-          }
-        : {
-            useVerb: "Remove",
-            useDescription: "You strip down.",
-            useGameStateEffect: { naked: true },
-          }),
-    },
-    apple: {
-      //todo when you eat the apple, it remains in inventory; it should not
-      displayName: "Apple",
-      spawnLocation: "inn",
-      description: "fresh apple",
-      useVerb: "Eat",
-      useDescription: "You bite eat the apple, feeling refreshed.",
-      ...(itemLocations.pasture.has("horse") &&
-        playerLocation === "pasture" && {
-          dropDescription:
-            "This horse seems very interested in food. The horse walks over to eat the apple that you dropped. While he is preoccupied, you tie the reins back to the post.",
-          dropGameStateEffect: { horseTethered: true },
-          dropLocation: "outOfPlay",
-          giveDescription:
-            "This horse seems very interested in food. The horse walks over to eat the apple that you offered. While he is preoccupied, you tie the reins back to the post.",
-          giveGameStateEffect: { horseTethered: true },
-          giveLocation: "outOfPlay",
-        }),
-      ...(playerLocation === "squirrel" &&
-        !gameState.squirrelDead && {
-          giveDescription:
-            "The squirrel nibbles at the apple, pleased to have such a treat.",
-          giveLocation: "outOfPlay",
-        }),
-    },
-    handkerchief: {
-      // todo when you drop the handkerchief but are wearing it, you should also stop wearingit
-      displayName: "Handkerchief",
-      spawnLocation: "adolescent",
-      ...(gameState.handkerchiefDamp
-        ? {
-            description: "damp handkerchief",
-          }
-        : {
-            description: "handkerchief",
-          }),
-      ...(gameState.masked
-        ? {
-            useVerb: "Remove",
-            useDescription:
-              "You remove the handkerchief from your nose and mouth.",
-            useGameStateEffect: { masked: false },
-          }
-        : {
-            useVerb: "Wear",
-            useDescription: `You tie the handkerchief around your nose and mouth. ${
-              playerLocation === ("manor" || "nursery" || "nurseryWindow") &&
-              gameState.fire &&
-              gameState.masked
-                ? "The damp handkerchief lets you breath more easily. "
-                : ""
-            }${
-              playerLocation === ("manor" || "nursery" || "nurseryWindow") &&
-              gameState.fire &&
-              !gameState.masked
-                ? "On its own, the handkerchief does little to block the smoke. "
-                : ""
-            }${
-              playerLocation ===
-              ("dung" || "defecatory" || "boulder" || "puddle")
-                ? "Even with it, the stench reaches your nose. "
-                : ""
-            }`,
-            useGameStateEffect: { masked: true },
-          }),
-      ...(playerLocation === ("fountain" || "stream" || "puddle") && {
-        dropGameStateEffect: { handkerchiefDamp: true },
-      }),
-      ...(playerLocation === "adolescent" && {
-        giveDescription: `You offer the handkerchief that you saw the adolescent drop. "Th-thank you," they sob. She tells you that she was meant to be sacrificed to the dragon in exchange for another year of safety for the town. In retaliation, she set the mayor's house on fire, not realizing that the baby was trapped inside.`,
-        giveGameStateEffect: { reputation: gameState.reputation + 1 },
-      }),
-    },
-    baby: {
-      displayName: "Baby",
-      spawnLocation: "nursery",
-      description: "crying baby",
-      useVerb: "Use",
-      useDescription: "It's unclear what use this item has. ",
-      dropDescription: "You drop the crying baby. It cries even louder. ",
-      ...(playerLocation === "nursery" && {
-        takeDescription:
-          "You pick up the baby from the crib. The baby coughs as you move it away from the open window. ",
-        dropDescription: "You place the baby back in the crib. ",
-      }),
-      takeGameStateEffect: { savedBaby: true },
-      ...(!playerLocation === "nurseryWindow" && {
-        dropGameStateEffect: { savedBaby: false },
-      }),
-
-      ...(playerLocation === "nurseryWindow" && {
-        dropDescription:
-          "You drop the baby out of the open window. The crowd below catches the baby. ",
-        dropLocation: "outOfPlay",
-      }),
-    },
-    sword: {
-      displayName: "Sword",
-      spawnLocation: "smithy",
-      description: "sword",
-      useVerb: "Attack",
-      useDescription:
-        "You slash the sword through the air, looking a bit foolish.",
-      ...(playerLocation === "smithy" &&
-        !gameState.ownSword && {
-          takeDescription:
-            'You grab the sword and place it in your bag. "Hey! Are you stealing my sword?" The blacksmith shop grabs the sword from you and returns it to the table.',
-          takeLocation: "smithy",
-          takeGameStateEffect: {
-            reputation: gameState.reputation - 1,
-            swordCost: gameState.swordCost + 10,
-          }, // todo this means sword cost can exceed amount of gold that you have...
-        }),
-      ...(gameState.dragonAsleep &&
-        !gameState.dragonDead &&
-        playerLocation === "lair" && {
-          useDescription: "You cut off the head of the dragon.",
-          useGameStateEffect: {
-            dragonDead: true,
-          },
-        }),
-      ...(gameState.dragonPoisoned &&
-        !gameState.dragonAsleep &&
-        !gameState.dragonDead &&
-        playerLocation === "lair" && {
-          useDescription:
-            "Despite the poison, the dragon is still able to singe you once you get near enough to cut off its head.",
-          useGameStateEffect: {
-            singeCount: gameState.singeCount + 1,
-            reputation: gameState.reputation - 1,
-          },
-        }),
-      ...(!gameState.dragonPoisoned &&
-        !gameState.dragonAsleep &&
-        !gameState.dragonDead &&
-        playerLocation === "lair" && {
-          useDescription:
-            "You try to cut off the dragon's head, but it singes you as soon as you get close enough.",
-          useGameStateEffect: {
-            singeCount: gameState.singeCount + 1,
-            reputation: gameState.reputation - 1,
-          },
-        }),
-    },
-    horse: {
-      displayName: "Horse",
-      description: gameState.horseDead ? "a dead horse" : "voracious horse",
-      ...(!gameState.horseTethered && {
-        takeDescription:
-          "You try to grab the horse's reins, but it evades you. It seems more interested in foraging for food than carrying you around.",
-        takeLocation: playerLocation,
-      }),
-      ...(gameState.horseDead && {
-        takeDescription: "This dead horse is too heavy to carry.",
-        takeLocation: playerLocation,
-      }),
-      dropDescription:
-        "You let go of the horse's reins. The horse trots away, probably in search of grass to munch.",
-      dropGameStateEffect: { horseTethered: false, horseMounted: false },
-      ...(gameState.horseMounted
-        ? {
-            useVerb: "Unmount",
-            useDescription:
-              "You unmount the horse, keeping hold of the horse's reins.",
-            useGameStateEffect: { horseMounted: false },
-            dropDescription:
-              "You unmount the horse and let go of the horse's reins.",
-          }
-        : {
-            useVerb: "Mount",
-            useDescription: "You mount the horse. Much easier than walking!",// todo should you be allowed to mount inside a building?
-            useGameStateEffect: { horseMounted: true },
-          }),
-      ...(playerLocation === "clearing"
-        ? {
-            dropDescription:
-              "You let go of the horse's reins. The horse starts to eat the berries. After a few mouthfuls, it foams at the mouth and falls over dead.",
-            dropGameStateEffect: {
-              horseTethered: false,
-              horseMounted: false,
-              horseDead: true,
-            },
-          }
-        : ""),
-    },
-    berries: {
-      displayName: "Berries",
-      description: "red berries",
-      useVerb: "Eat",
-      useDescription:
-        "You pop the berries into your mouth. Immediately, your mouth starts to tingle, so you spit out the berries. You narrowly avoided death, but your face is splotchy ans swollen, and your lips are a nasty shade of purple.",
-      useGameStateEffect: {
-        poisoned: true,
-        reputation: gameState.reputation - 1,
-      },
-      ...(playerLocation === "squirrel" &&
-        !gameState.squirrelDead && {
-          giveDescription:
-            "The squirrel eats the berries that you offered. After a few seconds, it foams at the mouth and rolls over, dead. Oh dear.",
-          giveLocation: "clearing",
-          giveGameStateEffect: { squirrelDead: true }, // todo didn't give way to give berries to horse. probably ok.
-        }),
-    },
-    treasure: {
-      displayName: "Treasure",
-      ...(gameState.dragonDead && {
-        takeDescription:
-          "You scoop as much treasure as possible into your bag, avoiding the gore from the severed dragon head.",
-        takeGameStateEffect: {
-          gold: gameState.gold + gameState.treasureAmount,
-        },
-        takeLocation: "outOfPlay",
-      }),
-      ...(gameState.dragonAsleep &&
-        !gameState.dragonDead && {
-          takeDescription:
-            "Giving a wide berth to the snoring dragon, you scoop as much treasure as possible into your bag.",
-          takeGameStateEffect: {
-            gold: gameState.gold + gameState.treasureAmount,
-          },
-          takeLocation: "outOfPlay",
-        }),
-      ...(gameState.dragonPoisoned &&
-        !gameState.dragonAsleep &&
-        !gameState.dragonDead && {
-          takeDescription:
-            "With the dragon slower from the poison, you can now reach the treasure. You scoop as much treasure as possible into your bag before the dragon singes you.",
-          takeGameStateEffect: {
-            gold: gameState.gold + gameState.treasureAmount / 2,
-            singeCount: gameState.singeCount + 1,
-            reputation: gameState.reputation - 1,
-          },
-          takeLocation: "outOfPlay",
-        }),
-      ...(!gameState.dragonPoisoned &&
-        !gameState.dragonAsleep &&
-        !gameState.dragonDead && {
-          takeDescription:
-            "You try to steal the treasure, but the dragon singes you before you can get close.",
-          takeGameStateEffect: {
-            singeCount: gameState.singeCount + 1,
-            reputation: gameState.reputation - 1,
-          },
-          takeLocation: "lair",
-        }),
-    },
-    score: {
-      displayName: "Muscial score",
-      description: "musical score",
-      useVerb: "Play",
-      useDescription: itemLocations.inventory.has("lute")
-        ? "You play a lulling melody. "
-        : "You would like to play this song, but you have no instrument. ",
-      ...(gameState.dragonPoisoned &&
-        !gameState.dragonAsleep &&
-        !gameState.dragonDead &&
-        playerLocation === "lair" &&
-        itemLocations.inventory.has("lute") && {
-          useDescription:
-            "You play a lulling melody. The dragon closes its eyes and begins to snore. ",
-          useGameStateEffect: {
-            dragonAsleep: true,
-          },
-        }),
-      ...(!gameState.dragonPoisoned &&
-        !gameState.dragonAsleep &&
-        !gameState.dragonDead &&
-        playerLocation === "lair" &&
-        itemLocations.inventory.has("lute") && {
-          useDescription:
-            "Before you can play the first few notes, the dragon lets out a burst of flame, singing you and nearly burning your lute. ",
-          useGameStateEffect: {
-            singeCount: gameState.singeCount + 1,
-            reputation: gameState.reputation - 1,
-          },
-        }),
-    },
-  };
 
   // function buildStartingLocations() {
   //   const startingItemLocations = {};
@@ -889,19 +122,23 @@ function App() {
 
     const oldLocation = playerLocation;
 
-    if (locations[oldLocation].onExitGameStateEffect) {
-      gameStateChanges = {
-        ...gameStateChanges,
-        ...locations[oldLocation].onExitGameStateEffect,
-      };
-    }
+    const customExitStateEffect =
+      locations[oldLocation].onExitGameStateEffect &&
+      locations[oldLocation].onExitGameStateEffect({
+        gameState: gameState,
+        playerLocation: playerLocation,
+        itemLocations: itemLocations,
+      });
+    gameStateChanges = { ...gameStateChanges, ...customExitStateEffect };
 
-    if (locations[newLocation].onEnterGameStateEffect) {
-      gameStateChanges = {
-        ...gameStateChanges,
-        ...locations[newLocation].onEnterGameStateEffect,
-      };
-    }
+    const customEnterStateEffect =
+      locations[oldLocation].onEnterGameStateEffect &&
+      locations[oldLocation].onEnterGameStateEffect({
+        gameState: gameState,
+        playerLocation: playerLocation,
+        itemLocations: itemLocations,
+      });
+    gameStateChanges = { ...gameStateChanges, ...customEnterStateEffect };
 
     if (Object.keys(gameStateChanges).length) {
       setGameState({
@@ -910,12 +147,28 @@ function App() {
       });
     }
 
-    if (locations[newLocation].onEnterItemLocationEffect) {
-      moveItem(locations[newLocation].onEnterItemLocationEffect);
+    const customEnterItemLocationEffect =
+      locations[newLocation].onEnterItemLocationEffect &&
+      locations[newLocation].onEnterItemLocationEffect({
+        gameState: gameState,
+        playerLocation: playerLocation,
+        itemLocations: itemLocations,
+      });
+
+    if (customEnterItemLocationEffect) {
+      moveItem(customEnterItemLocationEffect);
     }
 
-    if (locations[oldLocation].onExitItemLocationEffect) {
-      moveItem(locations[oldLocation].onExitItemLocationEffect);
+    const customExitItemLocationEffect =
+      locations[newLocation].onExitItemLocationEffect &&
+      locations[newLocation].onExitItemLocationEffect({
+        gameState: gameState,
+        playerLocation: playerLocation,
+        itemLocations: itemLocations,
+      });
+
+    if (customExitItemLocationEffect) {
+      moveItem(customExitItemLocationEffect);
     }
 
     setPlayerLocation(newLocation);
@@ -923,17 +176,58 @@ function App() {
 
   function handleTake(item) {
     // Get the "take"" description for the item -- this will be the consequence text
-    const description = allItems[item].takeDescription
-      ? allItems[item].takeDescription
-      : `You now have ${['a', 'e', 'i', 'o', 'u'].includes(allItems[item].description[0].toLowerCase()) ? "an" : "a"} ${allItems[item].description}.`;
+    const customDescription =
+      allItems[item].getCustomTakeDescription &&
+      allItems[item].getCustomTakeDescription({
+        playerLocation: playerLocation,
+        gameState: gameState,
+        itemLocations: itemLocations,
+      });
+
+    const description = customDescription
+      ? customDescription
+      : `You now have ${
+          ["a", "e", "i", "o", "u"].includes(
+            allItems[item]
+              .getDescription({
+                playerLocation: playerLocation,
+                gameState: gameState,
+                itemLocations: itemLocations,
+              })[0]
+              .toLowerCase()
+          )
+            ? "an"
+            : "a"
+        } ${allItems[item].getDescription({
+          playerLocation: playerLocation,
+          gameState: gameState,
+          itemLocations: itemLocations,
+        })}.`;
 
     // Get the "take" end location for the item -- will usually be "inventory"
-    const endItemLocation = allItems[item].takeLocation
-      ? allItems[item].takeLocation
+    const customItemLocation =
+      allItems[item].getCustomTakeLocation &&
+      allItems[item].getCustomTakeLocation({
+        playerLocation: playerLocation,
+        gameState: gameState,
+        itemLocations: itemLocations,
+      });
+
+    const endItemLocation = customItemLocation
+      ? customItemLocation
       : "inventory";
 
-    if (allItems[item].takeGameStateEffect) {
-      setGameState({ ...gameState, ...allItems[item].takeGameStateEffect });
+    // Get any effect on the game state
+    const customGameEffect =
+      allItems[item].getCustomTakeGameEffect &&
+      allItems[item].getCustomTakeGameEffect({
+        playerLocation: playerLocation,
+        gameState: gameState,
+        itemLocations: itemLocations,
+      });
+
+    if (customGameEffect) {
+      setGameState({ ...gameState, ...customGameEffect });
     }
 
     // Set the item location to the take end location
@@ -951,36 +245,81 @@ function App() {
   }
 
   function handleUse(item) {
-    const description = allItems[item].useDescription
-      ? allItems[item].useDescription
-      : `You use the ${item}.`;
+    // Get the "use"" description for the item -- this will be the consequence text
+    const customDescription =
+      allItems[item].getCustomUseDescription &&
+      allItems[item].getCustomUseDescription({
+        playerLocation: playerLocation,
+        gameState: gameState,
+        itemLocations: itemLocations,
+      });
 
-    if (allItems[item].useGameStateEffect) {
-      setGameState({ ...gameState, ...allItems[item].useGameStateEffect });
+    const description = customDescription
+      ? customDescription
+      : `You use the ${allItems[item].displayName.toLowerCase()}.`;
+
+    // Get any effect on the game state
+    const customGameEffect =
+      allItems[item].getCustomUseGameEffect &&
+      allItems[item].getCustomUseGameEffect({
+        playerLocation: playerLocation,
+        gameState: gameState,
+        itemLocations: itemLocations,
+      });
+
+    // Update game state with any custom effect
+    if (customGameEffect) {
+      setGameState({ ...gameState, ...customGameEffect });
     }
 
     // set the consequence text to the use description text
     setConsequenceText(description);
 
-    // set show consequence to true
+    // show consequence
     setCurrentDisplay("consequence");
   }
 
   function handleDrop(item) {
     // Get the "drop"" description for the item -- this will be the consequence text
-    const description = allItems[item].dropDescription
-      ? allItems[item].dropDescription
+    const customDescription =
+      allItems[item].getCustomDropDescription &&
+      allItems[item].getCustomDropDescription({
+        dropPreposition: locations[playerLocation].dropPreposition,
+        playerLocation: playerLocation,
+        gameState: gameState,
+        itemLocations: itemLocations,
+      });
+
+    const description = customDescription
+      ? customDescription
       : `You drop the ${item} ${locations[playerLocation].dropPreposition} the ${playerLocation}.`;
 
     // Get the "drop" end location for the item -- will usually be the current player location
-    const endItemLocation = allItems[item].dropLocation
-      ? allItems[item].dropLocation
+    const customItemLocation =
+      allItems[item].getCustomDropLocation &&
+      allItems[item].getCustomDropLocation({
+        playerLocation: playerLocation,
+        gameState: gameState,
+        itemLocations: itemLocations,
+      });
+
+    const endItemLocation = customItemLocation
+      ? customItemLocation
       : playerLocation;
 
     console.log(`drop at ${endItemLocation}`);
 
-    if (allItems[item].dropGameStateEffect) {
-      setGameState({ ...gameState, ...allItems[item].dropGameStateEffect });
+    // Get any effect on the game state
+    const customGameEffect =
+      allItems[item].getCustomDropGameEffect &&
+      allItems[item].getCustomDropGameEffect({
+        playerLocation: playerLocation,
+        gameState: gameState,
+        itemLocations: itemLocations,
+      });
+
+    if (customGameEffect) {
+      setGameState({ ...gameState, ...customGameEffect });
     }
 
     // Set the item location from the inventory to the new location
@@ -1045,10 +384,30 @@ function App() {
   function handleGive(item) {
     // If "give" is not handled, you can't give
     if (
-      allItems[item].giveDescription ||
-      allItems[item].giveGameStateEffect ||
-      allItems[item].giveLocation ||
-      allItems[item].giveItemLocationEffect
+      (allItems[item].getCustomGiveDescription &&
+        allItems[item].getCustomGiveDescription({
+          playerLocation: playerLocation,
+          gameState: gameState,
+          itemLocations: itemLocations,
+        })) ||
+      (allItems[item].getCustomGiveLocation &&
+        allItems[item].getCustomGiveLocation({
+          playerLocation: playerLocation,
+          gameState: gameState,
+          itemLocations: itemLocations,
+        })) ||
+      (allItems[item].getCustomGiveGameEffect &&
+        allItems[item].getCustomGiveGameEffect({
+          playerLocation: playerLocation,
+          gameState: gameState,
+          itemLocations: itemLocations,
+        })) ||
+      (allItems[item].getCustomGiveItemLocationEffect &&
+        allItems[item].getCustomGiveItemLocationEffect({
+          playerLocation: playerLocation,
+          gameState: gameState,
+          itemLocations: itemLocations,
+        }))
     ) {
       handleAcceptedGive(item);
     } else {
@@ -1066,19 +425,53 @@ function App() {
 
   function handleAcceptedGive(item) {
     // Get the "give" description for the item -- this will be the consequence text
-    const description = allItems[item].giveDescription
-      ? allItems[item].giveDescription
+    const customDescription =
+      allItems[item].getCustomGiveDescription &&
+      allItems[item].getCustomGiveDescription({
+        playerLocation: playerLocation,
+        gameState: gameState,
+        itemLocations: itemLocations,
+      });
+
+    const description = customDescription
+      ? customDescription
       : `You give the ${item} to the ${playerLocation}.`;
 
-    // Get the "give" end location for the item -- will usually be outOfPlay
-    const endItemLocation = allItems[item].giveLocation
-      ? allItems[item].giveLocation
+    // Get the "drop" end location for the item -- will usually be the current player location
+    const customItemLocation =
+      allItems[item].getCustomGiveLocation &&
+      allItems[item].getCustomGiveLocation({
+        playerLocation: playerLocation,
+        gameState: gameState,
+        itemLocations: itemLocations,
+      });
+
+    const endItemLocation = customItemLocation
+      ? customItemLocation
       : "outOfPlay";
 
     console.log(`give to ${endItemLocation}`);
 
-    if (allItems[item].giveGameStateEffect) {
-      setGameState({ ...gameState, ...allItems[item].giveGameStateEffect });
+    // Determine if another item should also move
+    const giveItemLocationEffect =
+      allItems[item].getCustomGiveItemLocationEffect &&
+      allItems[item].getCustomGiveItemLocationEffect({
+        playerLocation: playerLocation,
+        gameState: gameState,
+        itemLocations: itemLocations,
+      });
+
+    // Get any effect on the game state
+    const customGameEffect =
+      allItems[item].getCustomGiveGameEffect &&
+      allItems[item].getCustomGiveGameEffect({
+        playerLocation: playerLocation,
+        gameState: gameState,
+        itemLocations: itemLocations,
+      });
+
+    if (customGameEffect) {
+      setGameState({ ...gameState, ...customGameEffect });
     }
 
     // Set the item location from the inventory to the new location
@@ -1088,8 +481,8 @@ function App() {
       newLocation: endItemLocation,
     });
 
-    if (allItems[item].giveItemLocationEffect) {
-      moveItem(allItems[item].giveItemLocationEffect);
+    if (giveItemLocationEffect) {
+      moveItem(giveItemLocationEffect);
     }
 
     // set the consequence text to the give description text
@@ -1113,13 +506,23 @@ function App() {
     return Array.from(itemsInInventory).map((item) => {
       return (
         <div className="inventoryItem" key={item}>
-          <div key={item}>{allItems[item].description}</div>
+          <div key={item}>
+            {allItems[item].getDescription({
+              playerLocation: playerLocation,
+              gameState: gameState,
+              itemLocations: itemLocations,
+            })}
+          </div>
           <button
             onClick={(e) => handleUse(item)}
             className="item-action"
             key={item + "-use"}
           >
-            {allItems[item].useVerb}
+            {allItems[item].getUseVerb({
+              playerLocation: playerLocation,
+              gameState: gameState,
+              itemLocations: itemLocations,
+            })}
           </button>
           <button
             onClick={(e) => handleDrop(item)}
@@ -1129,7 +532,13 @@ function App() {
             Drop
           </button>
           <button
-            disabled={!locations[playerLocation].sentient}
+            disabled={
+              !locations[playerLocation].getSentient({
+                gameState: gameState,
+                playerLocation: playerLocation,
+                itemLocations: itemLocations,
+              })
+            }
             onClick={(e) => handleGive(item)}
             className="item-action"
             key={item + "-give"}
@@ -1149,8 +558,16 @@ function App() {
           key={connection}
           onClick={(e) => handleMovePlayer(connection)}
         >
-          {locations[connection].displayName
-            ? locations[connection].displayName
+          {locations[connection].getDisplayName({
+            playerLocation: playerLocation,
+            gameState: gameState,
+            itemLocations: itemLocations,
+          })
+            ? locations[connection].getDisplayName({
+                playerLocation: playerLocation,
+                gameState: gameState,
+                itemLocations: itemLocations,
+              })
             : connection}
         </button>
       );
@@ -1161,21 +578,31 @@ function App() {
     return (
       <div className="App">
         <div className="description">
-          {locations[playerLocation].description}
+          {locations[playerLocation].getDescription({
+            playerLocation: playerLocation,
+            gameState: gameState,
+            itemLocations: itemLocations,
+          })}
         </div>
         <div className="buttons">
-        <LocationItems itemsAtLocation={itemLocations[playerLocation]} />
-        <Connections connections={locations[playerLocation].connections} />
-        <button
-          className="inventory"
-          onClick={(e) => setCurrentDisplay("inventory")}
-        >
-          Inventory
-        </button>
+          <LocationItems itemsAtLocation={itemLocations[playerLocation]} />
+          <Connections
+            connections={locations[playerLocation].getConnections({
+              playerLocation: playerLocation,
+              gameState: gameState,
+              itemLocations: itemLocations,
+            })}
+          />
+          <button
+            className="inventory"
+            onClick={(e) => setCurrentDisplay("inventory")}
+          >
+            Inventory
+          </button>
         </div>
         <div className="stats">
           <div className="stat">
-            <div className="statName">Reputation:{" "}</div>
+            <div className="statName">Reputation: </div>
             <div className="statValue">{gameState.reputation}</div>
           </div>
           <div className="stat">
@@ -1191,10 +618,21 @@ function App() {
     return (
       <div className="App">
         <div className="description">{consequenceText}</div>
-        <button className="close" onClick={(e) => setCurrentDisplay("location")}>
+        <button
+          className="close"
+          onClick={(e) => setCurrentDisplay("location")}
+        >
           Back to{" "}
-          {locations[playerLocation].displayName
-            ? locations[playerLocation].displayName
+          {locations[playerLocation].getDisplayName({
+            playerLocation: playerLocation,
+            gameState: gameState,
+            itemLocations: itemLocations,
+          })
+            ? locations[playerLocation].getDisplayName({
+                playerLocation: playerLocation,
+                gameState: gameState,
+                itemLocations: itemLocations,
+              })
             : playerLocation}
         </button>
         <button
@@ -1213,20 +651,31 @@ function App() {
         <div className="description" key="description">
           Inventory
         </div>
-        <div className="inventoryItems"><InventoryItems itemsInInventory={itemLocations.inventory} />
-        <div className="inventoryItem" key="gold">
-          <div key="gold">{gameState.gold + " gold"}</div>
-          <button
-            disabled={!locations[playerLocation].sentient}
-            onClick={(e) => handlePay()}
-            className="item-action"
-            key={"gold-give"}
-          >
-            Pay
-          </button>
+        <div className="inventoryItems">
+          <InventoryItems itemsInInventory={itemLocations.inventory} />
+          <div className="inventoryItem" key="gold">
+            <div key="gold">{gameState.gold + " gold"}</div>
+            <button
+              disabled={
+                !locations[playerLocation].getSentient({
+                  gameState: gameState,
+                  playerLocation: playerLocation,
+                  itemLocations: itemLocations,
+                })
+              }
+              onClick={(e) => handlePay()}
+              className="item-action"
+              key={"gold-give"}
+            >
+              Pay
+            </button>
+          </div>
         </div>
-        </div>
-        <button key="back" className="close" onClick={(e) => setCurrentDisplay("location")}>
+        <button
+          key="back"
+          className="close"
+          onClick={(e) => setCurrentDisplay("location")}
+        >
           Close Inventory
         </button>
       </div>
