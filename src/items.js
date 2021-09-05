@@ -276,7 +276,7 @@ const handkerchief = new Item({
   // todo when you drop the handkerchief but are wearing it, you should also stop wearingit
 
   id: "handkerchief",
-  spawnLocation: "adolescent",
+  spawnLocation: "courtyard",
   getDescription: function (props) {
     return props.gameState.handkerchiefDamp
       ? "damp handkerchief"

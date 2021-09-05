@@ -33,64 +33,37 @@ function App() {
     treasureAmount: 100,
     singeCount: 0,
   };
+  
+  function buildStartingLocations() {
+    const startingItemLocations = {
+      inventory: new Set([]),
+      outOfPlay: new Set([]),  
+    };
+
+    Object.keys(locations).forEach(
+      (location) => (startingItemLocations[location] = new Set())
+    );
+
+    for (const [item, itemInfo] of Object.entries(allItems)) {
+      startingItemLocations[itemInfo.spawnLocation].add(item);
+    }
+
+    return startingItemLocations;
+  }
+
+  const startingItemLocations = buildStartingLocations();
+
+  const [itemLocations, setItemLocations] = useState(startingItemLocations);
+
   const [gameState, setGameState] = useState(startingState);
   const [playerLocation, setPlayerLocation] = useState("blacksmith");
   const [consequenceText, setConsequenceText] = useState("");
   const [currentDisplay, setCurrentDisplay] = useState("location"); // location | inventory | consequence
 
-  // todo could build programatically...if can remove circular dependency or need test to confirm matches
-  const startingItemLocations = {
-    inventory: new Set([]),
-    outOfPlay: new Set([]),
-    room: new Set(["lute", "apple"]),
-    window: new Set([]),
-    wardrobe: new Set(["clothes"]),
-    mirror: new Set([]),
-    inn: new Set(["apple"]),
-    courtyard: new Set(["handkerchief"]),
-    fountain: new Set([]),
-    manor: new Set([]),
-    nursery: new Set(["baby"]),
-    nurseryWindow: new Set([]),
-    smithy: new Set(["sword"]),
-    blacksmith: new Set([]),
-    pasture: new Set(["horse"]),
-    gate: new Set([]),
-    adolescent: new Set([]),
-    road: new Set([]),
-    stream: new Set([]),
-    clearing: new Set(["berries"]),
-    squirrel: new Set([]),
-    wizard: new Set([]),
-    cliff: new Set([]),
-    caveEntrance: new Set([]),
-    dung: new Set([]),
-    puddle: new Set([]),
-    boulder: new Set([]),
-    lair: new Set(["treasure"]),
-  };
-
-  const [itemLocations, setItemLocations] = useState(startingItemLocations);
-
   // todo add tests that locations and items have required values
 
   // todo write end game and scoring
 
-  // function buildStartingLocations() {
-  //   const startingItemLocations = {};
-
-  //   Object.keys(locations).forEach(
-  //     (location) => (startingItemLocations[location] = new Set())
-  //   );
-
-  //   for (const [item, itemInfo] of Object.entries(allItems)) {
-  //     startingItemLocations[itemInfo.spawnLocation].add(item);
-  //   }
-
-  //   return startingItemLocations;
-  // }
-
-  // buildStartingLocations();
 
   function moveItem({ item, oldLocation, newLocation }) {
     console.log(`'moving' ${item} from ${oldLocation} to ${newLocation}`);
