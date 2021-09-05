@@ -6,7 +6,7 @@ import { locations } from "./locations.js";
 function App() {
   const startingState = {
     reputation: 10,
-    gold: 700,
+    gold: 0,
     timeInCave: 0,
     swordCost: 50,
     ownSword: false,
@@ -36,7 +36,17 @@ function App() {
 
   function buildStartingLocations() {
     const startingItemLocations = {
-      inventory: new Set([]),
+      inventory: new Set([
+        "lute",
+        "clothes",
+        "apple",
+        "handkerchief",
+        "baby",
+        "sword",
+        "horse",
+        "berries",
+        "score",
+      ]),
       outOfPlay: new Set([]),
     };
 
@@ -56,7 +66,7 @@ function App() {
   const [itemLocations, setItemLocations] = useState(startingItemLocations);
 
   const [gameState, setGameState] = useState(startingState);
-  const [playerLocation, setPlayerLocation] = useState("blacksmith");
+  const [playerLocation, setPlayerLocation] = useState("clearing");
   const [consequenceText, setConsequenceText] = useState("");
   const [currentDisplay, setCurrentDisplay] = useState("location"); // location | inventory | consequence
 

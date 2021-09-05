@@ -43,17 +43,17 @@ const room = new Location({
   },
   dropPreposition: "in",
   getDescription: function (props) {
-    let baseText =
+    let text =
       "You are in a room with a bed. A window faces the west. A wardrobe sits on the north side of the room, opposite a door. ";
 
     if (props.itemLocations.room.has("lute")) {
-      baseText += "A lute leans against the bed. ";
+      text += "A lute leans against the bed. ";
     }
 
     if (props.gameState.fire) {
-      baseText += "You smell fire and hear screams in the distance. ";
+      text += "You smell fire and hear screams in the distance. ";
     }
-    return baseText;
+    return text;
   },
 });
 
@@ -65,8 +65,8 @@ const window = new Location({
   dropPreposition: "at", // todo could change to out and have anything dropped out any window end in location below
   getDescription: function (props) {
     return props.gameState.fire
-      ? "Through the window, you see flames and smoke coming from a nearby mansion. A crowd has gathered in front of the mansion."
-      : "Through the window, you see the charred remains of a nearby mansion.";
+      ? "Through the window, you see flames and smoke coming from a nearby mansion. A crowd has gathered in front of the mansion. "
+      : "Through the window, you see the charred remains of a nearby mansion. ";
   },
 });
 
@@ -79,7 +79,7 @@ const wardrobe = new Location({
   getDescription: function (props) {
     return `Inside the wardrobe, there is a mirror ${
       props.itemLocations.wardrobe.has("clothes") ? "and a set of clothes" : ""
-    }.`;
+    }. `;
   },
 });
 
@@ -94,7 +94,7 @@ const mirror = new Location({
     return `${
       props.gameState.naked
         ? "You're naked!"
-        : "You are quite good looking, if you say so yourself."
+        : "You are quite good looking, if you say so yourself. "
     }`;
   },
 });
@@ -163,12 +163,12 @@ const fountain = new Location({
     if (props.props.gameState.fire) {
       text += "The manor is on fire and surrounded by a crowd of people. ";
     } else {
-      text += "The manor is a framework of charred wood.";
+      text += "The manor is a framework of charred wood. ";
     }
 
     if (props.itemLocations.nursery.has("baby")) {
       text +=
-        'You hear a voice sobbing, "My baby! My baby is trapped in the nursery."';
+        'You hear a voice sobbing, "My baby! My baby is trapped in the nursery. " ';
     }
 
     if (props.gameState.savedBaby && !props.gameState.receivedBabyReward) {
@@ -177,7 +177,7 @@ const fountain = new Location({
           'You hear a voice: "My baby! You saved my baby! But my dear baby has a terrible cough from being carried through the smoke. Regardless, take this gold as thanks." As you take the gold and praise, you see the roof collapse. Finally, the crowd is able to douse the flames. ';
       } else {
         text +=
-          'You hear a voice: "Thank you for saving my baby! Please take this gold as thanks." As you take the gold and praise, you see the roof collapse. Finally, the crowd is able to douse the flames.';
+          'You hear a voice: "Thank you for saving my baby! Please take this gold as thanks." As you take the gold and praise, you see the roof collapse. Finally, the crowd is able to douse the flames. ';
       }
     }
     return text;
@@ -212,7 +212,7 @@ const fountain = new Location({
 const manor = new Location({
   id: "manor",
   dropPreposition: "in",
-  getConnections: function () {
+  getConnections: function (props) {
     return props.gameState.fire &&
       props.gameState.handkerchiefDamp &&
       props.gameState.masked
@@ -246,7 +246,7 @@ const manor = new Location({
       props.gameState.masked
     ) {
       text +=
-        "Although the smoke is thick, the damp handkerchief over your mouth helps you breath.";
+        "Although the smoke is thick, the damp handkerchief over your mouth helps you breath. ";
     }
 
     return text;
@@ -271,7 +271,7 @@ const nursery = new Location({
         return "You stand in a nursery with an empty crib. The fire continues to burn, pouring smoke into the room. ";
       }
     } else {
-      return "You stand in the charred remains of a nursery.";
+      return "You stand in the charred remains of a nursery. ";
     }
   },
   dropPreposition: "in",
@@ -317,7 +317,7 @@ const smithy = new Location({
 
     if (props.itemLocations.smithy.has("sword")) {
       text +=
-        "In front of the shop, you see a sword gleaming as if someone was recently polishing it.";
+        "In front of the shop, you see a sword gleaming as if someone was recently polishing it. ";
     }
     return text;
   },
@@ -346,7 +346,7 @@ const blacksmith = new Location({
         props.itemLocations.inventory.has("lute")
           ? " or I would trade it for your lute"
           : ""
-      }." `;
+      }. " `;
 
       return text;
     }
@@ -358,7 +358,7 @@ const blacksmith = new Location({
   payDescription: function (props) {
     if (!props.gameState.ownSword &&
       props.itemLocations.smithy.has("sword")) {
-        return `You hand the blacksmith ${props.gameState.swordCost} gold in exchange for the sword.` // todo this doesn't account for if sword costs more than have
+        return `You hand the blacksmith ${props.gameState.swordCost} gold in exchange for the sword. ` // todo this doesn't account for if sword costs more than have
       }
   },
   payGameStateEffect: function (props) {
@@ -385,7 +385,7 @@ const blacksmith = new Location({
 
 const pasture = new Location({
   id: "pasture",
-  getSentient: function () {
+  getSentient: function (props) {
     return props.itemLocations.pasture.has("horse");
   },
   dropPreposition: "at",
@@ -394,11 +394,17 @@ const pasture = new Location({
   },
   getDescription: function (props) {
     let text =
-      "You are standing in a wide field. There is no road in sight. To the north, you hear sounds of the blacksmith shop.";
+      "You are standing in a wide field. There is no road in sight. To the north, you hear sounds of the blacksmith shop. ";
 
     if (props.itemLocations.pasture.has("horse")) {
+      text += "A horse is grazing in the field. "
+      if (props.gameState.horseTethered) {
+        text += "Its reins are tied to a post. "
+      } else {
+        text += "Its reins have come untied from the post. "
+      }
       text +=
-        'A horse is grazing in the field. Its reins have come untied from the post. A sign reads: "Free horse (if you can catch it)."';
+        `A sign reads: "Free horse (if you can catch it)." `;
     }
 
     return text;
@@ -418,7 +424,7 @@ const gate = new Location({
   getDescription: function (props) {
     return `You are standing at the north gate. To the north, you see a road leading up a mountain. The adolescent that you saw earlier stands at the courtyard${
       !props.gameState.playedForAdolescent ? ", crying" : ""
-    }.`;
+    }. `;
   },
   onEnterGameStateEffect: function (props) {},
   onExitGameStateEffect: function (props) {},
@@ -463,7 +469,7 @@ const stream = new Location({
     return ["road", "clearing"];
   },
   getDescription: function (props) {
-    return "You come across a steam. It looks crossable by foot or by horse. On the north side, you see a bush full of berries. To the south, the road stretches back to the city.";
+    return "You come across a steam. It looks crossable by foot or by horse. On the north side, you see a bush full of berries. To the south, the road stretches back to the city. ";
   },
   onEnterGameStateEffect: function (props) {},
   onExitGameStateEffect: function (props) {},
@@ -481,7 +487,7 @@ const clearing = new Location({
     return `You stand in a clearing. A bush full of berries catches your eye. To the south, a stream burbles. To the north, you see a rocky cliff with a cave. A man stands in the middle of the clearing. His long white beard, pointed hat, and staff mark him as a wizard. ${
       props.gameState.squirrelDead
         ? "A dead squirrel lies at the base of a tree. "
-        : "A squirrel scampers around a tree."
+        : "A squirrel scampers around a tree. "
     }`;
   },
   onEnterGameStateEffect: function (props) {},
@@ -501,8 +507,8 @@ const squirrel = new Location({
   },
   getDescription: function (props) {
     return props.gameState.squirrelDead
-      ? "The squirrel lies dead on the ground."
-      : "You approach the squirrel. It pauses, perhaps curious if you will feed it, before scampering up the tree.";
+      ? "The squirrel lies dead on the ground. "
+      : "You approach the squirrel. It pauses, perhaps curious if you will feed it, before scampering up the tree. ";
   },
   onEnterGameStateEffect: function (props) {},
   onExitGameStateEffect: function (props) {},
@@ -521,7 +527,7 @@ const wizard = new Location({
   },
   getDescription: function (props) {
     // todo
-    return "The wizard looks at you though bushy eyebrows.";
+    return "The wizard looks at you though bushy eyebrows. ";
   },
   onEnterGameStateEffect: function (props) {},
   onExitGameStateEffect: function (props) {},
@@ -532,15 +538,15 @@ const wizard = new Location({
 const cliff = new Location({
   id: "cliff",
   dropPreposition: "on",
-  getConnections: function () {
+  getConnections: function (props) {
     return props.itemLocations.inventory.has("horse")
       ? ["clearing"]
       : ["clearing", "caveEntrance"];
   },
   getDescription: function (props) {
     return props.itemLocations.inventory.has("horse")
-      ? `The horse cannot make it up the rocky cliff. You must return to the clearing.`
-      : `You scramble on the rocky cliff. Above you is the entrance to a cave. Below you is a clearing next to a stream.`;
+      ? `The horse cannot make it up the rocky cliff. You must return to the clearing. `
+      : `You scramble on the rocky cliff. Above you is the entrance to a cave. Below you is a clearing next to a stream. `;
   },
   onEnterGameStateEffect: function (props) {},
   onExitGameStateEffect: function (props) {},
@@ -563,7 +569,7 @@ const caveEntrance = new Location({
 
     if (!props.gameState.dragonAsleep) {
       text +=
-        "You hear coins clanking from the east room, as if a large beast is rolling in piles of gold.";
+        "You hear coins clanking from the east room, as if a large beast is rolling in piles of gold. ";
     }
 
     if (!props.gameState.poopy && !props.gameState.dragonAsleep)
@@ -675,7 +681,7 @@ const lair = new Location({
     return ["caveEntrance"];
   },
   getDescription: function (props) {
-    let text = "You stand in a room full of gold and gems.";
+    let text = "You stand in a room full of gold and gems. ";
 
     if (
       !props.gameState.dragonAsleep &&
@@ -750,13 +756,13 @@ function dragonDescription(props) {
       // dragon drinks
       if (props.itemLocations.puddle.has("berries")) {
         text +=
-          "The dragon drinks from the puddle. It starts foaming at the mouth. Enraged and in pain, it stumbles back to the lair.";
+          "The dragon drinks from the puddle. It starts foaming at the mouth. Enraged and in pain, it stumbles back to the lair. ";
       } else {
-        text += "The dragon drinks from the puddle, then returns to the lair.";
+        text += "The dragon drinks from the puddle, then returns to the lair. ";
       }
     }
   } else if (timeInterval === 2) {
-    text += "You hear the dragon just outside.";
+    text += "You hear the dragon just outside. ";
   } else if (timeInterval === 1) {
     text +=
       "You hear coins clanking from the east room, as if a large beast is rising from a sea of treasure. ";
@@ -788,11 +794,12 @@ export const locations = {
   wizard: wizard,
   cliff: cliff,
   caveEntrance: caveEntrance,
-  dung: dung,
   puddle: puddle,
   boulder: boulder,
+  dung: dung,
   lair: lair,
 };
+
 export default {
   locations,
 };
