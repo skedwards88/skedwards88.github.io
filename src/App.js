@@ -33,11 +33,11 @@ function App() {
     treasureAmount: 100,
     singeCount: 0,
   };
-  
+
   function buildStartingLocations() {
     const startingItemLocations = {
       inventory: new Set([]),
-      outOfPlay: new Set([]),  
+      outOfPlay: new Set([]),
     };
 
     Object.keys(locations).forEach(
@@ -63,7 +63,6 @@ function App() {
   // todo add tests that locations and items have required values
 
   // todo write end game and scoring
-
 
   function moveItem({ item, oldLocation, newLocation }) {
     console.log(`'moving' ${item} from ${oldLocation} to ${newLocation}`);
@@ -139,23 +138,25 @@ function App() {
         itemLocations: itemLocations,
       });
 
-    const description = customDescription || `You now have ${
-          ["a", "e", "i", "o", "u"].includes(
-            allItems[item]
-              .getDescription({
-                playerLocation: playerLocation,
-                gameState: gameState,
-                itemLocations: itemLocations,
-              })[0]
-              .toLowerCase()
-          )
-            ? "an"
-            : "a"
-        } ${allItems[item].getDescription({
-          playerLocation: playerLocation,
-          gameState: gameState,
-          itemLocations: itemLocations,
-        })}.`;
+    const description =
+      customDescription ||
+      `You now have ${
+        ["a", "e", "i", "o", "u"].includes(
+          allItems[item]
+            .getDescription({
+              playerLocation: playerLocation,
+              gameState: gameState,
+              itemLocations: itemLocations,
+            })[0]
+            .toLowerCase()
+        )
+          ? "an"
+          : "a"
+      } ${allItems[item].getDescription({
+        playerLocation: playerLocation,
+        gameState: gameState,
+        itemLocations: itemLocations,
+      })}.`;
 
     // Get the "take" end location for the item -- will usually be "inventory"
     const customItemLocation =
@@ -205,7 +206,9 @@ function App() {
         itemLocations: itemLocations,
       });
 
-    const description = customDescription || `You use the ${allItems[item].displayName.toLowerCase()}.`;
+    const description =
+      customDescription ||
+      `You use the ${allItems[item].displayName.toLowerCase()}.`;
 
     // Get any effect on the game state
     const customGameEffect =
@@ -239,7 +242,9 @@ function App() {
         itemLocations: itemLocations,
       });
 
-    const description = customDescription || `You drop the ${item} ${locations[playerLocation].dropPreposition} the ${playerLocation}.`;
+    const description =
+      customDescription ||
+      `You drop the ${item} ${locations[playerLocation].dropPreposition} the ${playerLocation}.`;
 
     // Get the "drop" end location for the item -- will usually be the current player location
     const customItemLocation =
@@ -283,27 +288,26 @@ function App() {
 
   function handlePay() {
     // todo not checking yet if you have enough gold to buy
-      if (
-        (locations[playerLocation].payDescription &&
-          locations[playerLocation].payDescription({
-            playerLocation: playerLocation,
-            gameState: gameState,
-            itemLocations: itemLocations,
-          })) ||
-        (locations[playerLocation].payGameStateEffect &&
-          locations[playerLocation].payGameStateEffect({
-            playerLocation: playerLocation,
-            gameState: gameState,
-            itemLocations: itemLocations,
-          })) ||
-        (locations[playerLocation].payItemLocationEffect &&
-          locations[playerLocation].payItemLocationEffect({
-            playerLocation: playerLocation,
-            gameState: gameState,
-            itemLocations: itemLocations,
-          }))
-      ) {
-  
+    if (
+      (locations[playerLocation].payDescription &&
+        locations[playerLocation].payDescription({
+          playerLocation: playerLocation,
+          gameState: gameState,
+          itemLocations: itemLocations,
+        })) ||
+      (locations[playerLocation].payGameStateEffect &&
+        locations[playerLocation].payGameStateEffect({
+          playerLocation: playerLocation,
+          gameState: gameState,
+          itemLocations: itemLocations,
+        })) ||
+      (locations[playerLocation].payItemLocationEffect &&
+        locations[playerLocation].payItemLocationEffect({
+          playerLocation: playerLocation,
+          gameState: gameState,
+          itemLocations: itemLocations,
+        }))
+    ) {
       handleAcceptedPay();
     } else {
       handleUnwantedPay();
@@ -414,7 +418,8 @@ function App() {
         itemLocations: itemLocations,
       });
 
-    const description = customDescription || `You give the ${item} to the ${playerLocation}.`;
+    const description =
+      customDescription || `You give the ${item} to the ${playerLocation}.`;
 
     // Get the "drop" end location for the item -- will usually be the current player location
     const customItemLocation =

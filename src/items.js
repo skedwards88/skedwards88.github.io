@@ -4,7 +4,7 @@ class Item {
     displayName = id[0].toUpperCase() + id.slice(1),
     spawnLocation,
     getDescription = function () {
-      return displayName
+      return displayName;
     },
 
     getUseVerb = function () {
