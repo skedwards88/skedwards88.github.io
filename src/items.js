@@ -3,7 +3,9 @@ class Item {
     id,
     displayName = id[0].toUpperCase() + id.slice(1),
     spawnLocation,
-    getDescription,
+    getDescription = function () {
+      return displayName
+    },
 
     getUseVerb = function () {
       return "Use";
@@ -400,8 +402,6 @@ const baby = new Item({
 const sword = new Item({
   id: "sword",
   spawnLocation: "smithy",
-  getDescription: function (props) {},
-
   getUseVerb: function (props) {
     return "Attack";
   },
@@ -422,7 +422,8 @@ const sword = new Item({
     } else if (
       !props.gameState.dragonPoisoned &&
       !props.gameState.dragonAsleep &&
-      !props.gameState.dragonDead
+      !props.gameState.dragonDead &&
+      props.playerLocation === "lair"
     ) {
       return "You try to cut off the dragon's head, but it singes you as soon as you get close enough.";
     } else {
@@ -599,8 +600,6 @@ const berries = new Item({
 const treasure = new Item({
   id: "treasure",
   spawnLocation: "lair",
-  getDescription: function (props) {},
-
   getUseVerb: function (props) {},
   getCustomUseDescription: function (props) {},
   getCustomUseGameEffect: function (props) {},
@@ -782,10 +781,11 @@ const score = new Item({
 
 export const allItems = {
   lute: lute,
-  apple: apple,
   clothes: clothes,
+  apple: apple,
   handkerchief: handkerchief,
   baby: baby,
+  sword: sword,
   horse: horse,
   berries: berries,
   treasure: treasure,

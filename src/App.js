@@ -6,7 +6,7 @@ import { locations } from "./locations.js";
 function App() {
   const startingState = {
     reputation: 10,
-    gold: 0,
+    gold: 700,
     timeInCave: 0,
     swordCost: 50,
     ownSword: false,
@@ -34,7 +34,7 @@ function App() {
     singeCount: 0,
   };
   const [gameState, setGameState] = useState(startingState);
-  const [playerLocation, setPlayerLocation] = useState("room");
+  const [playerLocation, setPlayerLocation] = useState("blacksmith");
   const [consequenceText, setConsequenceText] = useState("");
   const [currentDisplay, setCurrentDisplay] = useState("location"); // location | inventory | consequence
 
@@ -73,24 +73,6 @@ function App() {
   const [itemLocations, setItemLocations] = useState(startingItemLocations);
 
   // todo add tests that locations and items have required values
-
-  const z = {
-    blacksmith: {
-      ...(!gameState.ownSword &&
-        itemLocations.smithy.has("sword") && {
-          payDescription: `You hand the blacksmith ${gameState.swordCost} gold in exchange for the sword.`, // todo this doesn't account for if sword costs more than have
-          payGameStateEffect: {
-            ownSword: true,
-            gold: gameState.gold - gameState.swordCost,
-          },
-          payItemLocationEffect: {
-            item: "sword",
-            oldLocation: "smithy",
-            newLocation: "inventory",
-          },
-        }),
-    },
-  };
 
   // todo write end game and scoring
 
@@ -328,11 +310,27 @@ function App() {
 
   function handlePay() {
     // todo not checking yet if you have enough gold to buy
-    if (
-      locations[playerLocation].payDescription ||
-      locations[playerLocation].payGameStateEffect ||
-      locations[playerLocation].payItemLocationEffect
-    ) {
+      if (
+        (locations[playerLocation].payDescription &&
+          locations[playerLocation].payDescription({
+            playerLocation: playerLocation,
+            gameState: gameState,
+            itemLocations: itemLocations,
+          })) ||
+        (locations[playerLocation].payGameStateEffect &&
+          locations[playerLocation].payGameStateEffect({
+            playerLocation: playerLocation,
+            gameState: gameState,
+            itemLocations: itemLocations,
+          })) ||
+        (locations[playerLocation].payItemLocationEffect &&
+          locations[playerLocation].payItemLocationEffect({
+            playerLocation: playerLocation,
+            gameState: gameState,
+            itemLocations: itemLocations,
+          }))
+      ) {
+  
       handleAcceptedPay();
     } else {
       handleUnwantedPay();
@@ -348,20 +346,40 @@ function App() {
   }
 
   function handleAcceptedPay() {
-    // Get the "pay" description for the item -- this will be the consequence text
-    const description = locations[playerLocation].payDescription
-      ? locations[playerLocation].payDescription
-      : `You pay the ${playerLocation}.`;
-
-    if (locations[playerLocation].payGameStateEffect) {
-      setGameState({
-        ...gameState,
-        ...locations[playerLocation].payGameStateEffect,
+    // Get the "give" description for the item -- this will be the consequence text
+    const customDescription =
+      locations[playerLocation].payDescription &&
+      locations[playerLocation].payDescription({
+        playerLocation: playerLocation,
+        gameState: gameState,
+        itemLocations: itemLocations,
       });
+
+    const description = customDescription || `You pay the ${playerLocation}.`;
+
+    // Get any effect on the game state
+    const customGameEffect =
+      locations[playerLocation].payGameStateEffect &&
+      locations[playerLocation].payGameStateEffect({
+        playerLocation: playerLocation,
+        gameState: gameState,
+        itemLocations: itemLocations,
+      });
+
+    if (customGameEffect) {
+      setGameState({ ...gameState, ...customGameEffect });
     }
 
-    if (locations[playerLocation].payItemLocationEffect) {
-      moveItem(locations[playerLocation].payItemLocationEffect);
+    const locationEffect =
+      locations[playerLocation].payItemLocationEffect &&
+      locations[playerLocation].payItemLocationEffect({
+        playerLocation: playerLocation,
+        gameState: gameState,
+        itemLocations: itemLocations,
+      });
+
+    if (locationEffect) {
+      moveItem(locationEffect);
     }
 
     // set the consequence text to the give description text

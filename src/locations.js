@@ -16,9 +16,9 @@ class Location {
     onExitGameStateEffect,
     onEnterItemLocationEffect,
     onExitItemLocationEffect,
-    // payDescription,
-    // payGameStateEffect,
-    // payItemLocationEffect,
+    payDescription,
+    payGameStateEffect,
+    payItemLocationEffect,
   }) {
     this.id = id;
     this.getDisplayName = getDisplayName;
@@ -30,21 +30,11 @@ class Location {
     this.onExitGameStateEffect = onExitGameStateEffect;
     this.onEnterItemLocationEffect = onEnterItemLocationEffect;
     this.onExitItemLocationEffect = onExitItemLocationEffect;
+    this.payDescription = payDescription;
+    this.payGameStateEffect = payGameStateEffect;
+    this.payItemLocationEffect = payItemLocationEffect;
   }
 }
-
-const blank = new Location({
-  id: "blank",
-  dropPreposition: "at",
-  getConnections: function () {
-    return [];
-  },
-  getDescription: function (props) {},
-  onEnterGameStateEffect: function (props) {},
-  onExitGameStateEffect: function (props) {},
-  onEnterItemLocationEffect: function (props) {},
-  onExitItemLocationEffect: function (props) {},
-});
 
 const room = new Location({
   id: "room",
@@ -316,7 +306,7 @@ const nurseryWindow = new Location({
 });
 
 const smithy = new Location({
-  id: "blank",
+  id: "smithy",
   dropPreposition: "at",
   getConnections: function () {
     return ["courtyard", "blacksmith", "gate", "pasture"];
@@ -340,6 +330,9 @@ const smithy = new Location({
 const blacksmith = new Location({
   id: "blacksmith",
   dropPreposition: "by",
+  getSentient: function () {
+    return true;
+  },
   getConnections: function () {
     return ["smithy"];
   },
@@ -353,7 +346,7 @@ const blacksmith = new Location({
         props.itemLocations.inventory.has("lute")
           ? " or I would trade it for your lute"
           : ""
-      }. `;
+      }." `;
 
       return text;
     }
@@ -362,6 +355,32 @@ const blacksmith = new Location({
   onExitGameStateEffect: function (props) {},
   onEnterItemLocationEffect: function (props) {},
   onExitItemLocationEffect: function (props) {},
+  payDescription: function (props) {
+    if (!props.gameState.ownSword &&
+      props.itemLocations.smithy.has("sword")) {
+        return `You hand the blacksmith ${props.gameState.swordCost} gold in exchange for the sword.` // todo this doesn't account for if sword costs more than have
+      }
+  },
+  payGameStateEffect: function (props) {
+    if (!props.gameState.ownSword &&
+      props.itemLocations.smithy.has("sword")) {
+        return {
+          ownSword: true,
+          gold: props.gameState.gold - props.gameState.swordCost,
+        }
+      }
+  },
+  payItemLocationEffect: function (props) {
+    if (!props.gameState.ownSword &&
+      props.itemLocations.smithy.has("sword")) {
+        return {
+          item: "sword",
+          oldLocation: "smithy",
+          newLocation: "inventory",
+        }
+      }
+  },
+
 });
 
 const pasture = new Location({
