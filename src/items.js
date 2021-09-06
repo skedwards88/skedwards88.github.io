@@ -73,7 +73,6 @@ const blank = new Item({
   getCustomGiveItemLocationEffect: function (props) {},
 });
 
-
 const lute = new Item({
   id: "lute",
   spawnLocation: "room",
@@ -173,20 +172,21 @@ const clothes = new Item({
   },
 
   getCustomDropDescription: function (props) {
+
     let text = "";
 
     props.gameState.naked
       ? (text += `You drop your clothes ${props.dropPreposition} the ${props.playerLocation}. `)
       : (text += `You strip down and drop your clothes ${props.dropPreposition} the ${props.playerLocation}. `);
 
-    if (props.playerLocation === ("fountain" || "stream" || "puddle")) {
+    if (["fountain", "stream", "puddle"].includes(props.playerLocation)) {
       text += "Your clothes look much cleaner now. ";
     }
 
     return text;
   },
   getCustomDropGameEffect: function (props) {
-    if (props.playerLocation === ("fountain" || "stream" || "puddle")) {
+    if (["fountain", "stream", "puddle"].includes(props.playerLocation)) {
       return { naked: true, poopy: false }; // todo lose reputation if at fountain (drinking water)?
     } else if (props.playerLocation === "dung") {
       return { naked: true, poopy: true };
@@ -282,7 +282,7 @@ const handkerchief = new Item({
       : (text += "You remove the handkerchief from your nose and mouth. ");
 
     if (
-      props.playerLocation === ("manor" || "nursery" || "nurseryWindow") &&
+      ["manor", "nursery", "nurseryWindow"].includes(props.playerLocation) &&
       props.gameState.fire &&
       props.gameState.handkerchiefDamp
     ) {
@@ -290,16 +290,14 @@ const handkerchief = new Item({
     }
 
     if (
-      props.playerLocation === ("manor" || "nursery" || "nurseryWindow") &&
+      ["manor", "nursery", "nurseryWindow"].includes(props.playerLocation) &&
       props.gameState.fire &&
       !props.gameState.handkerchiefDamp
     ) {
       text += "On its own, the handkerchief does little to block the smoke. ";
     }
 
-    if (
-      props.playerLocation === ("dung" || "defecatory" || "boulder" || "puddle")
-    ) {
+    if (["dung", "defecatory", "boulder", "puddle"].includes(props.playerLocation)) {
       text += "Even with it, the stench reaches your nose. ";
     }
 
@@ -312,7 +310,7 @@ const handkerchief = new Item({
     return `You remove the handkerchief from your nose and mouth and drop it ${props.dropPreposition} the ${props.playerLocation}. `
     },
   getCustomDropGameEffect: function (props) {
-    if (props.playerLocation === ("fountain" || "stream" || "puddle")) {
+    if (["fountain", "stream", "puddle"].includes(props.playerLocation)) {
       return { handkerchiefDamp: true, masked: false };
     } else {
       return {masked: false}
@@ -545,6 +543,21 @@ const berries = new Item({
       poisoned: true,
       reputation: props.gameState.reputation - 1,
     };
+  },
+  getCustomDropDescription: function (props) {
+    if (props.playerLocation === "squirrel" && !props.gameState.squirrelDead) {
+      return "The squirrel eats the berries that you dropped. After a few seconds, it foams at the mouth and rolls over, dead. Oh dear. ";
+    }
+  },
+  getCustomDropLocation: function (props) {
+    if (props.playerLocation === "squirrel" && !props.gameState.squirrelDead) {
+      return "clearing";
+    }
+  },
+  getCustomDropGameEffect: function (props) {
+    if (props.playerLocation === "squirrel" && !props.gameState.squirrelDead) {
+      return { squirrelDead: true };
+    }
   },
   getCustomGiveDescription: function (props) {
     if (props.playerLocation === "squirrel" && !props.gameState.squirrelDead) {

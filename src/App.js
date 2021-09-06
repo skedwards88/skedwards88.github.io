@@ -17,7 +17,7 @@ function App() {
     horseTethered: false,
     horseMounted: false,
     poisoned: false,
-    poopy: false,
+    poopy: true,
     handkerchiefDamp: false,
     masked: false,
     babyCough: false,

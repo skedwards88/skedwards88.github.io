@@ -484,11 +484,16 @@ const clearing = new Location({
     return ["wizard", "squirrel", "stream", "cliff"];
   },
   getDescription: function (props) {
-    return `You stand in a clearing. A bush full of berries catches your eye. To the south, a stream burbles. To the north, you see a rocky cliff with a cave. A man stands in the middle of the clearing. His long white beard, pointed hat, and staff mark him as a wizard. ${
+    let text = `You stand in a clearing. A bush full of berries catches your eye. To the south, a stream burbles. To the north, you see a rocky cliff with a cave. A man stands in the middle of the clearing. His long white beard, pointed hat, and staff mark him as a wizard. ${
       props.gameState.squirrelDead
         ? "A dead squirrel lies at the base of a tree. "
         : "A squirrel scampers around a tree. "
-    }`;
+    }`
+
+    if (props.gameState.horseDead && props.itemLocations.clearing.has("horse")) {
+      text += "A dead horse lies on the ground, foam and partially chewed berries coming from its mouth"
+    }
+    return text;
   },
   onEnterGameStateEffect: function (props) {},
   onExitGameStateEffect: function (props) {},
@@ -572,7 +577,7 @@ const caveEntrance = new Location({
         "You hear coins clanking from the east room, as if a large beast is rolling in piles of gold. ";
     }
 
-    if (!props.gameState.poopy && !props.gameState.dragonAsleep)
+    if ((!props.gameState.poopy || props.gameState.naked) && !props.gameState.dragonAsleep)
       text += 'From the east room, a voice booms "WHO DO I SMELL?"';
 
     return text;
@@ -601,7 +606,7 @@ const puddle = new Location({
       // if dragon is not poisoned and time is enough to trigger dragon entry and you are not poopy+hidden, you get singed
       ...(!props.gameState.dragonPoisoned &&
         (props.gameState.timeInCave + 1) % 4 === 3 &&
-        (!props.gameState.poopy || props.playerLocation !== "boulder") && {
+        ((!props.gameState.poopy || props.gameState.naked) || props.playerLocation !== "boulder") && {
           singeCount: props.gameState.singeCount + 1,
           reputation: props.gameState.reputation - 1,
         }),
@@ -630,13 +635,13 @@ const boulder = new Location({
       // if dragon is not poisoned and time is enough to trigger dragon entry and you are not poopy+hidden, you get singed
       ...(!props.gameState.dragonPoisoned &&
         (props.gameState.timeInCave + 1) % 4 === 3 &&
-        (!props.gameState.poopy || props.playerLocation !== "boulder") && {
+        ((!props.gameState.poopy || props.gameState.naked) || props.playerLocation !== "boulder") && {
           singeCount: props.gameState.singeCount + 1,
           reputation: props.gameState.reputation - 1,
         }),
       // if the berries are in the puddle and you are poopy_hidden, the dragon is poisoned
       ...(props.itemLocations.puddle.has("berries") &&
-        props.gameState.poopy &&
+      (props.gameState.poopy && !props.gameState.naked) &&
         props.playerLocation === "boulder" && { dragonPoisoned: true }),
     };
   },
@@ -663,7 +668,7 @@ const dung = new Location({
       // if dragon is not poisoned and time is enough to trigger dragon entry and you are not poopy+hidden, you get singed
       ...(!props.gameState.dragonPoisoned &&
         (props.gameState.timeInCave + 1) % 4 === 3 &&
-        (!props.gameState.poopy || props.playerLocation !== "boulder") && {
+        ((!props.gameState.poopy || props.gameState.naked) || props.playerLocation !== "boulder") && {
           singeCount: props.gameState.singeCount + 1,
           reputation: props.gameState.reputation - 1,
         }),
@@ -736,22 +741,22 @@ function dragonDescription(props) {
 
   if (
     timeInterval === 3 ||
-    (props.gameState.poopy &&
+    ((props.gameState.poopy && !props.gameState.naked) &&
       props.playerLocation === "boulder" &&
       props.itemLocations.puddle.has("berries"))
   ) {
     text += "The dragon prowls into the cavern. ";
     // not poop and not hidden
-    if (!props.gameState.poopy && props.playerLocation !== "boulder") {
+    if ((!props.gameState.poopy || props.gameState.naked) && props.playerLocation !== "boulder") {
       text += `"I KNEW I SMELT A HUMAN." The dragon singes you before you can fight or defend yourself. `;
     } // poop and not hidden
-    else if (props.gameState.poopy && props.playerLocation !== "boulder") {
+    else if ((props.gameState.poopy && !props.gameState.naked) && props.playerLocation !== "boulder") {
       text += `"YOU DO NOT SMELL LIKE A HUMAN BUT YOU LOOK LIKE ONE. The dragon singes you before you can fight or defend yourself. " `;
     } // not poop and hidden
-    else if (!props.gameState.poopy && props.playerLocation === "boulder") {
+    else if ((!props.gameState.poopy || props.gameState.naked) && props.playerLocation === "boulder") {
       text += `"I SMELL A HUMAN SOMEWHERE NEARBY." The dragon peaks around the boulder and spots you. The dragon singes you before you can fight or defend yourself. `;
     } // poop and hidden
-    else if (props.gameState.poopy && props.playerLocation === "boulder") {
+    else if ((props.gameState.poopy && !props.gameState.naked) && props.playerLocation === "boulder") {
       text += "It seems unaware of your location. ";
       // dragon drinks
       if (props.itemLocations.puddle.has("berries")) {
