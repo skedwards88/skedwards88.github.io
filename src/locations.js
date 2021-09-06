@@ -414,7 +414,7 @@ const gate = new Location({
   id: "gate",
   dropPreposition: "at",
   getConnections: function () {
-    return ["adolescent", "smithy", "road"];
+    return ["adolescent", "smithy", "road1"];
   },
   getDescription: function (props) {
     return `You are standing at the north gate. To the north, you see a road leading up a mountain. The adolescent that you saw earlier stands at the courtyard${
@@ -443,48 +443,72 @@ const adolescent = new Location({
   onExitItemLocationEffect: function (props) {},
 });
 
-const road = new Location({
-  // todo
-  id: "road",
+const road1 = new Location({
+  id: "road1",
   dropPreposition: "on",
-  getConnections: function () {
-    return ["gate", "stream"];
+  getDisplayName: function () {
+    return "Long road (South end)";
+  },
+  getConnections: function (props) {
+    if (props.gameState.horseMounted) {
+      return ["gate", "stream"];
+    } else {
+      return ["gate", "road2"];
+    }
   },
   getDescription: function (props) {
-    let text = "a road todo";
-    if (
-      props.gameState.promisedTreasure &&
-      props.gameState.earnedTreasureAmount
-    ) {
-      text +=
-        'As you cross the stream, a flash of lightning hits you, knocking you onto your back. "WHERE IS MY TREASURE?" the wizard demands. "Since you did not give me my share, you shall not have any." The treasure flies from your pouch and disappears down the stream. The wizard vanishes in a cloud of smoke.';
-    }
+    return `You stand at the end of a long road. The city gates sit to the south. To the north, you see mountains. 
+    
+    ${props.gameState.horseMounted ? "Thankfully, the horse lets you travel quickly. " : ""}`;
+  },
+});
 
-    return text;
+const road2 = new Location({
+  id: "road2",
+  dropPreposition: "on",
+  getDisplayName: function () {
+    return "Long road (middle)";
   },
-  onEnterGameStateEffect: function (props) {
-    //todo
-    if (
-      props.gameState.promisedTreasure &&
-      props.gameState.earnedTreasureAmount
-    ) {
-      return {
-        cursed: true,
-        gold: props.gameState.gold - props.gameState.earnedTreasureAmount,
-        reputation: 5,
-      };
+  getConnections: function (props) {
+    if (props.gameState.horseMounted) {
+      return ["gate", "stream"];
+    } else {
+      return ["road1", "road3"];
     }
   },
-  onExitGameStateEffect: function (props) {},
-  onEnterItemLocationEffect: function (props) {},
-  onExitItemLocationEffect: function (props) {},
+  getDescription: function (props) {
+    return `You are halfway along a long road. The city gates sit to the south. To the north, you see mountains. 
+    
+    ${props.gameState.horseMounted ? "Thankfully, the horse lets you travel faster. " : "This would be much easier with a horse. "}`
+
+  },
+});
+
+const road3 = new Location({
+  id: "road3",
+  dropPreposition: "on",
+  getDisplayName: function () {
+    return "Long road (North end)";
+  },
+  getConnections: function (props) {
+    if (props.gameState.horseMounted) {
+      return ["gate", "stream"];
+    } else {
+      return ["stream", "road2"];
+    }
+  },
+  getDescription: function (props) {
+    return `You stand at the end of a long road. The city gates sit to the south. To the north, you see mountains. 
+    
+    ${props.gameState.horseMounted ? "Thankfully, the horse lets you travel quickly. " : ""}`;
+  },
 });
 
 const stream = new Location({
   id: "stream",
   dropPreposition: "in",
   getConnections: function () {
-    return ["road", "clearing"];
+    return ["road3", "clearing"];
   },
   getDescription: function (props) {
     return "You come across a steam. It looks crossable by foot or by horse. On the north side, you see a bush full of berries. To the south, the road stretches back to the city. ";
@@ -941,7 +965,9 @@ export const locations = {
   pasture: pasture,
   gate: gate,
   adolescent: adolescent,
-  road: road,
+  road1: road1,
+  road2: road2,
+  road3: road3,
   stream: stream,
   clearing: clearing,
   squirrel: squirrel,

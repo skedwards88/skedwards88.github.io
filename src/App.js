@@ -38,14 +38,7 @@ function App() {
 
   function buildStartingLocations() {
     const startingItemLocations = {
-      inventory: new Set([
-        "lute",
-        "clothes",
-        "handkerchief",
-        "sword",
-        "horse",
-        "berries",
-      ]),
+      inventory: new Set(["lute", "clothes", "sword", "horse"]),
       outOfPlay: new Set([]),
     };
 
@@ -65,7 +58,7 @@ function App() {
   const [itemLocations, setItemLocations] = useState(startingItemLocations);
 
   const [gameState, setGameState] = useState(startingState);
-  const [playerLocation, setPlayerLocation] = useState("wizard");
+  const [playerLocation, setPlayerLocation] = useState("gate");
   const [consequenceText, setConsequenceText] = useState("");
   const [currentDisplay, setCurrentDisplay] = useState("location"); // location | inventory | consequence
 
