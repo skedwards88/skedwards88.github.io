@@ -172,7 +172,6 @@ const clothes = new Item({
   },
 
   getCustomDropDescription: function (props) {
-
     let text = "";
 
     props.gameState.naked
@@ -210,7 +209,8 @@ const apple = new Item({
   getCustomUseDescription: function (props) {
     return "You eat the apple, feeling refreshed. ";
   },
-  getCustomDropDescription: function (props) {// todo should you be able to drop/give to squirrel also?
+  getCustomDropDescription: function (props) {
+    // todo should you be able to drop/give to squirrel also?
     if (
       props.itemLocations.pasture.has("horse") &&
       props.playerLocation === "pasture"
@@ -297,7 +297,9 @@ const handkerchief = new Item({
       text += "On its own, the handkerchief does little to block the smoke. ";
     }
 
-    if (["dung", "defecatory", "boulder", "puddle"].includes(props.playerLocation)) {
+    if (
+      ["dung", "defecatory", "boulder", "puddle"].includes(props.playerLocation)
+    ) {
       text += "Even with it, the stench reaches your nose. ";
     }
 
@@ -307,13 +309,13 @@ const handkerchief = new Item({
     return props.gameState.masked ? { masked: false } : { masked: true };
   },
   getCustomDropDescription: function (props) {
-    return `You remove the handkerchief from your nose and mouth and drop it ${props.dropPreposition} the ${props.playerLocation}. `
-    },
+    return `You remove the handkerchief from your nose and mouth and drop it ${props.dropPreposition} the ${props.playerLocation}. `;
+  },
   getCustomDropGameEffect: function (props) {
     if (["fountain", "stream", "puddle"].includes(props.playerLocation)) {
       return { handkerchiefDamp: true, masked: false };
     } else {
-      return {masked: false}
+      return { masked: false };
     }
   },
   getCustomGiveDescription: function (props) {
@@ -322,10 +324,11 @@ const handkerchief = new Item({
       return `You offer the handkerchief that you saw the adolescent drop. "Th-thank you," they sob. She tells you that she was meant to be sacrificed to the dragon in exchange for another year of safety for the town. In retaliation, she set the mayor's house on fire, not realizing that the baby was trapped inside. `;
     }
   },
-  getCustomGiveLocation: function (props) { 
+  getCustomGiveLocation: function (props) {
     if (props.playerLocation === "adolescent") {
-      return "outOfPlay"}
-    },
+      return "outOfPlay";
+    }
+  },
   getCustomGiveGameEffect: function (props) {
     if (props.playerLocation === "adolescent") {
       return { reputation: props.gameState.reputation + 1 };
@@ -472,7 +475,7 @@ const horse = new Item({
       : { horseMounted: true };
   },
   getCustomDropDescription: function (props) {
-    let text = ""
+    let text = "";
 
     if (props.gameState.horseMounted) {
       text += "You unmount the horse and let go of the horse's reins. ";
@@ -481,9 +484,11 @@ const horse = new Item({
     }
 
     if (props.playerLocation === "clearing") {
-      text += "The horse starts to eat the berries. After a few mouthfuls, it foams at the mouth and falls over dead. ";
+      text +=
+        "The horse starts to eat the berries. After a few mouthfuls, it foams at the mouth and falls over dead. ";
     } else {
-      text +="You let go of the horse's reins. The horse trots away, probably in search of grass to munch. "
+      text +=
+        "You let go of the horse's reins. The horse trots away, probably in search of grass to munch. ";
     }
 
     return text;
@@ -517,7 +522,6 @@ const horse = new Item({
     if (!props.gameState.horseTethered) {
       return props.playerLocation;
     }
-
   },
   getCustomGiveDescription: function (props) {},
   getCustomGiveLocation: function (props) {},
@@ -675,7 +679,7 @@ const score = new Item({
     return "musical score";
   },
   getUseVerb: function () {
-    return "Play"
+    return "Play";
   },
   getCustomUseDescription: function (props) {
     if (!props.itemLocations.inventory.has("lute")) {
