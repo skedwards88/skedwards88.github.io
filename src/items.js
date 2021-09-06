@@ -236,7 +236,7 @@ const apple = new Item({
       return { horseTethered: true };
     }
   },
-  getCustomGiveItemLocationEffect: function (props) {}, //todo could use this to make horse go it inventory instead of being tied up. would also want to add for drop.
+  getCustomGiveItemLocationEffect: function (props) {}, // todo could use this to make horse go it inventory instead of being tied up. would also want to add for drop.
 });
 
 const handkerchief = new Item({
