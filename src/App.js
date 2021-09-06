@@ -66,6 +66,8 @@ function App() {
 
   // todo write end game and scoring
 
+  // todo typescript
+
   function moveItem({ item, oldLocation, newLocation }) {
     console.log(`'moving' ${item} from ${oldLocation} to ${newLocation}`);
     // todo can skip if location unchanged

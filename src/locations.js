@@ -459,7 +459,11 @@ const road1 = new Location({
   getDescription: function (props) {
     return `You stand at the end of a long road. The city gates sit to the south. To the north, you see mountains. 
     
-    ${props.gameState.horseMounted ? "Thankfully, the horse lets you travel quickly. " : ""}`;
+    ${
+      props.gameState.horseMounted
+        ? "Thankfully, the horse lets you travel quickly. "
+        : ""
+    }`;
   },
 });
 
@@ -479,8 +483,11 @@ const road2 = new Location({
   getDescription: function (props) {
     return `You are halfway along a long road. The city gates sit to the south. To the north, you see mountains. 
     
-    ${props.gameState.horseMounted ? "Thankfully, the horse lets you travel faster. " : "This would be much easier with a horse. "}`
-
+    ${
+      props.gameState.horseMounted
+        ? "Thankfully, the horse lets you travel faster. "
+        : "This would be much easier with a horse. "
+    }`;
   },
 });
 
@@ -500,7 +507,11 @@ const road3 = new Location({
   getDescription: function (props) {
     return `You stand at the end of a long road. The city gates sit to the south. To the north, you see mountains. 
     
-    ${props.gameState.horseMounted ? "Thankfully, the horse lets you travel quickly. " : ""}`;
+    ${
+      props.gameState.horseMounted
+        ? "Thankfully, the horse lets you travel quickly. "
+        : ""
+    }`;
   },
 });
 

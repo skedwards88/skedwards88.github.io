@@ -50,29 +50,6 @@ class Item {
   }
 }
 
-const blank = new Item({
-  id: "blank",
-  spawnLocation: "",
-  getDescription: function (props) {},
-
-  getUseVerb: function (props) {},
-  getCustomUseDescription: function (props) {},
-  getCustomUseGameEffect: function (props) {},
-
-  getCustomDropDescription: function (props) {},
-  getCustomDropLocation: function (props) {},
-  getCustomDropGameEffect: function (props) {},
-
-  getCustomTakeDescription: function (props) {},
-  getCustomTakeLocation: function (props) {},
-  getCustomTakeGameEffect: function (props) {},
-
-  getCustomGiveDescription: function (props) {},
-  getCustomGiveLocation: function (props) {},
-  getCustomGiveGameEffect: function (props) {},
-  getCustomGiveItemLocationEffect: function (props) {},
-});
-
 const lute = new Item({
   id: "lute",
   spawnLocation: "room",
