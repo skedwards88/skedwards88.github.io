@@ -487,7 +487,7 @@ const stream = new Location({
     return ["road", "clearing"];
   },
   getDescription: function (props) {
-    return "You come across a steam. It looks crossable by foot or by horse. On the north side, you see a bush full of berries. To the south, the road stretches back to the city. "
+    return "You come across a steam. It looks crossable by foot or by horse. On the north side, you see a bush full of berries. To the south, the road stretches back to the city. ";
   },
   onEnterGameStateEffect: function (props) {},
   onExitGameStateEffect: function (props) {},
@@ -741,10 +741,10 @@ const boulder = new Location({
     ${dragonDescription(props)}`;
   },
   onEnterGameStateEffect: function (props) {
-    console.log(props.gameState.dragonPoisoned)
-    console.log(props.gameState.dragonAsleep)
-    console.log(props.gameState.dragonDead)
-    
+    console.log(props.gameState.dragonPoisoned);
+    console.log(props.gameState.dragonAsleep);
+    console.log(props.gameState.dragonDead);
+
     return {
       // always increase the time
       timeInCave: props.gameState.timeInCave + 1,
@@ -764,12 +764,16 @@ const boulder = new Location({
     };
   },
   onExitGameStateEffect: function (props) {
-          // if the berries are in the puddle and you are poopy_hidden, the dragon is poisoned
+    // if the berries are in the puddle and you are poopy_hidden, the dragon is poisoned
 
-    if (props.itemLocations.puddle.has("berries") &&
-    props.gameState.poopy &&
-    !props.gameState.naked &&
-    props.playerLocation === "boulder") {return { dragonPoisoned: true }}
+    if (
+      props.itemLocations.puddle.has("berries") &&
+      props.gameState.poopy &&
+      !props.gameState.naked &&
+      props.playerLocation === "boulder"
+    ) {
+      return { dragonPoisoned: true };
+    }
   },
   onEnterItemLocationEffect: function (props) {},
   onExitItemLocationEffect: function (props) {},

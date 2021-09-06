@@ -385,10 +385,10 @@ const sword = new Item({
     return "Attack";
   },
   getCustomUseDescription: function (props) {
-    console.log(props.gameState.dragonPoisoned)
-    console.log(props.gameState.dragonAsleep)
-    console.log(props.gameState.dragonDead)
-    
+    console.log(props.gameState.dragonPoisoned);
+    console.log(props.gameState.dragonAsleep);
+    console.log(props.gameState.dragonDead);
+
     if (
       props.gameState.dragonAsleep &&
       !props.gameState.dragonDead &&
@@ -653,9 +653,9 @@ const treasure = new Item({
   spawnLocation: "lair",
 
   getCustomTakeDescription: function (props) {
-    console.log(props.gameState.dragonPoisoned)
-console.log(props.gameState.dragonAsleep)
-console.log(props.gameState.dragonDead)
+    console.log(props.gameState.dragonPoisoned);
+    console.log(props.gameState.dragonAsleep);
+    console.log(props.gameState.dragonDead);
 
     if (props.gameState.dragonDead) {
       return "You scoop as much treasure as possible into your bag, avoiding the gore from the severed dragon head. ";
@@ -682,10 +682,10 @@ console.log(props.gameState.dragonDead)
     }
   },
   getCustomTakeLocation: function (props) {
-    console.log(props.gameState.dragonPoisoned)
-    console.log(props.gameState.dragonAsleep)
-    console.log(props.gameState.dragonDead)
-    
+    console.log(props.gameState.dragonPoisoned);
+    console.log(props.gameState.dragonAsleep);
+    console.log(props.gameState.dragonDead);
+
     if (props.gameState.dragonDead) {
       return "outOfPlay";
     }
@@ -711,10 +711,10 @@ console.log(props.gameState.dragonDead)
     }
   },
   getCustomTakeGameEffect: function (props) {
-    console.log(props.gameState.dragonPoisoned)
-    console.log(props.gameState.dragonAsleep)
-    console.log(props.gameState.dragonDead)
-    
+    console.log(props.gameState.dragonPoisoned);
+    console.log(props.gameState.dragonAsleep);
+    console.log(props.gameState.dragonDead);
+
     if (props.gameState.dragonDead) {
       return {
         gold: props.gameState.gold + props.gameState.treasureAmount,
@@ -765,10 +765,10 @@ const score = new Item({
     return "Play";
   },
   getCustomUseDescription: function (props) {
-    console.log(props.gameState.dragonPoisoned)
-    console.log(props.gameState.dragonAsleep)
-    console.log(props.gameState.dragonDead)
-    
+    console.log(props.gameState.dragonPoisoned);
+    console.log(props.gameState.dragonAsleep);
+    console.log(props.gameState.dragonDead);
+
     if (!props.itemLocations.inventory.has("lute")) {
       return "You would like to play this song, but you have no instrument. ";
     }
@@ -796,10 +796,10 @@ const score = new Item({
     return "You play a lulling melody. ";
   },
   getCustomUseGameEffect: function (props) {
-    console.log(props.gameState.dragonPoisoned)
-    console.log(props.gameState.dragonAsleep)
-    console.log(props.gameState.dragonDead)
-    
+    console.log(props.gameState.dragonPoisoned);
+    console.log(props.gameState.dragonAsleep);
+    console.log(props.gameState.dragonDead);
+
     if (
       props.gameState.dragonPoisoned &&
       !props.gameState.dragonAsleep &&
