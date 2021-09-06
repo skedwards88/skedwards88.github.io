@@ -450,8 +450,24 @@ const road = new Location({
   getConnections: function () {
     return ["gate", "stream"];
   },
-  getDescription: function (props) {},
-  onEnterGameStateEffect: function (props) {},
+  getDescription: function (props) {
+    let text = "a road todo"
+    if (props.gameState.promisedTreasure && props.gameState.earnedTreasureAmount) {
+      text += 'As you cross the stream, a flash of lightning hits you, knocking you onto your back. "WHERE IS MY TREASURE?" the wizard demands. "Since you did not give me my share, you shall not have any." The treasure flies from your pouch and disappears down the stream. The wizard vanishes in a cloud of smoke.'
+    }
+
+    return text
+
+  },
+  onEnterGameStateEffect: function (props) {//todo 
+    if (props.gameState.promisedTreasure && props.gameState.earnedTreasureAmount) {
+      return {
+        cursed: true,
+        gold: props.gameState.gold - props.gameState.earnedTreasureAmount,
+        reputation: 5
+      }
+    }
+  },
   onExitGameStateEffect: function (props) {},
   onEnterItemLocationEffect: function (props) {},
   onExitItemLocationEffect: function (props) {},
@@ -464,7 +480,9 @@ const stream = new Location({
     return ["road", "clearing"];
   },
   getDescription: function (props) {
-    return "You come across a steam. It looks crossable by foot or by horse. On the north side, you see a bush full of berries. To the south, the road stretches back to the city. ";
+    let text =  "You come across a steam. It looks crossable by foot or by horse. On the north side, you see a bush full of berries. To the south, the road stretches back to the city. ";
+
+    return text
   },
   onEnterGameStateEffect: function (props) {},
   onExitGameStateEffect: function (props) {},
@@ -475,11 +493,14 @@ const stream = new Location({
 const clearing = new Location({
   id: "clearing",
   dropPreposition: "in",
-  getConnections: function () {
+  getConnections: function (props) {
+    if (props.gameState.cursed) {
+      return ["squirrel", "stream", "cliff"];
+    }
     return ["wizard", "squirrel", "stream", "cliff"];
   },
   getDescription: function (props) {
-    let text = `You stand in a clearing. A bush full of berries catches your eye. To the south, a stream burbles. To the north, you see a rocky cliff with a cave. A man stands in the middle of the clearing. His long white beard, pointed hat, and staff mark him as a wizard. ${
+    let text = `You stand in a clearing. A bush full of berries catches your eye. To the south, a stream burbles. To the north, you see a rocky cliff with a cave. ${props.gameState.cursed ? "A black patch marks where the wizard vanished. " : "A man stands in the middle of the clearing. His long white beard, pointed hat, and staff mark him as a wizard. "} ${
       props.gameState.squirrelDead
         ? "A dead squirrel lies at the base of a tree. "
         : "A squirrel scampers around a tree. "
@@ -490,7 +511,7 @@ const clearing = new Location({
       props.itemLocations.clearing.has("horse")
     ) {
       text +=
-        "A dead horse lies on the ground, foam and partially chewed berries coming from its mouth";
+        "A dead horse lies on the ground, foam and partially chewed berries coming from its mouth. ";
     }
     return text;
   },
@@ -530,13 +551,72 @@ const wizard = new Location({
     return ["clearing"];
   },
   getDescription: function (props) {
-    // todo
-    return "The wizard looks at you though bushy eyebrows. ";
+    let text = "The wizard looks at you though bushy eyebrows. ";
+
+    if (props.itemLocations.wizard.has("score") && !props.gameState.ownScore) {
+      text += `"I have a musical score that will be useful. I would trade it for ${props.itemLocations.inventory.has("sword") ? "your fine sword or " : ""}gold. I see your gold pouch is light, but I believe this score will lead to treasure if you combine it with your wit. I would accept gold on credit, and will take half the treasure that you earn.
+            
+      All sales on credit are final. All sales completed at time of purchase are refundable."`
+    }
+
+    if (props.gameState.promisedTreasure && props.gameState.earnedTreasureAmount) {
+      text +=  `"Are you here to give me my share of the treasure? "`
+    }
+
+
+    return text
   },
   onEnterGameStateEffect: function (props) {},
   onExitGameStateEffect: function (props) {},
   onEnterItemLocationEffect: function (props) {},
   onExitItemLocationEffect: function (props) {},
+
+  payDescription: function (props) {
+    if (props.itemLocations.wizard.has("score") && !props.gameState.ownScore) {
+      return `You promise the wizard half of the treasure that you hope to earn and pocket the musical score. `;
+    }
+
+    if (props.gameState.promisedTreasure && props.gameState.earnedTreasureAmount) {
+
+      let text = "";
+      if (props.gameState.earnedTreasureAmount === props.gameState.treasureAmount) {
+       text += `"It looks like you succeeded nicely." `
+      }
+      if (props.gameState.earnedTreasureAmount < props.gameState.treasureAmount) {
+       text += `"It looks like you succeeded, though not as well as I hoped." `
+     }
+     text += "The wizard takes a share of your treasure. "
+
+     return text
+
+    }
+  },
+  payGameStateEffect: function (props) {
+    if (props.itemLocations.wizard.has("score") && !props.gameState.ownScore) {
+      return {
+        ownScore: true,
+        promisedTreasure: true,
+      };
+    }
+
+    if (props.gameState.promisedTreasure && props.gameState.earnedTreasureAmount) {
+      return {
+        promisedTreasure: false,
+        treasureAmount: props.gameState.treasureAmount / 2,
+      }
+
+    }
+  },
+  payItemLocationEffect: function (props) {
+    if (props.itemLocations.wizard.has("score") && !props.gameState.ownScore) {
+      return {
+        item: "score",
+        oldLocation: "wizard",
+        newLocation: "inventory",
+      };
+    }
+  },
+
 });
 
 const cliff = new Location({
@@ -548,9 +628,18 @@ const cliff = new Location({
       : ["clearing", "caveEntrance"];
   },
   getDescription: function (props) {
-    return props.itemLocations.inventory.has("horse")
-      ? `The horse cannot make it up the rocky cliff. You must return to the clearing. `
-      : `You scramble on the rocky cliff. Above you is the entrance to a cave. Below you is a clearing next to a stream. `;
+    let text = ""
+    if (props.itemLocations.inventory.has("horse")) {
+text += `The horse cannot make it up the rocky cliff. You must return to the clearing. `
+if (!props.gameState.cursed) {
+  text += `
+      
+  The wizard calls out, "I do not think your horse can go higher, nor would they like what they find there. Would you like to give me your horse in exchange for peace of mind?"`
+}
+    } else {
+      text +=`You scramble on the rocky cliff. Above you is the entrance to a cave. Below you is a clearing next to a stream. `
+    }
+    return text
   },
   onEnterGameStateEffect: function (props) {},
   onExitGameStateEffect: function (props) {},
@@ -660,11 +749,14 @@ const boulder = new Location({
 const dung = new Location({
   id: "dung",
   dropPreposition: "in",
+  getDisplayName: function () {
+    return "Dung pile"
+  },
   getConnections: function () {
     return ["caveEntrance", "puddle", "boulder"];
   },
   getDescription: function (props) {
-    return `You stand in front of a large puddle of dragon dung. The stench makes your eyes water. Nearby, there is a large boulder and a puddle of clear water. The cave entrance is on the opposite side of the room. 
+    return `You stand in front of a large pile of dragon dung. The stench makes your eyes water. Nearby, there is a large boulder and a puddle of clear water. The cave entrance is on the opposite side of the room. 
       
     ${dragonDescription(props)}`;
   },

@@ -433,11 +433,22 @@ const sword = new Item({
     if (props.playerLocation === "smithy" && !props.gameState.ownSword) {
       return 'You grab the sword and place it in your bag. "Hey! Are you stealing my sword?" The blacksmith shop grabs the sword from you and returns it to the table. ';
     }
+
+    if (props.playerLocation === "wizard" && props.itemLocations.inventory.has("score")) {
+      return "Ah you would like to exchange? You must first give me the score."
+    }
   },
   getCustomTakeLocation: function (props) {
+    console.log(props.playerLocation)
+    console.log(props.itemLocations.inventory.has("score"))
     if (props.playerLocation === "smithy" && !props.gameState.ownSword) {
       return "smithy";
     }
+
+    if (props.playerLocation === "wizard" && props.itemLocations.inventory.has("score")) {
+      return "wizard"
+    }
+
   },
   getCustomTakeGameEffect: function (props) {
     if (props.playerLocation === "smithy" && !props.gameState.ownSword) {
@@ -448,10 +459,37 @@ const sword = new Item({
     }
   },
 
-  getCustomGiveDescription: function (props) {},
-  getCustomGiveLocation: function (props) {},
-  getCustomGiveGameEffect: function (props) {},
-  getCustomGiveItemLocationEffect: function (props) {},
+  getCustomGiveDescription: function (props) {
+    if (
+      props.itemLocations.wizard.has("score") && !props.gameState.ownScore && props.playerLocation === "wizard"
+    ) {
+      return "You give your sword to the wizard. In exchange, they give you the musical score. ";
+    }
+  },
+  getCustomGiveLocation: function (props) {
+    if (
+      props.itemLocations.wizard.has("score") && !props.gameState.ownScore && props.playerLocation === "wizard"
+    ) {
+return "wizard"}
+  },
+  getCustomGiveGameEffect: function (props) {
+    if (
+      props.itemLocations.wizard.has("score") && !props.gameState.ownScore && props.playerLocation === "wizard"
+    ) {
+      return { ownScore: true };
+    }
+  },
+  getCustomGiveItemLocationEffect: function (props) {
+    if (
+      props.itemLocations.wizard.has("score") && !props.gameState.ownScore && props.playerLocation === "wizard"
+    ) {
+      return {
+        item: "score",
+        oldLocation: "wizard",
+        newLocation: "inventory",
+      };
+    }
+  },
 });
 
 const horse = new Item({
@@ -523,8 +561,20 @@ const horse = new Item({
       return props.playerLocation;
     }
   },
-  getCustomGiveDescription: function (props) {},
-  getCustomGiveLocation: function (props) {},
+  getCustomGiveDescription: function (props) {
+    if (props.playerLocation === "wizard") {
+      if (props.gameState.horseMounted) {
+        return "You unmount the horse and give the horse's reins to the wizard. ";
+      } else {
+        return "You give the horse's reins to the wizard. ";
+      }
+  
+    }
+  },
+  getCustomGiveLocation: function (props) {
+    if (props.playerLocation === "wizard") {
+      return "wizard"}
+  },
   getCustomGiveGameEffect: function (props) {},
   getCustomGiveItemLocationEffect: function (props) {},
 });
@@ -533,7 +583,7 @@ const berries = new Item({
   id: "berries",
   spawnLocation: "clearing",
   getDescription: function () {
-    return "red berries";
+    return "handful of berries";
   },
 
   getUseVerb: function () {
@@ -638,12 +688,14 @@ const treasure = new Item({
     if (props.gameState.dragonDead) {
       return {
         gold: props.gameState.gold + props.gameState.treasureAmount,
+        earnedTreasureAmount: props.gameState.treasureAmount,
       };
     }
 
     if (props.gameState.dragonAsleep && !props.gameState.dragonDead) {
       return {
         gold: props.gameState.gold + props.gameState.treasureAmount,
+        earnedTreasureAmount: props.gameState.treasureAmount,
       };
     }
 
@@ -654,6 +706,7 @@ const treasure = new Item({
     ) {
       return {
         gold: props.gameState.gold + props.gameState.treasureAmount / 2,
+        earnedTreasureAmount: props.gameState.treasureAmount / 2,
         singeCount: props.gameState.singeCount + 1,
         reputation: props.gameState.reputation - 1,
       };
@@ -735,14 +788,51 @@ const score = new Item({
     }
   },
 
-  getCustomTakeDescription: function (props) {},
-  getCustomTakeLocation: function (props) {},
+  getCustomTakeDescription: function (props) {
+    if (!props.gameState.ownScore){
+      return `"Ah ah!" The wizard shakes a finger at you. Not for free. I would trade it for ${props.itemLocations.inventory.has("sword") ? "your fine sword or " : ""}gold.`
+    }
+  },
+  getCustomTakeLocation: function (props) {
+    if (!props.gameState.ownScore){
+return "wizard"
+    }
+  },
   getCustomTakeGameEffect: function (props) {},
 
-  getCustomGiveDescription: function (props) {},
-  getCustomGiveLocation: function (props) {},
-  getCustomGiveGameEffect: function (props) {},
-  getCustomGiveItemLocationEffect: function (props) {},
+  getCustomGiveDescription: function (props) {
+    if (props.playerLocation === "wizard" && props.itemLocations.inventory.has("score") && props.itemLocations.wizard.has("sword")) {
+      return '"You would like to exchange?" The wizard takes the musical score in exchange for the sword.'
+    }
+
+    if (props.playerLocation === "wizard" && props.itemLocations.inventory.has("score") && props.gameState.promisedTreasure) {
+      return "Ah ah. All sales on credit are final. The score is yours to keep, and half your resulting treasure is mine."
+    }
+
+  },
+  getCustomGiveLocation: function (props) {
+    if (props.playerLocation === "wizard" && props.itemLocations.inventory.has("score") && props.itemLocations.wizard.has("sword")) {
+      return "wizard"
+    }
+
+    if (props.playerLocation === "wizard" && props.itemLocations.inventory.has("score") && props.gameState.promisedTreasure) {
+      return "inventory"
+    }
+  },
+  getCustomGiveGameEffect: function (props) {
+    if (props.playerLocation === "wizard" && props.itemLocations.inventory.has("score") && props.itemLocations.wizard.has("sword")) {
+return {ownScore: false}
+    }
+  },
+  getCustomGiveItemLocationEffect: function (props) {
+    if (props.playerLocation === "wizard" && props.itemLocations.inventory.has("score") && props.itemLocations.wizard.has("sword")) {
+      return {
+        item: "sword",
+        oldLocation: "wizard",
+        newLocation: "inventory",
+      };
+    }
+  },
 });
 
 // todo would it be better to have all drop, etc as one function?

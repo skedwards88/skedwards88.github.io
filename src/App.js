@@ -31,7 +31,9 @@ function App() {
     dragonAsleep: false,
     dragonDead: false,
     treasureAmount: 100,
+    earnedTreasureAmount: 0,
     singeCount: 0,
+    ownScore: false,
   };
 
   function buildStartingLocations() {
@@ -39,13 +41,10 @@ function App() {
       inventory: new Set([
         "lute",
         "clothes",
-        "apple",
         "handkerchief",
-        "baby",
         "sword",
         "horse",
         "berries",
-        "score",
       ]),
       outOfPlay: new Set([]),
     };
@@ -66,7 +65,7 @@ function App() {
   const [itemLocations, setItemLocations] = useState(startingItemLocations);
 
   const [gameState, setGameState] = useState(startingState);
-  const [playerLocation, setPlayerLocation] = useState("clearing");
+  const [playerLocation, setPlayerLocation] = useState("wizard");
   const [consequenceText, setConsequenceText] = useState("");
   const [currentDisplay, setCurrentDisplay] = useState("location"); // location | inventory | consequence
 
@@ -76,6 +75,7 @@ function App() {
 
   function moveItem({ item, oldLocation, newLocation }) {
     console.log(`'moving' ${item} from ${oldLocation} to ${newLocation}`);
+    // todo can skip if location unchanged
     itemLocations[oldLocation].delete(item);
     itemLocations[newLocation].add(item);
     setItemLocations(itemLocations);
@@ -96,8 +96,8 @@ function App() {
     gameStateChanges = { ...gameStateChanges, ...customExitStateEffect };
 
     const customEnterStateEffect =
-      locations[oldLocation].onEnterGameStateEffect &&
-      locations[oldLocation].onEnterGameStateEffect({
+      locations[newLocation].onEnterGameStateEffect &&
+      locations[newLocation].onEnterGameStateEffect({
         gameState: gameState,
         playerLocation: playerLocation,
         itemLocations: itemLocations,
@@ -124,8 +124,8 @@ function App() {
     }
 
     const customExitItemLocationEffect =
-      locations[newLocation].onExitItemLocationEffect &&
-      locations[newLocation].onExitItemLocationEffect({
+      locations[oldLocation].onExitItemLocationEffect &&
+      locations[oldLocation].onExitItemLocationEffect({
         gameState: gameState,
         playerLocation: playerLocation,
         itemLocations: itemLocations,
