@@ -310,7 +310,7 @@ const smithy = new Location({
   id: "smithy",
   dropPreposition: "at",
   getConnections: function () {
-    return ["blacksmith", "gate", "courtyard",];
+    return ["blacksmith", "gate", "courtyard"];
   },
   getDescription: function (props) {
     let text =
@@ -454,7 +454,7 @@ const road1 = new Location({
     if (props.gameState.horseMounted) {
       return ["stream", "gate"];
     } else {
-      return [ "road2", "gate"];
+      return ["road2", "gate"];
     }
   },
   getDescription: function (props) {
@@ -735,7 +735,7 @@ const defecatory = new Location({
     return ["puddle", "boulder", "dung", "caveEntrance"];
   },
   getDescription: function (props) {
-    return "You stand in a large, foul smelling cavern. There is a puddle of clear water, a large boulder, and a pile of dragon dung. To the east, you feel the fresh air from the cave entrance. "
+    return "You stand in a large, foul smelling cavern. There is a puddle of clear water, a large boulder, and a pile of dragon dung. To the east, you feel the fresh air from the cave entrance. ";
   },
   onEnterGameStateEffect: function (props) {},
   onExitGameStateEffect: function (props) {},
@@ -750,7 +750,9 @@ const puddle = new Location({
     return ["boulder", "dung", "defecatory"];
   },
   getDescription: function (props) {
-    return `You stand at a puddle of clear water. Nearby, there is a large boulder and a pile of dragon dung. The cave entrance is on the opposite side of the room. \n\n${dragonDescription(props)}`;
+    return `You stand at a puddle of clear water. Nearby, there is a large boulder and a pile of dragon dung. The cave entrance is on the opposite side of the room. \n\n${dragonDescription(
+      props
+    )}`;
   },
   onEnterGameStateEffect: function (props) {
     return {
@@ -779,7 +781,9 @@ const boulder = new Location({
     return ["puddle", "dung", "defecatory"];
   },
   getDescription: function (props) {
-    return `You walk behind the boulder. It seems large enough to hide your from sight. Nearby, there is a pile of dragon dung and a puddle of clear water. The cave entrance is on the opposite side of the room. \n\n${dragonDescription(props)}`;
+    return `You walk behind the boulder. It seems large enough to hide your from sight. Nearby, there is a pile of dragon dung and a puddle of clear water. The cave entrance is on the opposite side of the room. \n\n${dragonDescription(
+      props
+    )}`;
   },
   onEnterGameStateEffect: function (props) {
     console.log(props.gameState.dragonPoisoned);
@@ -830,7 +834,9 @@ const dung = new Location({
     return ["puddle", "boulder", "defecatory"];
   },
   getDescription: function (props) {
-    return `You stand in front of a large pile of dragon dung. The stench makes your eyes water. Nearby, there is a large boulder and a puddle of clear water. The cave entrance is on the opposite side of the room. \n\n${dragonDescription(props)}`;
+    return `You stand in front of a large pile of dragon dung. The stench makes your eyes water. Nearby, there is a large boulder and a puddle of clear water. The cave entrance is on the opposite side of the room. \n\n${dragonDescription(
+      props
+    )}`;
   },
   onEnterGameStateEffect: function (props) {
     return {
@@ -871,7 +877,8 @@ const lair = new Location({
     }
 
     if (props.gameState.dragonAsleep && !props.gameState.dragonDead) {
-      text += "\n\nThe dragon lies in a deep slumber atop the pile of treasure. ";
+      text +=
+        "\n\nThe dragon lies in a deep slumber atop the pile of treasure. ";
     }
 
     if (props.gameState.dragonDead) {
@@ -915,12 +922,13 @@ function dragonDescription(props) {
   // If the dragon is not due to return yet but the poison conditions are met
   if (
     timeInterval < 3 &&
-    (props.gameState.poopy &&
-      !props.gameState.naked &&
-      props.playerLocation === "boulder" &&
-      props.itemLocations.puddle.has("berries"))
+    props.gameState.poopy &&
+    !props.gameState.naked &&
+    props.playerLocation === "boulder" &&
+    props.itemLocations.puddle.has("berries")
   ) {
-    text +="You jump as you hear the dragon just outside the cavern. Wasn't the dragon just in the lair? Perhaps it is suspicious. \n\n"
+    text +=
+      "You jump as you hear the dragon just outside the cavern. Wasn't the dragon just in the lair? Perhaps it is suspicious. \n\n";
   }
 
   if (
@@ -962,7 +970,8 @@ function dragonDescription(props) {
         text +=
           "\n\nThe dragon drinks from the puddle. It starts foaming at the mouth. Enraged and in pain, it stumbles back to the lair. ";
       } else {
-        text += "\n\nThe dragon drinks from the puddle, then returns to the lair to guard its treasure. ";
+        text +=
+          "\n\nThe dragon drinks from the puddle, then returns to the lair to guard its treasure. ";
       }
     }
   } else if (timeInterval === 2) {

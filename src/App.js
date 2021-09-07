@@ -237,7 +237,6 @@ function App() {
   }
 
   function handleDrop(item) {
-
     // const customDrop = allItems[item].getCustomDrop({
     //   dropPreposition: locations[playerLocation].dropPreposition,
     //   playerLocation: playerLocation,

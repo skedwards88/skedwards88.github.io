@@ -64,7 +64,7 @@ class Item {
     this.getCustomGiveGameEffect = getCustomGiveGameEffect;
     this.getCustomGiveItemLocationEffect = getCustomGiveItemLocationEffect;
 
-    this.getCustomDrop=getCustomDrop;
+    this.getCustomDrop = getCustomDrop;
   }
 }
 
@@ -162,8 +162,11 @@ const clothes = new Item({
       ? "You put on the clothes. "
       : "You strip down. ";
 
-      if (props.gameState.poopy){ text += "You wrinkle your nose in distaste. Certainly you are not fit for fine company anymore."}
-      return text
+    if (props.gameState.poopy) {
+      text +=
+        "You wrinkle your nose in distaste. Certainly you are not fit for fine company anymore.";
+    }
+    return text;
   },
   getCustomUseGameEffect: function (props) {
     return props.gameState.naked ? { naked: false } : { naked: true };
@@ -192,55 +195,44 @@ const clothes = new Item({
     }
   },
 
-
   // description,
   // gameEffect,
   // targetItemLocation,
   // otherItemLocations,
 
   getCustomDrop: function (props) {
-
     function writeDescription(props) {
       let text = "";
 
       props.gameState.naked
         ? (text += `You drop your clothes ${props.dropPreposition} the ${props.playerLocation}. `)
         : (text += `You strip down and drop your clothes ${props.dropPreposition} the ${props.playerLocation}. `);
-  
+
       if (["fountain", "stream", "puddle"].includes(props.playerLocation)) {
         text += "Your clothes look much cleaner now. ";
       }
-  
+
       return text;
-  
     }
 
     if (["fountain", "stream", "puddle"].includes(props.playerLocation)) {
+      return new ItemInteraction({
+        gameEffect: { naked: true, poopy: false },
+        description: writeDescription(props),
+      });
+    }
+
+    if (props.playerLocation === "dung") {
+      return new ItemInteraction({
+        gameEffect: { naked: true, poopy: true },
+        description: writeDescription(props),
+      });
+    }
 
     return new ItemInteraction({
-      gameEffect: { naked: true, poopy: false },
+      gameEffect: { naked: true },
       description: writeDescription(props),
-
-    })
-  }
-
-  if (props.playerLocation === "dung") {
-
-    return new ItemInteraction({
-      gameEffect: { naked: true, poopy: true },
-      description: writeDescription(props),
-
-
-    })
-  }
-
-  return new ItemInteraction({
-    gameEffect: { naked: true, },
-    description: writeDescription(props),
-
-
-  })
-
+    });
   },
 });
 
@@ -327,8 +319,8 @@ const handkerchief = new Item({
   getCustomUseDescription: function (props) {
     let text = "";
     props.gameState.masked
-    ? (text += "You remove the handkerchief from your nose and mouth. ")
-    : (text += "You tie the handkerchief around your nose and mouth. ");
+      ? (text += "You remove the handkerchief from your nose and mouth. ")
+      : (text += "You tie the handkerchief around your nose and mouth. ");
 
     if (
       ["manor", "nursery", "nurseryWindow"].includes(props.playerLocation) &&
@@ -685,18 +677,17 @@ const berries = new Item({
       return "The squirrel eats the berries that you offered. After a few seconds, it foams at the mouth and rolls over, dead. Oh dear. ";
     }
 
-    if (props.playerLocation === "wizard" ) {
+    if (props.playerLocation === "wizard") {
       return `The wizard politely refuses the berries. "Those will give you a life changing experience," he says.`;
     }
-
   },
   getCustomGiveLocation: function (props) {
     if (props.playerLocation === "squirrel" && !props.gameState.squirrelDead) {
       return "clearing";
     }
 
-    if (props.playerLocation === "wizard" ) {
-return "inventory"
+    if (props.playerLocation === "wizard") {
+      return "inventory";
     }
   },
   getCustomGiveGameEffect: function (props) {
