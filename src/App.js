@@ -38,7 +38,7 @@ function App() {
 
   function buildStartingLocations() {
     const startingItemLocations = {
-      inventory: new Set(["lute", "clothes", "sword", "horse"]),
+      inventory: new Set([]),
       outOfPlay: new Set([]),
     };
 
@@ -58,7 +58,7 @@ function App() {
   const [itemLocations, setItemLocations] = useState(startingItemLocations);
 
   const [gameState, setGameState] = useState(startingState);
-  const [playerLocation, setPlayerLocation] = useState("gate");
+  const [playerLocation, setPlayerLocation] = useState("cliff");
   const [consequenceText, setConsequenceText] = useState("");
   const [currentDisplay, setCurrentDisplay] = useState("location"); // location | inventory | consequence
 
@@ -237,6 +237,16 @@ function App() {
   }
 
   function handleDrop(item) {
+
+    // const customDrop = allItems[item].getCustomDrop({
+    //   dropPreposition: locations[playerLocation].dropPreposition,
+    //   playerLocation: playerLocation,
+    //   gameState: gameState,
+    //   itemLocations: itemLocations,
+    // });
+
+    // console.log(customDrop && customDrop.description);
+
     // Get the "drop"" description for the item -- this will be the consequence text
     const customDescription =
       allItems[item].getCustomDropDescription &&
