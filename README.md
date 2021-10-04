@@ -1,3 +1,5 @@
-[View projects](https://skedwards88.github.io/portfolio/)
+A collection of webapp games.
 
-To add a new project, edit `src/projects.js`.
+[View Games](https://skedwards88.github.io/portfolio/)
+
+To add a new project, add an entry to `src/projects.js` and add the project icon to `src/images`.

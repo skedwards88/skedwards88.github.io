@@ -1,5 +1,14 @@
 export const projects = [
   {
+    id: "dragon",
+    name: "Dragon Hero",
+    description: "A text adventure puzzle",
+    site: "https://skedwards88.github.io/dragon/",
+    code: "https://github.com/skedwards88/dragon",
+    numPlayers: 1,
+    playTimeMinutes: 20,
+  },
+  {
     id: "monkeys",
     name: "Monkeys of the Caribbean",
     description: "Compete to control the most coconut routes",
