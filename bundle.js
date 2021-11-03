@@ -340,7 +340,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony default export */ 
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony default export */ __webpack_exports__[\"default\"] = (__webpack_require__.p + \"86037aa3592d73d031223d0a2f9289ea.png\");\n\n//# sourceURL=webpack:///./src/images/stars_circles.png?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony default export */ __webpack_exports__[\"default\"] = (__webpack_require__.p + \"9b929dc27a8ffb5ac0eb4989e3a8bbb4.png\");\n\n//# sourceURL=webpack:///./src/images/stars_circles.png?");
 
 /***/ }),
 
