@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import { projects } from "./projects.js";
+import projects from "./projects.js";
 import getImageLookup from "./imageLookup.js";
 
 const imageLookup = getImageLookup();
@@ -44,11 +44,12 @@ function App() {
   return (
     <div className="App">
       <h1>CnS Games</h1>
-      <h2>
+      <h2>A collection of webapps that you can install on your phone</h2>
+      <h3>
         Designed by Colin Thom
         <br />
         Built by Sarah Edwards
-      </h2>
+      </h3>
       <div id="projects">{displays}</div>
     </div>
   );

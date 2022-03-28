@@ -1,4 +1,13 @@
-export const projects = [
+export default [
+  {
+    id: "words",
+    name: "Word Games",
+    description: "A collection of word games (mobile only)",
+    site: "https://skedwards88.github.io/word_games/",
+    code: "https://github.com/skedwards88/word_games",
+    numPlayers: 1,
+    playTimeMinutes: 5,
+  },
   {
     id: "dragon",
     name: "Dragon Hero",
@@ -35,16 +44,12 @@ export const projects = [
     numPlayers: 2,
     playTimeMinutes: 15,
   },
-  {
-    id: "stories",
-    name: "Stories ",
-    description: "Short stories inspired by Reddit writing prompts",
-    site: "https://skedwards88.github.io/ShortStories/",
-    code: "https://github.com/skedwards88/ShortStories",
-    activityDescription: "Read now",
-  },
+  // {
+  //   id: "stories",
+  //   name: "Stories ",
+  //   description: "Short stories inspired by Reddit writing prompts",
+  //   site: "https://skedwards88.github.io/ShortStories/",
+  //   code: "https://github.com/skedwards88/ShortStories",
+  //   activityDescription: "Read now",
+  // },
 ];
-
-export default {
-  projects,
-};
