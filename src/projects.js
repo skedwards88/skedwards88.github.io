@@ -1,8 +1,17 @@
 export default [
   {
+    id: "dailypalette",
+    name: "Daily Palette",
+    description: "A spatial word game",
+    site: "https://palettegame.com",
+    code: "https://palettegame.com",
+    numPlayers: 1,
+    playTimeMinutes: 5,
+  }, 
+  {
     id: "words",
     name: "Word Games",
-    description: "A collection of word games (mobile only)",
+    description: "A collection of word games",
     site: "https://skedwards88.github.io/word_games/",
     code: "https://github.com/skedwards88/word_games",
     numPlayers: 1,
