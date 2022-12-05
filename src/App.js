@@ -43,8 +43,8 @@ function App() {
 
   return (
     <div className="App">
-      <h1>CnS Games</h1>
-      <h2>A collection of webapps that you can install on your phone</h2>
+      <h1>SECT Games</h1>
+      <h2>Game and puzzle web apps</h2>
       <h3>
         Designed by Colin Thom
         <br />
