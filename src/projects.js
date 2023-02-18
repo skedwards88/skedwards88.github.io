@@ -1,10 +1,19 @@
 export default [
   {
+    id: "crossjig",
+    name: "Crossjig",
+    description: "A word-based jigsaw puzzle",
+    site: "https://crossjig.com",
+    code: "https://github.com/skedwards88/crossjig",
+    numPlayers: 1,
+    playTimeMinutes: 5,
+  }, 
+  {
     id: "dailypalette",
     name: "Daily Palette",
     description: "A spatial word game",
     site: "https://palettegame.com",
-    code: "https://palettegame.com",
+    code: "https://github.com/skedwards88/palette",
     numPlayers: 1,
     playTimeMinutes: 5,
   }, 
