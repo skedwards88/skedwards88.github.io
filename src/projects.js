@@ -7,7 +7,7 @@ export default [
     code: "https://github.com/skedwards88/crossjig",
     numPlayers: 1,
     playTimeMinutes: 5,
-  }, 
+  },
   {
     id: "dailypalette",
     name: "Daily Palette",
@@ -16,7 +16,7 @@ export default [
     code: "https://github.com/skedwards88/palette",
     numPlayers: 1,
     playTimeMinutes: 5,
-  }, 
+  },
   {
     id: "words",
     name: "Word Games",
