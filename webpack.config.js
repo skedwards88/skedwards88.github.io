@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
   entry: "./src/index.js",
-  mode: "development",
+  mode: "production",
   module: {
     rules: [
       {
@@ -26,13 +26,11 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, "dist/"),
     publicPath: "",
-    filename: "bundle.js",
+    filename: "bundle.[fullhash].js",
+    clean: true, // removes unused files from output dir
   },
   devServer: {
-    contentBase: path.join(__dirname, "public/"),
-    port: 3000,
-    publicPath: "http://localhost:3000",
-    hotOnly: false,
+    static: "./dist",
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -41,4 +39,8 @@ module.exports = {
       template: "./src/index.html",
     }),
   ],
+  performance: {
+    maxEntrypointSize: 280000,
+    maxAssetSize: 280000
+  },
 };
