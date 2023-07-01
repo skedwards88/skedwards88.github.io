@@ -1,5 +1,6 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   entry: "./src/index.js",
@@ -37,6 +38,14 @@ module.exports = {
       inject: true,
       // Need to use template because need 'root' div for react injection. templateContent doesn't play nice with title, so just use a template file instead.
       template: "./src/index.html",
+    }),
+    new CopyPlugin({
+      patterns: [
+        { from: "./src/images/favicon.png", to: "./favicon.png" },
+      ],
+      options: {
+        concurrency: 100,
+      },
     }),
   ],
   performance: {

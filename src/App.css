@@ -1,5 +1,5 @@
 #root {
-  background-color: rgb(235, 235, 235);
+  background-color: rgb(235 235 235);
 }
 
 .App {
@@ -34,6 +34,7 @@
 .project:last-child {
   border-bottom: 2px solid black;
 }
+
 #playParameters {
   display: flex;
   flex-direction: row;
