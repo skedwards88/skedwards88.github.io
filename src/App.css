@@ -31,6 +31,9 @@
   width: 90%;
 }
 
+.project:last-child {
+  border-bottom: 2px solid black;
+}
 #playParameters {
   display: flex;
   flex-direction: row;
