@@ -7,7 +7,8 @@ export default [
     code: "https://github.com/skedwards88/logic-grid",
     numPlayers: 1,
     playTimeMinutes: 5,
-    googlePlay: "https://play.google.com/store/apps/details?id=logicgrid.io.github.skedwards88.twa",
+    googlePlay:
+      "https://play.google.com/store/apps/details?id=logicgrid.io.github.skedwards88.twa",
   },
   {
     id: "crossjig",
@@ -17,7 +18,8 @@ export default [
     code: "https://github.com/skedwards88/crossjig",
     numPlayers: 1,
     playTimeMinutes: 5,
-    googlePlay: "https://play.google.com/store/apps/details?id=com.crossjig.twa",
+    googlePlay:
+      "https://play.google.com/store/apps/details?id=com.crossjig.twa",
   },
   {
     id: "dailypalette",
@@ -27,7 +29,8 @@ export default [
     code: "https://github.com/skedwards88/palette",
     numPlayers: 1,
     playTimeMinutes: 5,
-    googlePlay: "https://play.google.com/store/apps/details?id=com.palettegame.twa",
+    googlePlay:
+      "https://play.google.com/store/apps/details?id=com.palettegame.twa",
   },
   {
     id: "words",
@@ -46,7 +49,8 @@ export default [
     code: "https://github.com/skedwards88/dragon",
     numPlayers: 1,
     playTimeMinutes: 20,
-    googlePlay: "https://play.google.com/store/apps/details?id=dragon.io.github.skedwards88.twa",
+    googlePlay:
+      "https://play.google.com/store/apps/details?id=dragon.io.github.skedwards88.twa",
   },
   {
     id: "monkeys",
