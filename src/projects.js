@@ -1,5 +1,15 @@
 export default [
   {
+    id: "logicgrid",
+    name: "Logic Grid",
+    description: "A classic logic grid puzzle game",
+    site: "https://skedwards88.github.io/logic-grid/",
+    code: "https://github.com/skedwards88/logic-grid",
+    numPlayers: 1,
+    playTimeMinutes: 5,
+    googlePlay: "https://play.google.com/store/apps/details?id=logicgrid.io.github.skedwards88.twa",
+  },
+  {
     id: "crossjig",
     name: "Crossjig",
     description: "A word-based jigsaw puzzle",
