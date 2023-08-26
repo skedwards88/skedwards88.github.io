@@ -22,11 +22,11 @@ export default [
       "https://play.google.com/store/apps/details?id=com.crossjig.twa",
   },
   {
-    id: "dailypalette",
-    name: "Daily Palette",
+    id: "lexlet",
+    name: "Lexlet",
     description: "A daily spatial word puzzle",
-    site: "https://palettegame.com",
-    code: "https://github.com/skedwards88/palette",
+    site: "https://lexlet.com",
+    code: "https://github.com/skedwards88/lexlet",
     numPlayers: 1,
     playTimeMinutes: 5,
     googlePlay:
