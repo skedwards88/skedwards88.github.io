@@ -33,6 +33,17 @@ export default [
       "https://play.google.com/store/apps/details?id=com.palettegame.twa",
   },
   {
+    id: "gribbles",
+    name: "Gribbles",
+    description: "A jumbled word search game",
+    site: "https://skedwards88.github.io/gribbles/",
+    code: "https://github.com/skedwards88/gribbles",
+    numPlayers: 1,
+    playTimeMinutes: 5,
+    googlePlay:
+      "https://play.google.com/store/apps/details?id=gribbles.io.github.skedwards88.twa",
+  },
+  {
     id: "words",
     name: "Word Games",
     description: "A collection of word games",
