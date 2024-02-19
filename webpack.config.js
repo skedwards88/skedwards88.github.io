@@ -11,7 +11,7 @@ module.exports = {
         test: /\.(js|jsx)$/,
         exclude: /(node_modules|bower_components)/,
         loader: "babel-loader",
-        options: { presets: ["@babel/env"] },
+        options: {presets: ["@babel/env"]},
       },
       {
         test: /\.css$/,
@@ -23,7 +23,7 @@ module.exports = {
       },
     ],
   },
-  resolve: { extensions: ["*", ".js", ".jsx"] },
+  resolve: {extensions: ["*", ".js", ".jsx"]},
   output: {
     path: path.resolve(__dirname, "dist/"),
     publicPath: "",
@@ -40,9 +40,7 @@ module.exports = {
       template: "./src/index.html",
     }),
     new CopyPlugin({
-      patterns: [
-        { from: "./src/images/favicon.png", to: "./favicon.png" },
-      ],
+      patterns: [{from: "./src/images/favicon.png", to: "./favicon.png"}],
       options: {
         concurrency: 100,
       },
@@ -50,6 +48,6 @@ module.exports = {
   ],
   performance: {
     maxEntrypointSize: 280000,
-    maxAssetSize: 280000
+    maxAssetSize: 280000,
   },
 };
