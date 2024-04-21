@@ -1,5 +1,4 @@
 export default [
-
   {
     id: "blobble",
     name: "Blobble",
@@ -8,7 +7,8 @@ export default [
     code: "https://github.com/skedwards88/blobble",
     numPlayers: 1,
     playTimeMinutes: 5,
-  },{
+  },
+  {
     id: "logicgrid",
     name: "Logic Grid",
     description: "A classic logic grid puzzle game",
