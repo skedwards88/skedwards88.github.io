@@ -1,5 +1,14 @@
 export default [
+
   {
+    id: "blobble",
+    name: "Blobble",
+    description: "A spatial word search puzzle",
+    site: "https://skedwards88.github.io/blobble/",
+    code: "https://github.com/skedwards88/blobble",
+    numPlayers: 1,
+    playTimeMinutes: 5,
+  },{
     id: "logicgrid",
     name: "Logic Grid",
     description: "A classic logic grid puzzle game",
