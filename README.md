@@ -12,4 +12,4 @@ To add a new project, add an entry to `src/projects.js` and add the project icon
 
 To view locally, `npm run build` `npm start`.
 
-To deploy, `npm run deploy`. (This is automatically done when there is a push to `main`.)
+To deploy, push to `main` or manually trigger the GitHub Actions `deploy.yml` workflow.
