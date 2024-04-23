@@ -10,6 +10,7 @@
   font-weight: bold;
   font-variant: small-caps;
   justify-items: center;
+  white-space: pre;
 }
 
 #projects {

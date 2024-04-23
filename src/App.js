@@ -46,15 +46,14 @@ function App() {
 
   return (
     <div className="App">
-      <h1>SECT Games</h1>
-      <h2>Game and puzzle web apps</h2>
+      <h1>Puzzles and Games</h1>
+      <h4>{'All of these apps are installable and work offline.\nGoogle "Progressive Web App" to learn how to install on your device.'}</h4>
       <div id="projects">{displays}</div>
       <h3>
         Designers: Colin Thom & Sarah Edwards
         <br />
         Software Developer: Sarah Edwards
       </h3>
-      <h4>All of these games are installable and work offline.</h4>
     </div>
   );
 }
