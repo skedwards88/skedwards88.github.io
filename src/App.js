@@ -47,7 +47,11 @@ function App() {
   return (
     <div className="App">
       <h1>Puzzles and Games</h1>
-      <h4>{'All of these apps are installable and work offline.\nGoogle "Progressive Web App" to learn how to install on your device.'}</h4>
+      <h4>
+        {
+          'All of these apps are installable and work offline.\nGoogle "Progressive Web App" to learn how to install on your device.'
+        }
+      </h4>
       <div id="projects">{displays}</div>
       <h3>
         Designers: Colin Thom & Sarah Edwards
