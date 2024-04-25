@@ -42,6 +42,15 @@ export default [
       "https://play.google.com/store/apps/details?id=com.palettegame.twa",
   },
   {
+    id: "wordfall",
+    name: "Wordfall",
+    description: "A meditative jumbled word search game",
+    site: "https://skedwards88.github.io/wordfall/",
+    code: "https://github.com/skedwards88/wordfall",
+    numPlayers: 1,
+    playTimeMinutes: 5,
+  },
+  {
     id: "gribbles",
     name: "Gribbles",
     description: "A jumbled word search game",
