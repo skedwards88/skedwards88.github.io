@@ -30,6 +30,7 @@
   display: grid;
   justify-content: stretch;
   width: 90%;
+  white-space: pre-wrap;
 }
 
 .project:last-child {
