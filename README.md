@@ -1,6 +1,6 @@
-# SECT Games
+# Puzzles and Games
 
-A collection of short webapp games designed by Colin Thom and build by Sarah Edwards. All of the games are progressive web apps, so you can install them on your phone for easy access and offline play.
+A collection of short webapp puzzles and games, built by Sarah Edwards and designed by Colin Thom and Sarah Edwards. All of the games are progressive web apps, so you can install them on your phone for easy access and offline play.
 
 [View Games](https://skedwards88.github.io/)
 
