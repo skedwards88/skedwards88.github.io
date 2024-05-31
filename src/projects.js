@@ -7,6 +7,7 @@ export default [
     code: "https://github.com/skedwards88/blobble",
     numPlayers: 1,
     playTimeMinutes: 5,
+    googlePlay: "https://play.google.com/store/apps/details?id=blobble.io.github.skedwards88.twa",
   },
   {
     id: "logicgrid",
