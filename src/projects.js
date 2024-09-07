@@ -13,7 +13,7 @@ export default [
   {
     id: "lexlet",
     name: "Lexlet",
-    description: "A daily spatial word puzzle",
+    description: "A colorful spatial word puzzle",
     site: "https://lexlet.com",
     code: "https://github.com/skedwards88/lexlet",
     numPlayers: 1,
