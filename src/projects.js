@@ -1,27 +1,5 @@
 export default [
   {
-    id: "blobble",
-    name: "Blobble",
-    description: "A spatial word search puzzle",
-    site: "https://skedwards88.github.io/blobble/",
-    code: "https://github.com/skedwards88/blobble",
-    numPlayers: 1,
-    playTimeMinutes: 5,
-    googlePlay:
-      "https://play.google.com/store/apps/details?id=blobble.io.github.skedwards88.twa",
-  },
-  {
-    id: "logicgrid",
-    name: "Logic Grid",
-    description: "A classic logic grid puzzle game",
-    site: "https://skedwards88.github.io/logic-grid/",
-    code: "https://github.com/skedwards88/logic-grid",
-    numPlayers: 1,
-    playTimeMinutes: 5,
-    googlePlay:
-      "https://play.google.com/store/apps/details?id=logicgrid.io.github.skedwards88.twa",
-  },
-  {
     id: "crossjig",
     name: "Crossjig",
     description: "A word-based jigsaw puzzle",
@@ -44,6 +22,28 @@ export default [
       "https://play.google.com/store/apps/details?id=com.palettegame.twa",
   },
   {
+    id: "blobble",
+    name: "Blobble",
+    description: "A spatial word search puzzle",
+    site: "https://skedwards88.github.io/blobble/",
+    code: "https://github.com/skedwards88/blobble",
+    numPlayers: 1,
+    playTimeMinutes: 5,
+    googlePlay:
+      "https://play.google.com/store/apps/details?id=blobble.io.github.skedwards88.twa",
+  },
+  {
+    id: "logicgrid",
+    name: "Logic Grid",
+    description: "A classic logic grid puzzle game",
+    site: "https://skedwards88.github.io/logic-grid/",
+    code: "https://github.com/skedwards88/logic-grid",
+    numPlayers: 1,
+    playTimeMinutes: 5,
+    googlePlay:
+      "https://play.google.com/store/apps/details?id=logicgrid.io.github.skedwards88.twa",
+  },
+  {
     id: "wordfall",
     name: "Wordfall",
     description: "A meditative jumbled word search game",
@@ -64,15 +64,6 @@ export default [
       "https://play.google.com/store/apps/details?id=gribbles.io.github.skedwards88.twa",
   },
   {
-    id: "words",
-    name: "Word Games",
-    description: "A collection of word games",
-    site: "https://skedwards88.github.io/word_games/",
-    code: "https://github.com/skedwards88/word_games",
-    numPlayers: 1,
-    playTimeMinutes: 5,
-  },
-  {
     id: "dragon",
     name: "Dragon Hero",
     description: "A text adventure puzzle",
@@ -82,6 +73,15 @@ export default [
     playTimeMinutes: 20,
     googlePlay:
       "https://play.google.com/store/apps/details?id=dragon.io.github.skedwards88.twa",
+  },
+  {
+    id: "words",
+    name: "Word Games",
+    description: "A collection of word games",
+    site: "https://skedwards88.github.io/word_games/",
+    code: "https://github.com/skedwards88/word_games",
+    numPlayers: 1,
+    playTimeMinutes: 5,
   },
   {
     id: "monkeys",
