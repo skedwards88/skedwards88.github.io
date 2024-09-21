@@ -6,8 +6,6 @@ export default [
     site: "https://crossjig.com",
     numPlayers: 1,
     playTimeMinutes: 5,
-    googlePlay:
-      "https://play.google.com/store/apps/details?id=com.crossjig.twa",
   },
   {
     id: "lexlet",
@@ -16,8 +14,6 @@ export default [
     site: "https://lexlet.com",
     numPlayers: 1,
     playTimeMinutes: 5,
-    googlePlay:
-      "https://play.google.com/store/apps/details?id=com.palettegame.twa",
   },
   {
     id: "blobble",
@@ -26,8 +22,6 @@ export default [
     site: "https://skedwards88.github.io/blobble/",
     numPlayers: 1,
     playTimeMinutes: 5,
-    googlePlay:
-      "https://play.google.com/store/apps/details?id=blobble.io.github.skedwards88.twa",
   },
   {
     id: "logicgrid",
@@ -36,8 +30,6 @@ export default [
     site: "https://skedwards88.github.io/logic-grid/",
     numPlayers: 1,
     playTimeMinutes: 5,
-    googlePlay:
-      "https://play.google.com/store/apps/details?id=logicgrid.io.github.skedwards88.twa",
   },
   {
     id: "wordfall",
@@ -54,8 +46,6 @@ export default [
     site: "https://skedwards88.github.io/gribbles/",
     numPlayers: 1,
     playTimeMinutes: 5,
-    googlePlay:
-      "https://play.google.com/store/apps/details?id=gribbles.io.github.skedwards88.twa",
   },
   {
     id: "dragon",
@@ -64,8 +54,6 @@ export default [
     site: "https://skedwards88.github.io/dragon/",
     numPlayers: 1,
     playTimeMinutes: 20,
-    googlePlay:
-      "https://play.google.com/store/apps/details?id=dragon.io.github.skedwards88.twa",
   },
   {
     id: "words",

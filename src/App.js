@@ -12,7 +12,6 @@ function Project({
   activityDescription = "Play now",
   numPlayers,
   playTimeMinutes,
-  googlePlay,
 }) {
   const imagePath = imageLookup[id].default;
 
@@ -32,8 +31,6 @@ function Project({
       <p>{description}</p>
       <div className="links">
         <a href={site}>{activityDescription}</a>
-        {googlePlay ? <div>&nbsp;●&nbsp;</div> : <></>}
-        {googlePlay ? <a href={googlePlay}>Find on Google Play</a> : <></>}
       </div>
     </div>
   );
