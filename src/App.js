@@ -1,10 +1,7 @@
 import React from "react";
 import projects from "./projects.js";
-import getImageLookup from "./imageLookup.js";
 
-const imageLookup = getImageLookup();
-
-function Project({
+function Game({
   name,
   id,
   description,
@@ -12,14 +9,16 @@ function Project({
   activityDescription = "Play now",
   numPlayers,
   playTimeMinutes,
-  googlePlay,
 }) {
-  const imagePath = imageLookup[id].default;
-
   return (
     <div className="project" key={id}>
       <h3>{name}</h3>
-      <img className="icon" src={imagePath} alt={id} />
+      <a
+        href={site}
+        className={`game-image ${id}`}
+        role="img"
+        aria-label={`Screenshot of the ${name} game.`}
+      ></a>
       <div id="playParameters">
         <p>
           {numPlayers
@@ -32,8 +31,6 @@ function Project({
       <p>{description}</p>
       <div className="links">
         <a href={site}>{activityDescription}</a>
-        {googlePlay ? <div>&nbsp;●&nbsp;</div> : <></>}
-        {googlePlay ? <a href={googlePlay}>Find on Google Play</a> : <></>}
       </div>
     </div>
   );
@@ -41,7 +38,7 @@ function Project({
 
 function App() {
   const displays = projects.map((project) => {
-    return Project(project);
+    return Game(project);
   });
 
   return (
