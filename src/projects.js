@@ -4,7 +4,6 @@ export default [
     name: "Crossjig",
     description: "A word-based jigsaw puzzle",
     site: "https://crossjig.com",
-    code: "https://github.com/skedwards88/crossjig",
     numPlayers: 1,
     playTimeMinutes: 5,
     googlePlay:
@@ -15,7 +14,6 @@ export default [
     name: "Lexlet",
     description: "A colorful spatial word puzzle",
     site: "https://lexlet.com",
-    code: "https://github.com/skedwards88/lexlet",
     numPlayers: 1,
     playTimeMinutes: 5,
     googlePlay:
@@ -26,7 +24,6 @@ export default [
     name: "Blobble",
     description: "A spatial word search puzzle",
     site: "https://skedwards88.github.io/blobble/",
-    code: "https://github.com/skedwards88/blobble",
     numPlayers: 1,
     playTimeMinutes: 5,
     googlePlay:
@@ -37,7 +34,6 @@ export default [
     name: "Logic Grid",
     description: "A classic logic grid puzzle game",
     site: "https://skedwards88.github.io/logic-grid/",
-    code: "https://github.com/skedwards88/logic-grid",
     numPlayers: 1,
     playTimeMinutes: 5,
     googlePlay:
@@ -48,7 +44,6 @@ export default [
     name: "Wordfall",
     description: "A meditative jumbled word search game",
     site: "https://skedwards88.github.io/wordfall/",
-    code: "https://github.com/skedwards88/wordfall",
     numPlayers: 1,
     playTimeMinutes: 5,
   },
@@ -57,7 +52,6 @@ export default [
     name: "Gribbles",
     description: "A jumbled word search game",
     site: "https://skedwards88.github.io/gribbles/",
-    code: "https://github.com/skedwards88/gribbles",
     numPlayers: 1,
     playTimeMinutes: 5,
     googlePlay:
@@ -68,7 +62,6 @@ export default [
     name: "Dragon Hero",
     description: "A text adventure puzzle",
     site: "https://skedwards88.github.io/dragon/",
-    code: "https://github.com/skedwards88/dragon",
     numPlayers: 1,
     playTimeMinutes: 20,
     googlePlay:
@@ -79,7 +72,6 @@ export default [
     name: "Word Games",
     description: "A collection of word games",
     site: "https://skedwards88.github.io/word_games/",
-    code: "https://github.com/skedwards88/word_games",
     numPlayers: 1,
     playTimeMinutes: 5,
   },
@@ -88,7 +80,6 @@ export default [
     name: "Monkeys of the Caribbean",
     description: "Compete to control the most coconut routes",
     site: "https://skedwards88.github.io/monkeys/",
-    code: "https://github.com/skedwards88/monkeys",
     numPlayers: 2,
     playTimeMinutes: 15,
   },
@@ -97,7 +88,6 @@ export default [
     name: "Sector",
     description: "Control the largest sector of the universe",
     site: "https://skedwards88.github.io/sector/",
-    code: "https://github.com/skedwards88/sector",
     numPlayers: 2,
     playTimeMinutes: 15,
   },
@@ -106,7 +96,6 @@ export default [
     name: "Stars and Circles",
     description: "Stake out your territory before your opponent claims it",
     site: "https://skedwards88.github.io/stars_circles_game/",
-    code: "https://github.com/skedwards88/stars_circles_game",
     numPlayers: 2,
     playTimeMinutes: 15,
   },
@@ -115,7 +104,6 @@ export default [
   //   name: "Stories ",
   //   description: "Short stories inspired by Reddit writing prompts",
   //   site: "https://skedwards88.github.io/ShortStories/",
-  //   code: "https://github.com/skedwards88/ShortStories",
   //   activityDescription: "Read now",
   // },
 ];
