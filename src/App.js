@@ -1,10 +1,7 @@
 import React from "react";
 import projects from "./projects.js";
-import getImageLookup from "./imageLookup.js";
 
-const imageLookup = getImageLookup();
-
-function Project({
+function Game({
   name,
   id,
   description,
@@ -13,12 +10,15 @@ function Project({
   numPlayers,
   playTimeMinutes,
 }) {
-  const imagePath = imageLookup[id].default;
-
   return (
     <div className="project" key={id}>
       <h3>{name}</h3>
-      <img className="icon" src={imagePath} alt={id} />
+      <a
+        href={site}
+        className={`game-image ${id}`}
+        role="img"
+        aria-label={`Screenshot of the ${name} game.`}
+      ></a>
       <div id="playParameters">
         <p>
           {numPlayers
@@ -38,7 +38,7 @@ function Project({
 
 function App() {
   const displays = projects.map((project) => {
-    return Project(project);
+    return Game(project);
   });
 
   return (

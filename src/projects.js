@@ -24,7 +24,7 @@ export default [
     playTimeMinutes: 5,
   },
   {
-    id: "logicgrid",
+    id: "logicGrid",
     name: "Logic Grid",
     description: "A classic logic grid puzzle game",
     site: "https://skedwards88.github.io/logic-grid/",

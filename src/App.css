@@ -1,4 +1,4 @@
-#root {
+html {
   background-color: rgb(235 235 235);
 }
 
@@ -11,6 +11,13 @@
   font-variant: small-caps;
   justify-items: center;
   white-space: pre;
+  height: 90vh; /* fallback if svh isn't handled */
+  height: 100svh;
+  width: 98vw;
+}
+
+h4 {
+  text-wrap: wrap;
 }
 
 #projects {
@@ -65,9 +72,61 @@ a:hover {
   justify-content: space-evenly;
 }
 
-.icon {
-  width: 50%;
-  margin: auto;
+.game-image {
+  margin: 2vw;
+  width: 40vw;
+  height: 70vw;
+  background-size: cover;
+  background-position: center center;
+  border: 1px solid var(--light-color);
+  border-radius: 5%;
+  justify-self: center;
+}
+
+.crossjig {
+  background-image: url("./images/crossjig.webp");
+}
+
+.blobble {
+  background-image: url("./images/blobble.webp");
+}
+
+.lexlet {
+  background-image: url("./images/lexlet.webp");
+}
+
+.wordfall {
+  background-image: url("./images/wordfall.webp");
+}
+
+.gribbles {
+  background-image: url("./images/gribbles.webp");
+}
+
+.logicGrid {
+  background-image: url("./images/logicGrid.webp");
+}
+
+.dragon {
+  background-image: url("./images/dragon.webp");
+}
+
+.sector {
+  background-image: url("./images/sector.webp");
+}
+
+.stars_circles {
+  background-image: url("./images/stars_circles.webp");
+}
+
+.words {
+  background-image: url("./images/words.webp");
+}
+
+.monkeys {
+  background-image: url("./images/monkeys.png");
+  width: 40vw;
+  height: 40vw;
 }
 
 /* larger screens */
@@ -79,5 +138,21 @@ a:hover {
 
   .project {
     border: 2px solid black;
+  }
+
+  .game-image {
+    margin: 2vw;
+    max-width: 200px;
+    max-height: 360px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 5%;
+    justify-self: center;
+  }
+
+  .monkeys {
+    background-image: url("./images/monkeys.png");
+    max-width: 200px;
+    max-height: 200px;
   }
 }
