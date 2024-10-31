@@ -49,6 +49,10 @@ function App() {
           'All of these apps are installable and work offline.\nGoogle "Progressive Web App" to learn how to install on your device.'
         }
       </h4>
+      <h4>
+        <a href="https://www.patreon.com/skedwards88">Follow me on Patreon</a>{" "}
+        (for free) to get sneak previews and learn about new releases.
+      </h4>
       <div id="projects">{displays}</div>
       <h3>
         Designers: Colin Thom & Sarah Edwards
