@@ -50,7 +50,7 @@ function App() {
         }
       </h4>
       <h4>
-        <a href="https://www.patreon.com/skedwards88">Follow me on Patreon</a>{" "}
+        <a href="https://www.patreon.com/TwistedTrailGames">Follow me on Patreon</a>{" "}
         (for free) to get sneak previews and learn about new releases.
       </h4>
       <div id="projects">{displays}</div>
