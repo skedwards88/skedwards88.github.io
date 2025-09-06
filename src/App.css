@@ -82,43 +82,43 @@ a:hover {
 }
 
 .crossjig {
-  background-image: url("./images/crossjig.webp");
+  background-image: url("@skedwards88/shared-components/src/images/moreGames/crossjig.webp");
 }
 
 .blobble {
-  background-image: url("./images/blobble.webp");
+  background-image: url("@skedwards88/shared-components/src/images/moreGames/blobble.webp");
 }
 
 .lexlet {
-  background-image: url("./images/lexlet.webp");
+  background-image: url("@skedwards88/shared-components/src/images/moreGames/lexlet.webp");
 }
 
 .wordfall {
-  background-image: url("./images/wordfall.webp");
+  background-image: url("@skedwards88/shared-components/src/images/moreGames/wordfall.webp");
 }
 
 .gribbles {
-  background-image: url("./images/gribbles.webp");
+  background-image: url("@skedwards88/shared-components/src/images/moreGames/gribbles.webp");
 }
 
 .logicGrid {
-  background-image: url("./images/logicGrid.webp");
+  background-image: url("@skedwards88/shared-components/src/images/moreGames/logicGrid.webp");
 }
 
 .dragon {
-  background-image: url("./images/dragon.webp");
+  background-image: url("@skedwards88/shared-components/src/images/moreGames/dragon.webp");
 }
 
 .sector {
-  background-image: url("./images/sector.webp");
+  background-image: url("@skedwards88/shared-components/src/images/moreGames/sector.webp");
 }
 
 .stars_circles {
-  background-image: url("./images/stars_circles.webp");
+  background-image: url("@skedwards88/shared-components/src/images/moreGames/stars_circles.webp");
 }
 
 .words {
-  background-image: url("./images/words.webp");
+  background-image: url("@skedwards88/shared-components/src/images/moreGames/words.webp");
 }
 
 .monkeys {
