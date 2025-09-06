@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/skedwards88/portfolio#readme",
   "dependencies": {
+    "@skedwards88/shared-components": "latest",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },

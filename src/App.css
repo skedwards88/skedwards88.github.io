@@ -1,47 +1,47 @@
 html {
-  background-color: rgb(235 235 235);
+  --dark-color: rgb(55 54 71);
+  --light-color: rgb(215 215 215);
+
+  background-color: var(--dark-color);
+  color: var(--light-color);
+  height: 100vh;
+  width: 100vw;
 }
 
 .App {
   font-family: Arial, Helvetica, sans-serif;
   display: grid;
-  margin: 10px;
   text-align: center;
   font-weight: bold;
   font-variant: small-caps;
+  justify-self: center;
+  justify-content: center;
   justify-items: center;
   white-space: pre;
-  height: 90vh; /* fallback if svh isn't handled */
-  height: 100svh;
-  width: 98vw;
+  height: 100vh;
+  width: 90%;
 }
 
-h4 {
+p {
   text-wrap: wrap;
+  margin: 5px;
 }
 
 #projects {
   display: grid;
   grid-template-columns: 100%;
-  gap: 10px;
+  gap: 15px;
   justify-items: center;
 }
 
 .project {
-  border-top: 2px solid black;
-  border-bottom: 0;
-  border-left: 0;
-  border-right: 0;
-  margin: 3px;
-  padding: 20px;
+  background-color: var(--light-color);
+  color: var(--dark-color);
+  border-radius: 7px;
   display: grid;
   justify-content: stretch;
-  width: 90%;
+  width: 100%;
   white-space: pre-wrap;
-}
-
-.project:last-child {
-  border-bottom: 2px solid black;
 }
 
 #playParameters {
@@ -73,13 +73,11 @@ a:hover {
 }
 
 .game-image {
-  margin: 2vw;
-  width: 40vw;
-  height: 70vw;
+  width: 75%;
+  aspect-ratio: 4 / 7;
   background-size: cover;
   background-position: center center;
-  border: 1px solid var(--light-color);
-  border-radius: 5%;
+  border-radius: 7px;
   justify-self: center;
 }
 
@@ -125,8 +123,70 @@ a:hover {
 
 .monkeys {
   background-image: url("./images/monkeys.png");
-  width: 40vw;
-  height: 40vw;
+  width: 70%;
+  aspect-ratio: 1/1;
+}
+
+.appStoreButtons {
+  display: grid;
+  grid-template-areas:
+    "google apple pwa"
+    "gcoming acoming pcoming";
+  grid-template-columns: 1fr 1fr 1fr;
+  column-gap: 10px;
+  margin: 10px;
+  row-gap: 0;
+  align-items: start;
+}
+
+.appStoreButton {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  max-width: 180px;
+  aspect-ratio: 3 / 1;
+}
+
+.appStoreButton:disabled {
+  opacity: 0.4;
+
+  /* Since this case is a button instead of a link, need to remove some button styling */
+  border: none;
+  background-color: transparent;
+  margin-bottom: 0;
+}
+
+.appStoreButtons > p {
+  margin: 0;
+  font-size: xx-small;
+}
+
+#googlePlayStore {
+  background-image: url("@skedwards88/shared-components/src/images/appStores/google.png");
+  grid-area: google;
+}
+
+#googlePlayStore + p {
+  grid-area: gcoming;
+}
+
+#appleAppStore {
+  background-image: url("@skedwards88/shared-components/src/images/appStores/apple_black.svg");
+  grid-area: apple;
+}
+
+#appleAppStore + p {
+  grid-area: acoming;
+}
+
+#pwa {
+  background-image: url("./images/pwa.svg");
+  grid-area: pwa;
+
+  /* Unset some button styling */
+  background-color: transparent;
+  border: none;
+  padding: 0;
 }
 
 /* larger screens */
@@ -134,25 +194,6 @@ a:hover {
   #projects {
     grid-template-columns: 50% 50%;
     max-width: 900px;
-  }
-
-  .project {
-    border: 2px solid black;
-  }
-
-  .game-image {
-    margin: 2vw;
-    max-width: 200px;
-    max-height: 360px;
-    background-size: cover;
-    background-position: center;
-    border-radius: 5%;
-    justify-self: center;
-  }
-
-  .monkeys {
-    background-image: url("./images/monkeys.png");
-    max-width: 200px;
-    max-height: 200px;
+    gap: 25px;
   }
 }

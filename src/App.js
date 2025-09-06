@@ -1,12 +1,18 @@
 import React from "react";
 import projects from "./projects.js";
+import AppleStore from "@skedwards88/shared-components/src/components/AppleStore";
+import AppleStoreDisabled from "@skedwards88/shared-components/src/components/AppleStoreDisabled";
+import GooglePlayStoreDisabled from "@skedwards88/shared-components/src/components/GooglePlayStoreDisabled";
+import GooglePlayStore from "@skedwards88/shared-components/src/components/GooglePlayStore";
+// import NoStore from "@skedwards88/shared-components/src/components/NoStore";
 
 function Game({
   name,
   id,
   description,
   site,
-  activityDescription = "Play now",
+  googleAppLink,
+  appleAppLink,
   numPlayers,
   playTimeMinutes,
 }) {
@@ -19,6 +25,7 @@ function Game({
         role="img"
         aria-label={`Screenshot of the ${name} game.`}
       ></a>
+      <p>{description}</p>
       <div id="playParameters">
         <p>
           {numPlayers
@@ -28,9 +35,25 @@ function Game({
         <p>{numPlayers && playTimeMinutes ? " ● " : null}</p>
         <p>{playTimeMinutes ? playTimeMinutes + " min" : null}</p>
       </div>
-      <p>{description}</p>
-      <div className="links">
-        <a href={site}>{activityDescription}</a>
+      <div className="appStoreButtons">
+        {googleAppLink ? (
+          <GooglePlayStore appLink={googleAppLink}></GooglePlayStore>
+        ) : (
+          <GooglePlayStoreDisabled />
+        )}
+
+        {appleAppLink ? (
+          <AppleStore appLink={appleAppLink}></AppleStore>
+        ) : (
+          <AppleStoreDisabled />
+        )}
+
+        <a
+          className="appStoreButton"
+          id="pwa"
+          href={site}
+          aria-label="Play in your browser"
+        ></a>
       </div>
     </div>
   );
@@ -43,22 +66,19 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Puzzles and Games</h1>
-      <h4>
-        {
-          'All of these apps are installable and work offline.\nGoogle "Progressive Web App" to learn how to install on your device.'
-        }
-      </h4>
-      <h4>
-        <a href="https://www.patreon.com/TwistedTrailGames">Follow me on Patreon</a>{" "}
+      <h1>Twisted Trail Games</h1>
+      <p>
+        <a href="https://www.patreon.com/TwistedTrailGames">
+          Follow on Patreon
+        </a>{" "}
         (for free) to get sneak previews and learn about new releases.
-      </h4>
+      </p>
       <div id="projects">{displays}</div>
-      <h3>
+      <p>
         Designers: Colin Thom & Sarah Edwards
         <br />
         Software Developer: Sarah Edwards
-      </h3>
+      </p>
     </div>
   );
 }
