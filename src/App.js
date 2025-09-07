@@ -18,7 +18,7 @@ function Game({
 }) {
   return (
     <div className="project" key={id}>
-      <h3>{name}</h3>
+      <h2>{name}</h2>
       <a
         href={site}
         className={`game-image ${id}`}
