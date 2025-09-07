@@ -32,6 +32,7 @@ p {
   grid-template-columns: 100%;
   gap: 15px;
   justify-items: center;
+  margin: 10px 0;
 }
 
 .project {
