@@ -6,7 +6,7 @@ All of the games are progressive web apps, so you can install them on your phone
 
 [View Games](https://skedwards88.github.io/)
 
-<img src="src/images/favicon.png" alt="game icon" width="70"/>
+<img src="src/images/favicon.svg" alt="game icon" width="70"/>
 
 ## Development
 

@@ -41,7 +41,7 @@ module.exports = {
       template: "./src/index.html",
     }),
     new CopyPlugin({
-      patterns: [{from: "./src/images/favicon.png", to: "./favicon.png"}],
+      patterns: [{from: "./src/images/favicon.svg", to: "./favicon.svg"}],
       options: {
         concurrency: 100,
       },

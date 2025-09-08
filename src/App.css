@@ -27,6 +27,19 @@ p {
   margin: 5px;
 }
 
+#logo {
+  background-image: url("./images/favicon-light.svg");
+  width: 25%;
+  aspect-ratio: 1/1;
+  background-size: cover;
+  background-position: center center;
+  justify-self: center;
+}
+
+h1 {
+  margin-top: 0;
+}
+
 #projects {
   display: grid;
   grid-template-columns: 100%;
@@ -61,7 +74,7 @@ a {
 
 a:active,
 a:hover {
-  color: rgb(121, 233, 255);
+  color: rgb(121 233 255);
 }
 
 .links {

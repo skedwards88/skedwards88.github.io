@@ -4,7 +4,6 @@ import AppleStore from "@skedwards88/shared-components/src/components/AppleStore
 import AppleStoreDisabled from "@skedwards88/shared-components/src/components/AppleStoreDisabled";
 import GooglePlayStoreDisabled from "@skedwards88/shared-components/src/components/GooglePlayStoreDisabled";
 import GooglePlayStore from "@skedwards88/shared-components/src/components/GooglePlayStore";
-// import NoStore from "@skedwards88/shared-components/src/components/NoStore";
 
 function Game({
   name,
@@ -66,6 +65,7 @@ function App() {
 
   return (
     <div className="App">
+      <div id="logo"></div>
       <h1>Twisted Trail Games</h1>
       <p>
         <a href="https://www.patreon.com/TwistedTrailGames">
