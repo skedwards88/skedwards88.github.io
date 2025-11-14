@@ -1,6 +1,6 @@
 html {
-  --dark-color: rgb(55 54 71);
-  --light-color: rgb(215 215 215);
+  --dark-color: #373647;
+  --light-color: #d7d7d7;
 
   background-color: var(--dark-color);
   color: var(--light-color);
