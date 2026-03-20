@@ -11,6 +11,16 @@ export default [
     playTimeMinutes: 5,
   },
   {
+    id: "deepSpaceSlime",
+    name: "Deep Space Slime",
+    description: "A maze puzzle game",
+    site: "https://deepspaceslime.com",
+    googleAppLink: "",
+    appleAppLink: "",
+    numPlayers: 1,
+    playTimeMinutes: 60,
+  },
+  {
     id: "lexlet",
     name: "Lexlet",
     description: "A colorful spatial word puzzle",

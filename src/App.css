@@ -99,6 +99,10 @@ a:hover {
   background-image: url("@skedwards88/shared-components/src/images/moreGames/crossjig.webp");
 }
 
+.deepSpaceSlime {
+  background-image: url("@skedwards88/shared-components/src/images/moreGames/deep_space_slime.webp");
+}
+
 .blobble {
   background-image: url("@skedwards88/shared-components/src/images/moreGames/blobble.webp");
 }
