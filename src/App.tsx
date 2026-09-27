@@ -1,5 +1,4 @@
-import React from "react";
-import projects from "./projects.js";
+import projects, {type Project} from "./projects";
 import AppleStore from "@skedwards88/shared-components/src/components/AppleStore";
 import AppleStoreDisabled from "@skedwards88/shared-components/src/components/AppleStoreDisabled";
 import GooglePlayStoreDisabled from "@skedwards88/shared-components/src/components/GooglePlayStoreDisabled";
@@ -14,7 +13,7 @@ function Game({
   appleAppLink,
   numPlayers,
   playTimeMinutes,
-}) {
+}: Project): React.JSX.Element {
   return (
     <div className="project" key={id}>
       <h2>{name}</h2>
@@ -36,13 +35,21 @@ function Game({
       </div>
       <div className="appStoreButtons">
         {googleAppLink ? (
-          <GooglePlayStore appLink={googleAppLink}></GooglePlayStore>
+          <GooglePlayStore
+            appLink={googleAppLink}
+            userId="untracked_ttg_site"
+            sessionId="untracked_ttg_site"
+          ></GooglePlayStore>
         ) : (
           <GooglePlayStoreDisabled />
         )}
 
         {appleAppLink ? (
-          <AppleStore appLink={appleAppLink}></AppleStore>
+          <AppleStore
+            appLink={appleAppLink}
+            userId="untracked_ttg_site"
+            sessionId="untracked_ttg_site"
+          ></AppleStore>
         ) : (
           <AppleStoreDisabled />
         )}
@@ -58,7 +65,7 @@ function Game({
   );
 }
 
-function App() {
+function App(): React.JSX.Element {
   const displays = projects.map((project) => {
     return Game(project);
   });

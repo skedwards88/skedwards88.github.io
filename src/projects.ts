@@ -1,4 +1,25 @@
+export type Project = {
+  id: string;
+  name: string;
+  description: string;
+  site: string;
+  googleAppLink: string;
+  appleAppLink: string;
+  numPlayers: number;
+  playTimeMinutes: number;
+};
+
 export default [
+  {
+    id: "currents",
+    name: "Currents (beta release)",
+    description: "A relaxing ocean themed puzzle game",
+    site: "https://currents.twistedtrailgames.com/",
+    googleAppLink: "",
+    appleAppLink: "",
+    numPlayers: 1,
+    playTimeMinutes: 15,
+  },
   {
     id: "crossjig",
     name: "Crossjig",
@@ -131,4 +152,4 @@ export default [
   //   description: "Short stories inspired by Reddit writing prompts",
   //   site: "https://skedwards88.github.io/ShortStories/",
   // },
-];
+] as Project[];

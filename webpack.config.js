@@ -8,7 +8,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
+        test: /\.(js|jsx|ts|tsx)$/,
         include: [
           path.resolve(__dirname, "src"),
           path.dirname(
@@ -16,7 +16,13 @@ module.exports = {
           ),
         ],
         loader: "babel-loader",
-        options: {presets: ["@babel/env"]},
+        options: {
+          presets: [
+            "@babel/env",
+            ["@babel/preset-react", {runtime: "automatic"}],
+            "@babel/preset-typescript",
+          ],
+        },
       },
       {
         test: /\.css$/,
@@ -24,7 +30,7 @@ module.exports = {
       },
     ],
   },
-  resolve: {extensions: ["*", ".js", ".jsx"]},
+  resolve: {extensions: ["*", ".js", ".jsx", ".ts", ".tsx"]},
   output: {
     path: path.resolve(__dirname, "dist"),
     publicPath: "",
