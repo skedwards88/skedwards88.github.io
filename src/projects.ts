@@ -5,7 +5,7 @@ export type Project = {
   site: string;
   googleAppLink: string;
   appleAppLink: string;
-  numPlayers: number;
+  numPlayers: number | string;
   playTimeMinutes: number;
 };
 
@@ -123,7 +123,7 @@ export default [
     site: "https://monkeys.twistedtrailgames.com/",
     googleAppLink: "",
     appleAppLink: "",
-    numPlayers: 2,
+    numPlayers: "1-2",
     playTimeMinutes: 15,
   },
   {
@@ -133,7 +133,7 @@ export default [
     site: "https://sector.twistedtrailgames.com/",
     googleAppLink: "",
     appleAppLink: "",
-    numPlayers: 2,
+    numPlayers: "1-2",
     playTimeMinutes: 15,
   },
   {

@@ -27,7 +27,7 @@ function Game({
       <div id="playParameters">
         <p>
           {numPlayers
-            ? `${numPlayers} player${numPlayers > 1 ? "s" : ""}`
+            ? `${numPlayers} player${numPlayers != 1 ? "s" : ""}`
             : null}
         </p>
         <p>{numPlayers && playTimeMinutes ? " ● " : null}</p>
