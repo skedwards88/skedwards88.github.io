@@ -26,7 +26,7 @@
   },
   "homepage": "https://github.com/skedwards88/portfolio#readme",
   "dependencies": {
-    "@skedwards88/shared-components": "^0.1.5",
+    "@skedwards88/shared-components": "^0.1.9",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },

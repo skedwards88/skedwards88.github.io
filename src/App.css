@@ -144,9 +144,7 @@ a:hover {
 }
 
 .monkeys {
-  background-image: url("./images/monkeys.png");
-  width: 70%;
-  aspect-ratio: 1/1;
+  background-image: url("@skedwards88/shared-components/src/images/moreGames/monkeys_partial.webp");
 }
 
 .appStoreButtons {
